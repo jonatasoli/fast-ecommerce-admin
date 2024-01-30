@@ -26,6 +26,13 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 			});
 		}
 
+		if(data.role !== 'ADMIN') {
+			return json({
+				success: false,
+				message: 'UNAUTHORIZED'
+			});
+		}
+
 		cookies.set('access_token', data.access_token, {
 			httpOnly: true,
 			secure: true,

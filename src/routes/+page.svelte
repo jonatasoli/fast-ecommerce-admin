@@ -22,6 +22,11 @@
 			error = 'Credenciais inválidas';
 			return;
 		}
+
+		if (data.message === 'UNAUTHORIZED') {
+			error = 'Você não tem permissão para acessar essa página';
+			return;
+		}
 		goto('/admin');
 	}
 </script>
