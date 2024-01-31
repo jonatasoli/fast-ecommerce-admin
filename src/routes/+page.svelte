@@ -1,18 +1,55 @@
 <script lang="ts">
-  import "../app.css";
+	import { goto } from '$app/navigation';
+	import '../app.css';
+
+	let username = '';
+	let password = '';
+	let error = '';
+
+	async function handleLogin() {
+		const resp = await fetch(`/api/auth/login`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				username,
+				password
+			})
+		});
+		const data = await resp.json();
+		if (data.message === 'INVALID_CREDENTIALS') {
+			error = 'Credenciais inválidas';
+			return;
+		}
+
+		if (data.message === 'UNAUTHORIZED') {
+			error = 'Você não tem permissão para acessar essa página';
+			return;
+		}
+		goto('/admin');
+	}
 </script>
 
-<div class="card container mx-auto">
-  <h1 class="text-sky-400 hover:text-green-400 text-center">Fast E-COMMERCE ADMIN</h1>
-
-  <div>
-    <form class="rounded">
-      <p>Por favor coloque suas credenciais para logar</p>
-      <label class="block text-sm decoration-sky-500">Login</label>
-      <input class="border border-black" name="login" />
-      <label class="block text-sm decoration-sku-500">Senha</label>
-      <input class="border border-black" name="password" />
-      <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" name=Login type="button">Login</button>
-    </form>
-  </div>
+<div class="flex flex-col justify-center items-center h-screen w-screen">
+	<h1 class="text-primary text-2xl font-semibold text-center mb-6">GATTO ROSA ADMIN</h1>
+	<div>
+		<form class="rounded flex flex-col gap-2">
+      <div class="h-4">
+        {#if error}
+          <p class="text-red-500 text-center w-full">{error}</p>
+        {/if}
+      </div>
+			<label class="text-sm decoration-sky-500" for="login">Login</label>
+			<input class="border border-black p-1" name="login" bind:value={username} />
+			<label class="text-sm decoration-sku-500" for="password">Senha</label>
+			<input class="border border-black p-1" name="password" bind:value={password} />
+			<button
+				on:click={handleLogin}
+				class="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+				name="Login"
+				type="button">Login</button
+			>
+		</form>
+	</div>
 </div>
