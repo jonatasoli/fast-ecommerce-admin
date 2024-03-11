@@ -35,18 +35,23 @@
 	<h1 class="text-primary text-2xl font-semibold text-center mb-6">GATTO ROSA ADMIN</h1>
 	<div>
 		<form class="rounded flex flex-col gap-2">
-      <div class="h-4">
-        {#if error}
-          <p class="text-red-500 text-center w-full">{error}</p>
-        {/if}
-      </div>
+			<div class="h-4">
+				{#if error}
+					<p class="text-red-500 text-center w-full">{error}</p>
+				{/if}
+			</div>
 			<label class="text-sm decoration-sky-500" for="login">Login</label>
-			<input class="border border-black p-1" name="login" bind:value={username} />
+			<input class="border border-gray-500 rounded-md p-1" name="login" bind:value={username} />
 			<label class="text-sm decoration-sku-500" for="password">Senha</label>
-			<input class="border border-black p-1" name="password" bind:value={password} />
+			<input
+				class="border border-gray-500 rounded-md p-1"
+				name="password"
+				type="password"
+				bind:value={password}
+			/>
 			<button
 				on:click={handleLogin}
-				class="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+				class="bg-primary hover:bg-primary-dark text-white font-bold mt-2 py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 				name="Login"
 				type="button">Login</button
 			>
