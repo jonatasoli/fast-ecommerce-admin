@@ -33,33 +33,52 @@ export const actions: Actions = {
 		}
 
 		const payload = {
-			...form.data,
+			name: form.data.name,
+			sku: form.data.sku,
+			weight: form.data.weight,
+			height: form.data.height,
+			width: form.data.width,
+			length: form.data.length,
+			price: form.data.price,
 			uri: generateURI(form.data.name),
 			installments_config: 1,
 			category_id: form.data.category,
 			image_path: '',
 			active: true,
-			description: {},
-			sku: '',
+			description: {
+				content: form.data.content,
+				composition: form.data.composition,
+				how_to_use: form.data.howToUse
+			},
 		};
 
-		console.log(payload)
 		const res = await fetch(`${SERVER_BASE_URL}/product/create-product`, {
-			method: 'POST',
+			method: 'POST',  
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(payload)
 		});
-
 		
-		const data = await res.json();
-		console.log(data.detail);
-		if (data.uri) {
-			return {
-				success: true
-			};
+		const productData = await res.json();
+
+		if (form.data.image) {
+			const formData = new FormData();
+			formData.append('image', form.data.image);
+			const res = await fetch(`${SERVER_BASE_URL}/product/upload-image/${productData.product_id}`, {
+				method: 'POST',
+				body: formData
+			});
+
+			const imageData = await res.json();
+
+			if (imageData && productData.uri)   {
+				return {
+					success: true
+				};
+			}
 		}
+		
 		return fail(422, {
 			success: false
 		})
