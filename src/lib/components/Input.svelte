@@ -26,7 +26,7 @@
 	<label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 		>{label}</label
 	>
-	<input class={input()} {type} {value} {...$$restProps} />
+	<input class={input()} on:change {type} {value} {...$$restProps} />
 	<div class="pt-[0.15rem] h-8">
 		{#if error}
 			<p class="text-sm text-red-600">{error}</p>
