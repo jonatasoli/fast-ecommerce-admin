@@ -15,7 +15,7 @@
     "test:unit": "vitest",
     "smui-theme": "smui-theme compile static/smui.css -i src/theme",
     "prepare": "npm run smui-theme",
-    "start": "vite build"
+    "start": "node build/index.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.28.1",
