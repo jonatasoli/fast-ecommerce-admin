@@ -30,7 +30,7 @@
 	<label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 		>{label}</label
 	>
-    <div class="border rounded-lg flex gap-20 items-center">
+    <div class="border rounded-lg flex gap-20 p-2 items-center">
         <input class={input()} on:input={handleInput} type="file" {...$$restProps} />
     </div>
     {#if files}

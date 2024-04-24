@@ -1,9 +1,7 @@
 <script lang="ts">
+	import { IMask } from '@imask/svelte';
+	import { Helper, Input, Label, type InputType } from 'flowbite-svelte';
 	import { tv } from 'tailwind-variants';
-
-	const input = tv({
-		base: 'border text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-primary block w-full p-2.5 outline-none',
-	});
 
 	type Input = Omit<Partial<HTMLInputElement>, 'max' | 'min' | 'step' | 'value'>;
 
@@ -14,22 +12,31 @@
 		step?: string | number
 		min?: string | number
 		value?: string | number
+		mask?: string
     }
     
     export let label = 'Label';
-	export let type = 'text';
 	export let value = $$restProps.defaultValue || '';
 	export let error: string[] | null | undefined = [];
+	export let mask: string | undefined = undefined;
+
+	function applyMask(event: Event) {
+		if (mask) {
+			const input = event.target as HTMLInputElement;
+			const imask = IMask(input, { mask });
+			value = imask.unmaskedValue;
+		}
+	}
 </script>
 
-<div>
-	<label for="first_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-		>{label}</label
-	>
-	<input class={input()} on:change {type} {value} {...$$restProps} />
-	<div class="pt-[0.15rem] h-8">
-		{#if error}
-			<p class="text-sm text-red-600">{error}</p>
-		{/if}
+<div class="block space-y-2">
+	<Label>{label}</Label>
+	<Input {value} {...$$restProps} on:input={applyMask}/>
+	{#if error}
+		<Helper class="mt-2" color="red">
+			{#each error as message}
+				<p class="text-sm">{message}</p>
+			{/each}
+		</Helper>
+	{/if}
 	</div>
-</div>

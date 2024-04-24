@@ -30,6 +30,8 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-svelte": "^2.30.0",
     "felte": "^1.2.14",
+    "flowbite": "^2.3.0",
+    "flowbite-svelte": "^0.44.24",
     "flowbite-svelte-icons": "^1.2.1",
     "postcss": "^8.4.31",
     "prettier": "^3.0.0",
@@ -50,6 +52,7 @@
     "@canutin/svelte-currency-input": "^0.11.3",
     "@felte/reporter-svelte": "^1.1.11",
     "@felte/validator-zod": "^1.0.17",
+    "@imask/svelte": "^7.6.0",
     "quill": "2.0.0-rc.3",
     "tailwind-variants": "^0.1.20",
     "zod": "^3.22.4"

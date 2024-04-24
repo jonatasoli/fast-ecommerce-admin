@@ -17,6 +17,11 @@
 	let howToUse = '';
 	let files: FileList;
 
+	const categoryItems = data.categories.map((category) => ({
+		value: category.category_id,
+		name: category.name
+	}));
+
 	const { form, constraints, errors, enhance } = superForm(data.form, {
 		applyAction: false,
 		onSubmit: ({ formData }) => {
@@ -61,11 +66,10 @@
 				name="category"
 				bind:value={$form.category}
 				{...$constraints.category}
-			>
-				{#each data.categories as category (category.category_id)}
-					<option value={category.category_id}>{category.name}</option>
-				{/each}
-			</Select>
+				items={categoryItems}
+			/>
+				
+			
 		</div>
 		<div class="grid grid-cols-2 gap-4">
 			<InputCurrency
