@@ -6,10 +6,11 @@
 		name: string;
 	}
 
-	interface $$Props extends Partial<HTMLSelectElement> {
+	interface $$Props extends Omit<Partial<HTMLSelectElement>, 'value'> {
 		label: string;
 		error?: string[] | null;
 		items: OptionType[];
+		value?: string | number | undefined;
 	}
 
 	export let label = 'Label';
