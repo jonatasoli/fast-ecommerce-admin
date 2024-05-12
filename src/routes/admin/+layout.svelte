@@ -34,6 +34,11 @@
 		<nav class="flex gap-4">
 			<a href="/admin" class={active(pathname, '/admin')}>Inicio</a>
 			<a href="/admin/products" class={active(pathname, '/admin/products')}>Produtos</a>
+			<a href="/admin/inventory" class={active(pathname, '/admin/inventory')}>Estoque</a>
+			<a href="/admin/invoices" class={active(pathname, '/admin/invoices')}>Fiscal</a>
+			<a href="/admin/logistics" class={active(pathname, '/admin/logistics')}>Logistica</a>
+			<a href="/admin/sales" class={active(pathname, '/admin/sales')}>Vendas</a>
+			<a href="/admin/settings" class={active(pathname, '/admin/settings')}>Configurações</a>
 		</nav>
 		<Button variant="secondary" on:click={logout}>Sair</Button>
 	</header>

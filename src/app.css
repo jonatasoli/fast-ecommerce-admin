@@ -1,13 +1,16 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* @import 'tailwindcss/base'; */
+/* @import 'tailwindcss/components'; */
+/* @import 'tailwindcss/utilities'; */
 
 .ql-container.ql-snow {
-    border-radius: 0 0 10px 10px;
-    border: 1px solid #e2e8f0 !important;
+	border-radius: 0 0 10px 10px;
+	border: 1px solid #e2e8f0 !important;
 }
 
 .ql-toolbar.ql-snow {
-    border-radius: 10px 10px 0 0;
-    border: 1px solid #e2e8f0 !important;
+	border-radius: 10px 10px 0 0;
+	border: 1px solid #e2e8f0 !important;
 }
