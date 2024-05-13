@@ -1,64 +1,57 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
+	import { superForm } from 'sveltekit-superforms';
 	import '../app.css';
+	import Input from '$lib/components/Input.svelte';
+	
+	import Toast from '$lib/components/Toast.svelte';
+	import { notifications } from '$lib/notifications';
 
-	let username = '';
-	let password = '';
-	let error = '';
+	export let data;
+	let loading = false;
 
-	async function handleLogin() {
-		const resp = await fetch(`/api/auth/login`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				username,
-				password
-			})
-		});
-		const data = await resp.json();
-		if (!data.success) {
-			error = 'Erro ao fazer login';
-			return;
+	const { form, enhance, errors, constraints } = superForm(data.form, {
+		applyAction: false,
+		onSubmit: () => {
+			loading = true;
+		},
+		onResult({ result }) {
+			if (result.type === 'failure') {
+				notifications.danger(result.data?.error, 3000);
+				loading = false;
+				return;
+			}
+
+			if (result.type === 'success') {
+				goto('/admin');
+			}
 		}
-		if (data.message === 'INVALID_CREDENTIALS') {
-			error = 'Credenciais inválidas';
-			return;
-		}
-
-		if (data.message === 'UNAUTHORIZED') {
-			error = 'Você não tem permissão para acessar essa página';
-			return;
-		}
-		goto('/admin');
-	}
-  
-
-
+	});
 </script>
 
-<div class="flex flex-col justify-center items-center h-screen w-screen">
-	<h1 class="text-primary text-2xl font-semibold text-center mb-6">GATTO ROSA ADMIN</h1>
-	
-	<div>
-		<form class="rounded flex flex-col gap-4">
-			<div class="h-4">
-				{#if error}
-					<p class="text-red-500 text-center w-full">{error}</p>
-				{/if}
-			</div>
-			<label class="text-sm decoration-sky-500" for="login">Login</label>
-			<input class="border border-gray-500 rounded-md p-1" name="login" bind:value={username} />
-			<label class="text-sm decoration-sku-500" for="password">Senha</label>
-			<input
-				class="border border-gray-500 rounded-md p-1"
+<Toast />
+<div class="flex flex-col justify-center items-center h-screen w-screen bg-slate-100">
+	<div class="bg-white border rounded-lg p-16">
+		<h1 class="text-primary text-2xl font-semibold text-center mb-8">GATTO ROSA ADMIN</h1>
+		<form class="flex flex-col gap-8" method="POST" use:enhance>
+			<Input
+				mask='000.000.000-00'
+				label="Login"
+				name="username"
+				bind:value={$form.username}
+				{...$constraints.username}
+				error={$errors.username}
+			/>
+			<Input
+				label="Senha"
 				name="password"
 				type="password"
-				bind:value={password}
+				bind:value={$form.password}
+				{...$constraints.password}
+				error={$errors.password}
 			/>
-			<Button on:click={handleLogin} name="Login" block={true}>Login</Button>
+			<Button name="Login" block={true} loading={loading} type="submit">Login</Button>
 		</form>
 	</div>
 </div>
