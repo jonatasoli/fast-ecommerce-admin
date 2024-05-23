@@ -24,3 +24,13 @@ export interface Category {
   showcase: boolean;
   image_path: string;
 }
+
+export interface DataInventory {
+	inventory_id: number;
+	product_id: string;
+	product_name: string;
+	order_id: number;
+	quantity: number;
+	operation: string;
+	create_at: Date;
+}
