@@ -7,6 +7,7 @@
 	
 	import Toast from '$lib/components/Toast.svelte';
 	import { notifications } from '$lib/notifications';
+	import { onMount } from 'svelte';
 
 	export let data;
 	let loading = false;
@@ -26,6 +27,15 @@
 			if (result.type === 'success') {
 				goto('/admin');
 			}
+		}
+	});
+
+	onMount(() => {
+
+		console.log('token');
+		console.log(`um token ${data.token}`);
+		if (data.token) {
+			goto('/admin');
 		}
 	});
 </script>

@@ -2,6 +2,12 @@ import { SERVER_BASE_URL } from '$env/static/private';
 import { json, type Cookies } from '@sveltejs/kit';
 
 export async function POST({ request, cookies }: { request: Request; cookies: Cookies }) {
+	const existingToken = cookies.get('access_token');
+	if (existingToken) {
+		// Redirecione para a página principal se o token já estiver presente
+		throw redirect(303, '/admin');
+	}
+
 	const body = await request.json();
 	const bodyEncoded = Object.keys(body)
 		.map((key) => {
@@ -37,14 +43,16 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 			httpOnly: true,
 			secure: true,
 			sameSite: 'strict',
-			path: '/'
+			path: '/',
+			maxAge: 60 * 60 * 12,
 		});
 
         cookies.set('userDocument', body.username, {
             httpOnly: true,
             secure: true,
             sameSite: 'strict',
-            path: '/'
+            path: '/',
+						maxAge: 60 * 60 * 12,
         });
 
 		return json({

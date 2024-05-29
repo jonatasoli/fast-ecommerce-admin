@@ -3,11 +3,13 @@ import { fail, type Actions } from "@sveltejs/kit"
 import { superValidate } from "sveltekit-superforms"
 import { zod } from "sveltekit-superforms/adapters"
 
-export const load = async () => {
+export const load = async ({cookies}) => {
     const form = await superValidate(zod(loginSchema))
+    const token = cookies.get('access_token');
 
     return {
-        form
+        form,
+        token
     }
 }
 
