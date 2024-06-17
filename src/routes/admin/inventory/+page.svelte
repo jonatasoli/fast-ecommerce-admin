@@ -3,11 +3,10 @@
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
-	import { currencyFormat } from '$lib/utils.js';
 	import { page } from '$app/stores';
 	import { createInventory } from '$lib/stores/inventory';
 	import {
-	Label,
+		Label,
 		Select,
 		Table,
 		TableBody,
@@ -25,20 +24,18 @@
 
 	export let data;
 
-  const inventoryStore = createInventory();
-  inventoryStore.set({
-    inventory: data.inventory.inventory,
-    page: data.inventory.page,
-    offset: data.inventory.offset,
-    totalPages: data.inventory.total_pages,
-    totalRecords: data.inventory.total_records,
-  });
+	const inventoryStore = createInventory();
+	inventoryStore.set({
+		inventory: data.inventory.inventory,
+		page: data.inventory.page,
+		offset: data.inventory.offset,
+		totalPages: data.inventory.total_pages,
+		totalRecords: data.inventory.total_records
+	});
 
-	
 	let rowsPerPage = data.inventory.offset;
 	let currentPage = data.inventory.page;
 	const searchParams = new URLSearchParams($page.url.searchParams);
-
 
 	$: items = data.inventory.inventory;
 	$: start = currentPage * rowsPerPage - rowsPerPage;
@@ -47,38 +44,33 @@
 	$: if (currentPage > endPage) {
 		currentPage = endPage;
 	}
-	console.log('start');
-	console.log(start);
-
-  // const refreshInventory = async (token) => {
-  //   items = await fetchInventory(token, new URL(window.location.href)); // Use current URL
-  // };
-  let unsubscribe;
-  unsubscribe = inventoryStore.subscribe(($store) => {
-    items = $store.inventory;
-    rowsPerPage = $store.offset;
-    currentPage = $store.page;
-    start = currentPage * rowsPerPage - rowsPerPage;
-    end = Math.min(start + rowsPerPage, $store.totalRecords);
-    endPage = $store.totalPages;
-  });
-  onMount(() => {
-    refreshInventory();
-  });
+	inventoryStore.subscribe(($store) => {
+		items = $store.inventory;
+		rowsPerPage = $store.offset;
+		currentPage = $store.page;
+		start = currentPage * rowsPerPage - rowsPerPage;
+		end = Math.min(start + rowsPerPage, $store.totalRecords);
+		endPage = $store.totalPages;
+	});
+	onMount(() => {
+		refreshInventory();
+	});
 
 	async function refreshInventory() {
 		await inventoryStore.get(
-			`${data.base_url}/product/inventory?page=${currentPage}&offset=${rowsPerPage}`, data.inventory.access_token);
+			`${data.base_url}/product/inventory?page=${currentPage}&offset=${rowsPerPage}`,
+			data.inventory.access_token
+		);
 	}
 
-  async function handleRowsPerPageChange(event) {
-    rowsPerPage = parseInt(event.target.value);
-    currentPage = 1; // Reset to first page
-    searchParams.set('offset', rowsPerPage);
-    searchParams.set('page', currentPage);
-    await refreshInventory();
-  }
-	
+	async function handleRowsPerPageChange(event) {
+		rowsPerPage = parseInt(event.target.value);
+		currentPage = 1; // Reset to first page
+		searchParams.set('offset', rowsPerPage);
+		searchParams.set('page', currentPage);
+		await refreshInventory();
+	}
+
 	function firstPage() {
 		currentPage = 1;
 		searchParams.set('page', currentPage);
@@ -109,18 +101,12 @@
 		searchParams.set('page', currentPage);
 		refreshInventory();
 	}
-
-	function goToNew() {
-		// goto('/admin/inventory/new');
-		console.log(currentPage);
-	}
-
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
 		<h1 class="text-3xl font-semibold">Estoque</h1>
-		<Button variant="primary" >Atualizar estoque</Button>
+		<Button variant="primary" on:click={() => goto('inventory/new')}>Atualizar estoque</Button>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
@@ -161,34 +147,33 @@
 			{start + 1}-{end} de {data.inventory.total_records}
 
 			<button
-			  on:click={firstPage}
+				on:click={firstPage}
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === 1}
 			>
 				<ChevronDoubleLeftOutline class="w-7 h-7 outline-none" />
 			</button>
 			<button
-			  on:click={prevPage}
+				on:click={prevPage}
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === 1}
 			>
 				<AngleLeftOutline class="w-5 h-5 outline-none" />
 			</button>
 			<button
-			  on:click={async() => await nextPage()}
- 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
+				on:click={async () => await nextPage()}
+				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === endPage}
 			>
 				<AngleRightOutline class="w-5 h-5 outline-none" />
 			</button>
 			<button
-			  on:click={lastPage}
+				on:click={lastPage}
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === endPage}
 			>
 				<ChevronDoubleRightOutline class="w-7 h-7 outline-none" />
 			</button>
 		</div>
-
 	</div>
 </div>

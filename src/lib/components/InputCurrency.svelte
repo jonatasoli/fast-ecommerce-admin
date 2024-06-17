@@ -17,15 +17,15 @@
 		>{label}</label
 	>
 	<CurrencyInput
-	    {onValueChange}
+		{onValueChange}
 		{...$$restProps}
 		currency="BRL"
 		locale="pt-BR"
 		{value}
 		inputClasses={{
-			wrapper:
-				'text-gray-900 text-sm p-0.5 rounded-lg  block w-full  outline-none',
-			formatted: 'text-gray-900 outline-none w-full border border-gray-300 rounded-lg bg-[#F9FAFB] focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:ring-opacity-50',
+			wrapper: 'text-gray-900 text-sm p-0.5 rounded-lg  block w-full  outline-none',
+			formatted:
+				'text-gray-900 outline-none w-full border border-gray-300 rounded-lg bg-[#F9FAFB] focus:border-primary-500 focus:ring-1 focus:ring-primary-500 focus:ring-opacity-50',
 			formattedPositive: 'text-black'
 		}}
 	/>

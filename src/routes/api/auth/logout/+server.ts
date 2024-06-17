@@ -1,10 +1,10 @@
-import { json, type Cookies } from "@sveltejs/kit";
+import { json, type Cookies } from '@sveltejs/kit';
 
-export async function POST({ cookies } : { cookies: Cookies}) {
-    cookies.delete('access_token', { path: '/'})
-    cookies.delete('userDocument', { path: '/'})
+export async function POST({ cookies }: { cookies: Cookies }) {
+	cookies.delete('access_token', { path: '/' });
+	cookies.delete('userDocument', { path: '/' });
 
-    return json({
-        success: true
-    })
+	return json({
+		success: true
+	});
 }

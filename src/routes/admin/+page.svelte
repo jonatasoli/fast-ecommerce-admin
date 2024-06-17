@@ -1,5 +1,13 @@
 <script lang="ts">
-	import { DatabaseSolid, StoreSolid, TableRowSolid, FileInvoiceSolid, TruckSolid, AdjustmentsHorizontalSolid, SalePercentSolid } from 'flowbite-svelte-icons';
+	import {
+		DatabaseSolid,
+		StoreSolid,
+		TableRowSolid,
+		FileInvoiceSolid,
+		TruckSolid,
+		AdjustmentsHorizontalSolid,
+		SalePercentSolid
+	} from 'flowbite-svelte-icons';
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">
@@ -63,4 +71,3 @@
 		</div>
 	</a>
 </div>
-

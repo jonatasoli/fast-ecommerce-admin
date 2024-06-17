@@ -34,10 +34,11 @@
 		});
 	});
 
-	$: quill && quill.on('text-change', () => {
-		value = quill.getSemanticHTML();
-		dispatch('change', { value: quill.getSemanticHTML() });
-	});
+	$: quill &&
+		quill.on('text-change', () => {
+			value = quill.getSemanticHTML();
+			dispatch('change', { value: quill.getSemanticHTML() });
+		});
 </script>
 
 <div>

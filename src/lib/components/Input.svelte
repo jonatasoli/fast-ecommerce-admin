@@ -6,16 +6,16 @@
 	type Input = Omit<Partial<HTMLInputElement>, 'max' | 'min' | 'step' | 'value'>;
 
 	interface $$Props extends Partial<Input> {
-        label: string
-		error?: string[] | null
-		max?: string | number
-		step?: string | number
-		min?: string | number
-		value?: string | number
-		mask?: string
-    }
-    
-    export let label = 'Label';
+		label: string;
+		error?: string[] | null;
+		max?: string | number;
+		step?: string | number;
+		min?: string | number;
+		value?: string | number;
+		mask?: string;
+	}
+
+	export let label = 'Label';
 	export let value = $$restProps.defaultValue || '';
 	export let error: string[] | null | undefined = [];
 	export let mask: string | undefined = undefined;
@@ -31,7 +31,7 @@
 
 <div class="block space-y-2">
 	<Label>{label}</Label>
-	<Input {value} {...$$restProps} on:input={applyMask}/>
+	<Input {value} {...$$restProps} on:input={applyMask} />
 	{#if error}
 		<Helper class="mt-2" color="red">
 			{#each error as message}
@@ -39,4 +39,4 @@
 			{/each}
 		</Helper>
 	{/if}
-	</div>
+</div>

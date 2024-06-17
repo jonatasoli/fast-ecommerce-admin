@@ -68,8 +68,6 @@
 				{...$constraints.category}
 				items={categoryItems}
 			/>
-				
-			
 		</div>
 		<div class="grid grid-cols-2 gap-4">
 			<InputCurrency
@@ -134,7 +132,7 @@
 		</div>
 		<div class="inline-flex w-full justify-center">
 			<div class="mt-8 w-80">
-				<Button block loading={loading}>Salvar</Button>
+				<Button block {loading}>Salvar</Button>
 			</div>
 		</div>
 	</form>

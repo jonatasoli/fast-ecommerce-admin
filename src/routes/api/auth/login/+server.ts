@@ -32,7 +32,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 			});
 		}
 
-		if(data.role !== 'ADMIN') {
+		if (data.role !== 'ADMIN') {
 			return json({
 				success: false,
 				message: 'UNAUTHORIZED'
@@ -44,16 +44,16 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 			secure: true,
 			sameSite: 'strict',
 			path: '/',
-			maxAge: 60 * 60 * 12,
+			maxAge: 60 * 60 * 12
 		});
 
-        cookies.set('userDocument', body.username, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict',
-            path: '/',
-						maxAge: 60 * 60 * 12,
-        });
+		cookies.set('userDocument', body.username, {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'strict',
+			path: '/',
+			maxAge: 60 * 60 * 12
+		});
 
 		return json({
 			success: true

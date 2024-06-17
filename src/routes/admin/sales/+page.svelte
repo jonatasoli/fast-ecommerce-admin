@@ -3,11 +3,10 @@
 	import { onMount } from 'svelte';
 
 	import { goto } from '$app/navigation';
-	import { currencyFormat } from '$lib/utils.js';
 	import { page } from '$app/stores';
-	import { createSalesStore } from '$lib/stores/sales';
+	import { ordersStore } from '$lib/stores/sales';
 	import {
-	Label,
+		Label,
 		Select,
 		Table,
 		TableBody,
@@ -25,20 +24,9 @@
 
 	export let data;
 
-  const OrdersStore = createSalesStore();
-  OrdersStore.set({
-    orders: data.orders.orders,
-    page: data.orders.page,
-    offset: data.orders.offset,
-    totalPages: data.orders.total_pages,
-    totalRecords: data.orders.total_records,
-  });
-
-	
 	let rowsPerPage = data.orders.offset;
 	let currentPage = data.orders.page;
 	const searchParams = new URLSearchParams($page.url.searchParams);
-
 
 	$: items = data.orders.orders;
 	$: start = currentPage * rowsPerPage - rowsPerPage;
@@ -47,35 +35,38 @@
 	$: if (currentPage > endPage) {
 		currentPage = endPage;
 	}
-	console.log('start');
-	console.log(start);
 
-  let unsubscribe;
-  unsubscribe = OrdersStore.subscribe(($store) => {
-    items = $store.orders;
-    rowsPerPage = $store.offset;
-    currentPage = $store.page;
-    start = currentPage * rowsPerPage - rowsPerPage;
-    end = Math.min(start + rowsPerPage, $store.totalRecords);
-    endPage = $store.totalPages;
-  });
-  onMount(() => {
-    refreshOrders();
-  });
+	ordersStore.subscribe(($store) => {
+		items = $store.orders;
+		rowsPerPage = $store.offset;
+		currentPage = $store.page;
+		start = currentPage * rowsPerPage - rowsPerPage;
+		end = Math.min(start + rowsPerPage, $store.totalRecords);
+		endPage = $store.totalPages;
+	});
+	onMount(() => {
+		refreshOrders();
+	});
 
 	async function refreshOrders() {
-		await OrdersStore.get(
-			`${data.base_url}/order/orders?page=${currentPage}&offset=${rowsPerPage}`, data.orders.access_token);
+		if (data?.orders) {
+			await ordersStore.get(
+				`${data.base_url}/order/orders?page=${currentPage}&offset=${rowsPerPage}`,
+				data.orders.access_token
+			);
+		} else {
+			console.error('Missing data or access token');
+		}
 	}
 
-  async function handleRowsPerPageChange(event) {
-    rowsPerPage = parseInt(event.target.value);
-    currentPage = 1; // Reset to first page
-    searchParams.set('offset', rowsPerPage);
-    searchParams.set('page', currentPage);
-    await refreshOrders();
-  }
-	
+	async function handleRowsPerPageChange(event) {
+		rowsPerPage = parseInt(event.target.value);
+		currentPage = 1; // Reset to first page
+		searchParams.set('offset', rowsPerPage);
+		searchParams.set('page', currentPage);
+		await refreshOrders();
+	}
+
 	function firstPage() {
 		currentPage = 1;
 		searchParams.set('page', currentPage);
@@ -106,7 +97,6 @@
 		searchParams.set('page', currentPage);
 		refreshOrders();
 	}
-
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">
@@ -130,6 +120,7 @@
 				<TableHeadCell>ID do Cupom</TableHeadCell>
 				<TableHeadCell>Motivo do cancelamento</TableHeadCell>
 				<TableHeadCell>Data do cancelamento</TableHeadCell>
+				<TableHeadCell>Editar</TableHeadCell>
 			</TableHead>
 			<TableBody tableBodyClass="divide-y">
 				{#each items as order}
@@ -147,6 +138,14 @@
 						<TableBodyCell tdClass="py-2">{order.coupon_id ?? 'sem cupom'}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.cancelled_reason ?? ''}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.cancelled_at ?? ''}</TableBodyCell>
+						<TableBodyCell tdClass="py-2"
+							><Button
+								variant="primary"
+								on:click={() => {
+									goto(`sales/new?order_id=${order.order_id}`);
+								}}>Editar</Button
+							></TableBodyCell
+						>
 					</TableBodyRow>
 				{/each}
 			</TableBody>
@@ -172,35 +171,33 @@
 			{start + 1}-{end} de {data.orders.total_records}
 
 			<button
-			  on:click={firstPage}
+				on:click={firstPage}
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === 1}
 			>
 				<ChevronDoubleLeftOutline class="w-7 h-7 outline-none" />
 			</button>
 			<button
-			  on:click={prevPage}
+				on:click={prevPage}
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === 1}
 			>
 				<AngleLeftOutline class="w-5 h-5 outline-none" />
 			</button>
 			<button
-			  on:click={async() => await nextPage()}
- 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
+				on:click={async () => await nextPage()}
+				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === endPage}
 			>
 				<AngleRightOutline class="w-5 h-5 outline-none" />
 			</button>
 			<button
-			  on:click={lastPage}
+				on:click={lastPage}
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === endPage}
 			>
 				<ChevronDoubleRightOutline class="w-7 h-7 outline-none" />
 			</button>
 		</div>
-
 	</div>
 </div>
-

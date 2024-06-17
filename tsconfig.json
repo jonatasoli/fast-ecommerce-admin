@@ -12,7 +12,9 @@
 		"moduleResolution": "bundler",
 		"plugins": [
 			{
-				"name": "typescript-svelte-plugin"
+				"name": "typescript-svelte-plugin",
+				"enabled": true,
+				"assumeIsSvelteProject": true
 			}
 		]
 	}

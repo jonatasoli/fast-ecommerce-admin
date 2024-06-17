@@ -49,17 +49,17 @@ export const actions: Actions = {
 				content: form.data.content,
 				composition: form.data.composition,
 				how_to_use: form.data.howToUse
-			},
+			}
 		};
 
 		const res = await fetch(`${SERVER_BASE_URL}/product/create-product`, {
-			method: 'POST',  
+			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(payload)
 		});
-		
+
 		const productData = await res.json();
 
 		if (form.data.image) {
@@ -72,15 +72,15 @@ export const actions: Actions = {
 
 			const imageData = await res.json();
 
-			if (imageData && productData.uri)   {
+			if (imageData && productData.uri) {
 				return {
 					success: true
 				};
 			}
 		}
-		
+
 		return fail(422, {
 			success: false
-		})
+		});
 	}
 };

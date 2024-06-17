@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { currencyFormat } from '$lib/utils.js';
 	import {
-	Label,
+		Label,
 		Select,
 		Table,
 		TableBody,

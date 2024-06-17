@@ -36,12 +36,14 @@
 	class="fixed top-3 left-0 right-0 mx-auto p-0 z-[9999] flex flex-col justify-start items-center pointer-events-none"
 >
 	{#each $notifications as notification (notification.id)}
-		<Toast color={themes[notification.type]} divClass="w-full p-6 text-gray-500 bg-white shadow dark:text-gray-400 dark:bg-gray-800 gap-3">
+		<Toast
+			color={themes[notification.type]}
+			divClass="w-full p-6 text-gray-500 bg-white shadow dark:text-gray-400 dark:bg-gray-800 gap-3"
+		>
 			<svelte:fragment slot="icon">
 				<svelte:component this={icons[notification.type]} class="w-8 h-8" />
 			</svelte:fragment>
-            <p class="text-xl">{notification.message}</p>
-		</Toast
-		>
+			<p class="text-xl">{notification.message}</p>
+		</Toast>
 	{/each}
 </div>

@@ -26,7 +26,6 @@
 	}
 
 	$: pathname = $page.url.pathname;
-	
 </script>
 
 <main>

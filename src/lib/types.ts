@@ -18,11 +18,11 @@ export interface DataProducts {
 
 export interface Category {
 	category_id: number;
-  name: string;
-  path: string;
-  menu: boolean;
-  showcase: boolean;
-  image_path: string;
+	name: string;
+	path: string;
+	menu: boolean;
+	showcase: boolean;
+	image_path: string;
 }
 
 export interface DataInventory {
