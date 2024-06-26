@@ -1,5 +1,5 @@
 import { SERVER_BASE_URL } from '$env/static/private';
-import { productSchema } from '$lib/schemas/product';
+import { productEdit } from '$lib/schemas/product';
 import type { Category } from '$lib/types';
 import { generateURI } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
@@ -8,7 +8,9 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 /** @type {import('./$types').PageLoad} */
-export const load = async () => {
+export const load = async ({ url, cookies }) => {
+	const product_id = new URL(url).searchParams.get('product_id') ?? '1';
+	const token = cookies.get('access_token');
 	const fetchCategories = async (): Promise<{ categories: Category[] }> => {
 		const res = await fetch(`${SERVER_BASE_URL}/catalog/categories`);
 		const data = await res.json();
@@ -16,11 +18,25 @@ export const load = async () => {
 	};
 
 	const receivedCategories = await fetchCategories();
+	const fetchProduct = async (): Promise<DataProduct> => {
+		const res = await fetch(`${SERVER_BASE_URL}/product/${product_id}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`
+			}
+		});
+		const data = await res.json();
+		return data;
+	};
 
-	const form = await superValidate(zod(productSchema));
-
+	const receivedProduct = await fetchProduct();
+	const form = await superValidate(zod(productEdit), {
+		data: receivedProduct
+	});
 	return {
 		categories: receivedCategories.categories,
+		product: receivedProduct,
 		form
 	};
 };
@@ -28,13 +44,15 @@ export const load = async () => {
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
 		const token = cookies.get('access_token');
-		const form = await superValidate(request, zod(productSchema));
+		const form = await superValidate(request, zod(productEdit));
 
 		if (!form.valid) {
 			delete form.data.image;
 			console.log(form);
 			return fail(400, { form });
 		}
+		console.log('productid');
+		console.log(form.data.product_id);
 		const payload = {
 			name: form.data.name,
 			sku: form.data.sku,
@@ -44,20 +62,21 @@ export const actions: Actions = {
 			length: form.data.length,
 			price: form.data.price,
 			uri: generateURI(form.data.name),
-			installments_config: 1,
-			category_id: form.data.category,
-			description: {
+			category_id: form.data.category
+		};
+		if (form.data.content || form.data.composition || form.data.howToUse) {
+			payload.description = {
 				content: form.data.content,
 				composition: form.data.composition,
 				how_to_use: form.data.howToUse
-			}
-		};
+			};
+		}
 		console.log(payload);
 
 		const body = JSON.stringify(payload);
 		console.log(body);
-		const res = await fetch(`${SERVER_BASE_URL}/product/`, {
-			method: 'POST',
+		const res = await fetch(`${SERVER_BASE_URL}/product/${form.data.product_id}`, {
+			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: `Bearer ${token}`
@@ -69,20 +88,17 @@ export const actions: Actions = {
 		console.log('Status Text:', res.statusText);
 		console.log('Headers:', Array.from(res.headers.entries()));
 
-		const productData = await res.json();
-		console.log(productData);
-
 		if (form.data.image) {
 			const formData = new FormData();
 			formData.append('image', form.data.image);
-			const res = await fetch(`${SERVER_BASE_URL}/product/upload-image/${productData.product_id}`, {
+			const res = await fetch(`${SERVER_BASE_URL}/product/upload-image/${form.data.product_id}`, {
 				method: 'POST',
 				body: formData
 			});
 
 			const imageData = await res.json();
 
-			if (imageData && productData.uri) {
+			if (imageData && res.status == 204) {
 				delete form.data.image;
 				return {
 					success: true,
@@ -90,7 +106,7 @@ export const actions: Actions = {
 				};
 			}
 		} else {
-			if (productData.uri) {
+			if (res.status == 204) {
 				delete form.data.image;
 				return {
 					success: true,

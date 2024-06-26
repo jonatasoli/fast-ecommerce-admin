@@ -19,6 +19,7 @@ export function createInventory() {
 		// define headers and body
 		const headers = {
 			'Content-type': 'application/json',
+			'Access-Control-Allow-Origin': '*',
 			Authorization: `Bearer ${token}`
 		};
 		const body =

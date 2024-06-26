@@ -32,6 +32,9 @@
 			theme: 'snow',
 			placeholder: placeholder
 		});
+		if (value) {
+			quill.setText(value);
+		}
 	});
 
 	$: quill &&

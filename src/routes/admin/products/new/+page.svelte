@@ -5,10 +5,10 @@
 	import Input from '$lib/components/Input.svelte';
 	import InputCurrency from '$lib/components/InputCurrency.svelte';
 	import InputFile from '$lib/components/InputFile.svelte';
-	import Select from '$lib/components/Select.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import { notifications } from '$lib/notifications.js';
 	import { superForm } from 'sveltekit-superforms';
+	import { Label, Select } from 'flowbite-svelte';
 
 	export let data;
 	let loading = false;
@@ -21,20 +21,24 @@
 		value: category.category_id,
 		name: category.name
 	}));
+	$: category = '';
 
 	const { form, constraints, errors, enhance } = superForm(data.form, {
 		applyAction: false,
 		onSubmit: ({ formData }) => {
 			loading = true;
+			console.log(formData);
 			formData.set('content', content);
 			formData.set('composition', composition);
 			formData.set('howToUse', howToUse);
+			formData.set('category', category);
 			if (files && files.length > 0) {
 				formData.set('image', files[0]);
 			}
 		},
 		onResult({ result }) {
 			loading = false;
+			console.log(result.type === 'success');
 			if (result.type === 'success') {
 				notifications.success('Produto Criado com sucesso!', 3000);
 				goto('/admin/products');
@@ -57,18 +61,24 @@
 
 <div class="w-[90vw] mt-8 mx-auto mb-8">
 	<Toast />
+	<div class="flex justify-between items-center w-full">
+		<h1 class="text-3xl font-semibold">Criar Novo Produto</h1>
+		<Button variant="secondary" on:click={() => goto('/admin/products')}>Voltar</Button>
+	</div>
 	<h1 class="text-3xl font-semibold">Novo Produto</h1>
 	<form class="mt-12" method="POST" use:enhance>
 		<div class="grid grid-cols-2 gap-4">
 			<Input label="Nome" name="name" type="text" bind:value={$form.name} {...$constraints.name} />
-			<Select
-				label="Categoria"
-				name="category"
-				bind:value={$form.category}
-				{...$constraints.category}
-				items={categoryItems}
-			/>
+			<div>
+				<Label class="mb-2">Categoria</Label>
+				<Select class="mt-2" id="category" bind:value={category}>
+					{#each categoryItems as { value, name }}
+						<option {value}>{name}</option>
+					{/each}
+				</Select>
+			</div>
 		</div>
+
 		<div class="grid grid-cols-2 gap-4">
 			<InputCurrency
 				label="Preço"
@@ -98,7 +108,7 @@
 		<h2 class="text-xl font-bold">Dimensões do produto:</h2>
 		<div class="grid grid-cols-2 gap-4 mt-8">
 			<Input
-				label="Altura"
+				label="Altura (cm)"
 				type="number"
 				defaultValue="0"
 				name="height"
@@ -106,15 +116,7 @@
 				{...$constraints.height}
 			/>
 			<Input
-				label="Largura"
-				type="number"
-				defaultValue="0"
-				name="width"
-				bind:value={$form.width}
-				{...$constraints.width}
-			/>
-			<Input
-				label="Comprimento"
+				label="Comprimento (cm)"
 				type="number"
 				defaultValue="0"
 				name="length"
@@ -122,7 +124,23 @@
 				{...$constraints.length}
 			/>
 			<Input
-				label="Peso"
+				label="Largura (cm)"
+				type="number"
+				defaultValue="0"
+				name="width"
+				bind:value={$form.width}
+				{...$constraints.width}
+			/>
+			<Input
+				label="Diametro (cm)"
+				type="number"
+				defaultValue="0"
+				name="width"
+				bind:value={$form.diameter}
+				{...$constraints.diameter}
+			/>
+			<Input
+				label="Peso (gramas)"
 				type="number"
 				defaultValue="0"
 				name="weight"
@@ -132,7 +150,7 @@
 		</div>
 		<div class="inline-flex w-full justify-center">
 			<div class="mt-8 w-80">
-				<Button block {loading}>Salvar</Button>
+				<Button block {loading} type="submit">Salvar</Button>
 			</div>
 		</div>
 	</form>

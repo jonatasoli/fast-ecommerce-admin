@@ -1,5 +1,23 @@
 import { z } from 'zod';
 
+export const productEdit = z.object({
+	product_id: z.number(),
+	name: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
+	sku: z.string().min(3, 'SKU deve ter no mínimo 3 caracteres'),
+	price: z.number().refine((v) => v > 0, { message: 'Preço deve ser maior que 0' }),
+	category_id: z.string().optional(),
+	image_path: z.string().optional(),
+	image: z.instanceof(File).optional(),
+	content: z.string().optional(),
+	howToUse: z.string().optional(),
+	composition: z.string().optional(),
+	weight: z.number().optional(),
+	height: z.number().optional(),
+	width: z.number().optional(),
+	diameter: z.number().optional(),
+	length: z.number().optional()
+});
+
 export const productSchema = z.object({
 	name: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
 	sku: z.string().min(3, 'SKU deve ter no mínimo 3 caracteres'),
@@ -13,6 +31,7 @@ export const productSchema = z.object({
 	weight: z.number().optional(),
 	height: z.number().optional(),
 	width: z.number().optional(),
+	diameter: z.number().optional(),
 	length: z.number().optional()
 });
 

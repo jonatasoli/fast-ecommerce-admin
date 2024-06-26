@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { currencyFormat } from '$lib/utils.js';
 	import {
 		Label,
@@ -21,10 +22,12 @@
 
 	export let data;
 
-	let rowsPerPage = 10;
-	let currentPage = 1;
+	let rowsPerPage = data.offset ?? 10;
+	let currentPage = data.page ?? 1;
+	const searchParams = new URLSearchParams($page.url.searchParams);
 
-	$: items = data.products;
+	$: items = data.products ?? [];
+	console.log(data.products);
 	$: start = currentPage * rowsPerPage - rowsPerPage;
 	$: end = Math.min(start + rowsPerPage, data.totalRecords);
 	$: endPage = data.totalPages;
@@ -33,32 +36,48 @@
 		currentPage = endPage;
 	}
 
+	async function handleRowsPerPageChange(event) {
+		rowsPerPage = parseInt(event.target.value);
+		currentPage = 1; // Reset to first page
+		searchParams.set('offset', `${rowsPerPage}`);
+		searchParams.set('page', `${currentPage}`);
+		goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
+	}
+
 	function firstPage() {
 		currentPage = 1;
-		goto(`/admin/products?page=${currentPage}`);
+		goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
 	}
 
 	function nextPage() {
+		console.log(currentPage);
 		if (currentPage < endPage) {
 			currentPage++;
-			goto(`/admin/products?page=${currentPage}`);
+			console.log(currentPage);
+			goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
 		}
 	}
 
 	function prevPage() {
+		console.log(currentPage);
 		if (currentPage > 1) {
 			currentPage--;
-			goto(`/admin/products?page=${currentPage}`);
+			console.log(currentPage);
+			goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
 		}
 	}
 
 	function lastPage() {
 		currentPage = data.totalPages;
-		goto(`/admin/products?page=${currentPage}`);
+		goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
 	}
 
 	function goToNew() {
 		goto('/admin/products/new');
+	}
+
+	function productMore(product_id: number) {
+		goto(`/admin/products/more?product_id=${product_id}`);
 	}
 </script>
 
@@ -85,7 +104,9 @@
 						<TableBodyCell tdClass="py-2">{product.quantity}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{currencyFormat(product.price)}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">
-							<Button variant="primary">Ver mais</Button>
+							<Button variant="primary" on:click={() => productMore(product.product_id)}
+								>Ver mais</Button
+							>
 						</TableBodyCell>
 					</TableBodyRow>
 				{/each}
@@ -105,6 +126,7 @@
 					{ value: 50, name: '50' },
 					{ value: 100, name: '100' }
 				]}
+				on:change={handleRowsPerPageChange}
 			/>
 
 			{start + 1}-{end} de {data.totalRecords}
@@ -112,26 +134,30 @@
 			<button
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === 1}
+				on:click={firstPage}
 			>
-				<ChevronDoubleLeftOutline class="w-7 h-7 outline-none" on:click={firstPage} />
+				<ChevronDoubleLeftOutline class="w-7 h-7 outline-none" />
 			</button>
 			<button
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === 1}
+				on:click={prevPage}
 			>
-				<AngleLeftOutline class="w-5 h-5 outline-none" on:click={prevPage} />
+				<AngleLeftOutline class="w-5 h-5 outline-none" />
 			</button>
 			<button
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === endPage}
+				on:click={nextPage}
 			>
-				<AngleRightOutline class="w-5 h-5 outline-none" on:click={nextPage} />
+				<AngleRightOutline class="w-5 h-5 outline-none" />
 			</button>
 			<button
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
 				disabled={currentPage === endPage}
+				on:click={lastPage}
 			>
-				<ChevronDoubleRightOutline class="w-7 h-7 outline-none" on:click={lastPage} />
+				<ChevronDoubleRightOutline class="w-7 h-7 outline-none" />
 			</button>
 		</div>
 	</div>
