@@ -18,7 +18,7 @@
 </div>
 
 <div class="w-[90vw] mt-8 mx-auto">
-	<a href="/partner/commissions">
+	<a href="/partner">
 		<div
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>

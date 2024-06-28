@@ -34,7 +34,7 @@
 		<nav class="flex gap-4">
 			<a href="/partner" class={active(pathname, '/partner')}>Inicio</a>
 			<a href="/partner/coupons" class={active(pathname, '/partner/coupons')}>Cupons</a>
-			<a href="/partner/commissions" class={active(pathname, '/partner/coupons')}>Comissões</a>
+			<a href="/partner" class={active(pathname, '/partner/coupons')}>Comissões</a>
 		</nav>
 		<Button variant="secondary" on:click={logout}>Sair</Button>
 	</header>
