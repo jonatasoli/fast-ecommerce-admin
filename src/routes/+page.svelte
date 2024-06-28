@@ -34,9 +34,11 @@
 	onMount(() => {
 		console.log('token');
 		console.log(`um token ${data.token}`);
-		if (data.token) {
+		if (data.token && data.role === 'ADMIN') {
 			goto('/admin');
-		}
+		} else if (data.token && data.role === 'AFFILIATE') {
+			goto('/partner');
+        }
 	});
 </script>
 

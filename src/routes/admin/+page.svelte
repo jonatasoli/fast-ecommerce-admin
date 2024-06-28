@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import {
 		DatabaseSolid,
 		StoreSolid,
@@ -8,6 +9,18 @@
 		AdjustmentsHorizontalSolid,
 		SalePercentSolid
 	} from 'flowbite-svelte-icons';
+	import { onMount } from 'svelte';
+
+    export let data;
+
+	onMount(() => {
+		console.log('token');
+		if (data.token && data.role === 'ADMIN') {
+			goto('/admin');
+		} else if (data.token && data.role === 'AFFILIATE') {
+			goto('/partner');
+        }
+	});
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">

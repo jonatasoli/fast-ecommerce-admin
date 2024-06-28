@@ -6,10 +6,13 @@ import { zod } from 'sveltekit-superforms/adapters';
 export const load = async ({ cookies }) => {
 	const form = await superValidate(zod(loginSchema));
 	const token = cookies.get('access_token');
+	const role = cookies.get('role');
 
 	return {
 		form,
-		token
+		token,
+        role,
+
 	};
 };
 
