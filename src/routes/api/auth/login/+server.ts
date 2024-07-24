@@ -5,11 +5,11 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 	const existingToken = cookies.get('access_token');
 	if (existingToken && data.role) {
 		// Redirecione para a página principal se o token já estiver presente
-        if (data.role === '/admin') {
-          throw redirect(303, '/admin');
-        } else if (data.role === 'AFFILIATE') {
-          throw redirect(303, '/partner')
-        }
+		if (data.role === '/admin') {
+			throw redirect(303, '/admin');
+		} else if (data.role === 'AFFILIATE') {
+			throw redirect(303, '/partner');
+		}
 	}
 
 	const body = await request.json();
@@ -35,18 +35,18 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 				message: 'INVALID_CREDENTIALS'
 			});
 		}
-        console.log(data.role);
+		console.log(data.role);
 
-        if (data.role === 'ADMIN') {
-          cookies.set('role', 'ADMIN', { path: '/' }); // Set cookie for ADMIN
-        } else if (data.role === 'AFFILIATE') {
-          cookies.set('role', 'AFFILIATE', { path: '/' }); // Set cookie for AFFILIATE
-        } else {
-          return json({
-            success: false,
-            message: 'UNAUTHORIZED'
-          });
-        }
+		if (data.role === 'ADMIN') {
+			cookies.set('role', 'ADMIN', { path: '/' }); // Set cookie for ADMIN
+		} else if (data.role === 'AFFILIATE') {
+			cookies.set('role', 'AFFILIATE', { path: '/' }); // Set cookie for AFFILIATE
+		} else {
+			return json({
+				success: false,
+				message: 'UNAUTHORIZED'
+			});
+		}
 
 		cookies.set('access_token', data.access_token, {
 			httpOnly: true,

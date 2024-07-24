@@ -11,8 +11,7 @@ export const load = async ({ cookies }) => {
 	return {
 		form,
 		token,
-        role,
-
+		role
 	};
 };
 

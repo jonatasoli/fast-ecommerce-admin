@@ -5,6 +5,7 @@ export const productEdit = z.object({
 	name: z.string().min(3, 'Nome deve ter no mínimo 3 caracteres'),
 	sku: z.string().min(3, 'SKU deve ter no mínimo 3 caracteres'),
 	price: z.number().refine((v) => v > 0, { message: 'Preço deve ser maior que 0' }),
+	active: z.boolean(),
 	category_id: z.string().optional(),
 	image_path: z.string().optional(),
 	image: z.instanceof(File).optional(),

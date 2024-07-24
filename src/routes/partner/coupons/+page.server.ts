@@ -18,6 +18,6 @@ export const load = async ({ url, cookies }) => {
 
 	const receivedLinks = await fetchLinks();
 	return {
-		links: receivedLinks.urls,
+		links: receivedLinks.urls
 	};
 };

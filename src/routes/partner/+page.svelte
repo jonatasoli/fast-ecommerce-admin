@@ -1,9 +1,5 @@
 <script lang="ts">
-	import {
-		StoreSolid,
-		TableRowSolid,
-	} from 'flowbite-svelte-icons';
-
+	import { StoreSolid, TableRowSolid } from 'flowbite-svelte-icons';
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">
@@ -18,7 +14,7 @@
 </div>
 
 <div class="w-[90vw] mt-8 mx-auto">
-	<a href="/partner">
+	<a href="/partner/commissions">
 		<div
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>

@@ -53,8 +53,11 @@ export const actions: Actions = {
 		}
 		console.log('productid');
 		console.log(form.data.product_id);
+		console.log('ativo');
+		console.log(form.data.active);
 		const payload = {
 			name: form.data.name,
+			active: form.data.active,
 			sku: form.data.sku,
 			weight: form.data.weight,
 			height: form.data.height,
@@ -74,6 +77,7 @@ export const actions: Actions = {
 		console.log(payload);
 
 		const body = JSON.stringify(payload);
+		console.log('corpo');
 		console.log(body);
 		const res = await fetch(`${SERVER_BASE_URL}/product/${form.data.product_id}`, {
 			method: 'PATCH',

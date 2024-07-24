@@ -6,7 +6,7 @@
 	import InputCurrency from '$lib/components/InputCurrency.svelte';
 	import { notifications } from '$lib/notifications.js';
 	import InputFile from '$lib/components/InputFile.svelte';
-	import { Label, Select } from 'flowbite-svelte';
+	import { Checkbox, Label, Select } from 'flowbite-svelte';
 	import { superForm } from 'sveltekit-superforms';
 
 	export let data;
@@ -21,6 +21,7 @@
 		name: category.name
 	}));
 	$: category = data.product.category_id;
+	let checkboxValue = data.product?.active ?? false;
 
 	const { form, constraints, errors, enhance } = superForm(data.form, {
 		applyAction: false,
@@ -33,6 +34,7 @@
 			formData.set('composition', composition ?? data.product.composition);
 			formData.set('howToUse', howToUse ?? data.product.how_to_use);
 			formData.set('category', category);
+			formData.set('active', checkboxValue.toString());
 			if (files && files.length > 0) {
 				formData.set('image', files[0]);
 			}
@@ -112,6 +114,8 @@
 				<div>
 					<InputFile label="Imagem" bind:files id="avatar" name="avatar" />
 				</div>
+				<h2 class="text-xl font-bold mt-4 mb-4">Status do produto:</h2>
+				<Checkbox bind:checked={checkboxValue}>Ativo</Checkbox>
 				<h2 class="text-xl font-bold mt-4">Descrição do produto:</h2>
 				<div class="my-10">
 					<Editor

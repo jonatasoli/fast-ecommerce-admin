@@ -38,7 +38,7 @@
 			goto('/admin');
 		} else if (data.token && data.role === 'AFFILIATE') {
 			goto('/partner');
-        }
+		}
 	});
 </script>
 

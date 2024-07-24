@@ -11,7 +11,7 @@
 	} from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 
-    export let data;
+	export let data;
 
 	onMount(() => {
 		console.log('token');
@@ -19,7 +19,7 @@
 			goto('/admin');
 		} else if (data.token && data.role === 'AFFILIATE') {
 			goto('/partner');
-        }
+		}
 	});
 </script>
 
