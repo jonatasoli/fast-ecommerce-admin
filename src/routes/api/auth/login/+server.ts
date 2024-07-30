@@ -53,7 +53,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 			secure: true,
 			sameSite: 'strict',
 			path: '/',
-			maxAge: 60 * 60 * 12
+			maxAge: 60 * 60
 		});
 
 		cookies.set('userDocument', body.username, {
@@ -61,7 +61,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 			secure: true,
 			sameSite: 'strict',
 			path: '/',
-			maxAge: 60 * 60 * 12
+			maxAge: 60 * 60
 		});
 
 		return json({
