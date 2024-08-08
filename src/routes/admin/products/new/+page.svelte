@@ -34,6 +34,12 @@
 			formData.set('category', category);
 			if (files && files.length > 0) {
 				formData.set('image', files[0]);
+                const fileSizeInBytes = files[0].size;
+                const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+                if (fileSizeInMB > 2) {
+                    notifications.danger("Imagem é maior que o permitido!", 3000);
+                    
+                }
 			}
 		},
 		onResult({ result }) {

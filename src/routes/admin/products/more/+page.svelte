@@ -8,6 +8,7 @@
 	import InputFile from '$lib/components/InputFile.svelte';
 	import { Checkbox, Label, Select } from 'flowbite-svelte';
 	import { superForm } from 'sveltekit-superforms';
+	import Toast from '$lib/components/Toast.svelte';
 
 	export let data;
 	let loading = false;
@@ -37,6 +38,12 @@
 			formData.set('active', checkboxValue.toString());
 			if (files && files.length > 0) {
 				formData.set('image', files[0]);
+                const fileSizeInBytes = files[0].size;
+                const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+                if (fileSizeInMB > 2) {
+                    notifications.danger("Imagem é maior que o permitido!", 3000);
+                    
+                }
 			}
 		},
 		onResult({ result }) {
@@ -62,6 +69,7 @@
 	}
 </script>
 
+<Toast />
 <div class="w-[90vw] mt-8 mx-auto mb-8">
 	<h1>Mais ações</h1>
 	<div class="flex justify-between items-center w-full">
