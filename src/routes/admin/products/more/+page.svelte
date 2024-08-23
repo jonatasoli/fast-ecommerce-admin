@@ -23,6 +23,9 @@
 	}));
 	$: category = data.product.category_id;
 	let checkboxValue = data.product?.active ?? false;
+	let showcaseValue = data.product?.showcase ?? false;
+	let featureValue = data.product?.feature ?? false;
+	let showDiscountValue = data.product?.show_discount ?? false;
 
 	const { form, constraints, errors, enhance } = superForm(data.form, {
 		applyAction: false,
@@ -67,6 +70,10 @@
 	function handleChangeHowToUse(event: CustomEvent<{ value: string }>) {
 		howToUse = event.detail.value;
 	}
+
+    function remove_image_path() {
+        data.product.image_path = null;
+    }
 </script>
 
 <Toast />
@@ -77,7 +84,7 @@
 		<Button variant="secondary" on:click={() => goto('/admin/products')}>Voltar</Button>
 	</div>
 	<h1 class="text-3xl font-semibold">Atualizar Produto</h1>
-	<form class="mt-12" method="POST" use:enhance>
+	<form class="mt-12 divide-y-2 divide-gray-400" method="POST" use:enhance>
 		<div class="grid grid-cols-1 gap-1">
 			<Input
 				label="ID do Produto"
@@ -119,11 +126,35 @@
 					/>
 					<Input label="SKU" name="sku" bind:value={data.product.sku} {...$constraints.sku} />
 				</div>
-				<div>
+                {#if data.product.image_path}
+                    <div class="grid grid-cols-1 justify-center justify-items-center">
+                        <img src={data.product.image_path} width="500" height="600">
+                        <div class="mt-8 w-80">
+                            <Button on:click={remove_image_path}>Remover</Button>
+                        </div>
+                    </div>
+                {/if}
+				<div class="divide-y-2 divide-gray-400">
 					<InputFile label="Imagem" bind:files id="avatar" name="avatar" />
 				</div>
-				<h2 class="text-xl font-bold mt-4 mb-4">Status do produto:</h2>
-				<Checkbox bind:checked={checkboxValue}>Ativo</Checkbox>
+                <div class="grid grid-cols-4 gap-1">
+                    <div class="grid grid-cols-1 gap-1">
+                        <h2 class="text-xl font-bold mt-4 mb-4 ">Status do produto:</h2>
+                        <Checkbox bind:checked={checkboxValue}>Ativo</Checkbox>
+                    </div>
+                    <div class="grid grid-cols-1 gap-1">
+                        <h2 class="text-xl font-bold mt-4 mb-4 ">Exibir no carrossel:</h2>
+                        <Checkbox bind:checked={showcaseValue}>Ativo</Checkbox>
+                    </div>
+                    <div class="grid grid-cols-1 gap-1">
+                        <h2 class="text-xl font-bold mt-4 mb-4 ">Exibir no destaque:</h2>
+                        <Checkbox bind:checked={featureValue}>Ativo</Checkbox>
+                    </div>
+                    <div class="grid grid-cols-1 gap-1">
+                        <h2 class="text-xl font-bold mt-4 mb-4 ">Exibir no desconto:</h2>
+                        <Checkbox bind:checked={showDiscountValue}>Ativo</Checkbox>
+                    </div>
+                </div>
 				<h2 class="text-xl font-bold mt-4">Descrição do produto:</h2>
 				<div class="my-10">
 					<Editor

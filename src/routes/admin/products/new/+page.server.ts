@@ -37,6 +37,10 @@ export const actions: Actions = {
 		}
 		const payload = {
 			name: form.data.name,
+            active: form.data.active,
+            showcase: form.data.showcase,
+            feature: form.data.feature,
+            show_discount: form.data.show_discount,
 			sku: form.data.sku,
 			weight: form.data.weight,
 			height: form.data.height,

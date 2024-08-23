@@ -8,7 +8,7 @@
 	import Toast from '$lib/components/Toast.svelte';
 	import { notifications } from '$lib/notifications.js';
 	import { superForm } from 'sveltekit-superforms';
-	import { Label, Select } from 'flowbite-svelte';
+	import { Checkbox, Label, Select } from 'flowbite-svelte';
 
 	export let data;
 	let loading = false;
@@ -22,6 +22,10 @@
 		name: category.name
 	}));
 	$: category = '';
+	let checkboxValue = false;
+	let showcaseValue = false;
+	let featureValue =  false;
+	let showDiscountValue = false;
 
 	const { form, constraints, errors, enhance } = superForm(data.form, {
 		applyAction: false,
@@ -32,6 +36,10 @@
 			formData.set('composition', composition);
 			formData.set('howToUse', howToUse);
 			formData.set('category', category);
+            formData.set('active', checkboxValue);
+            formData.set('showcase', showcaseValue);
+            formData.set('feature', featureValue);
+            formData.set('show_discount', showDiscountValue);
 			if (files && files.length > 0) {
 				formData.set('image', files[0]);
                 const fileSizeInBytes = files[0].size;
@@ -101,6 +109,24 @@
 		<div>
 			<InputFile label="Imagem" bind:files id="avatar" name="avatar" />
 		</div>
+        <div class="grid grid-cols-4 gap-1">
+            <div class="grid grid-cols-1 gap-1">
+                <h2 class="text-xl font-bold mt-4 mb-4 ">Status do produto:</h2>
+                <Checkbox bind:checked={checkboxValue}>Ativo</Checkbox>
+            </div>
+            <div class="grid grid-cols-1 gap-1">
+                <h2 class="text-xl font-bold mt-4 mb-4 ">Exibir no carrossel:</h2>
+                <Checkbox bind:checked={showcaseValue}>Ativo</Checkbox>
+            </div>
+            <div class="grid grid-cols-1 gap-1">
+                <h2 class="text-xl font-bold mt-4 mb-4 ">Exibir no destaque:</h2>
+                <Checkbox bind:checked={featureValue}>Ativo</Checkbox>
+            </div>
+            <div class="grid grid-cols-1 gap-1">
+                <h2 class="text-xl font-bold mt-4 mb-4 ">Exibir no desconto:</h2>
+                <Checkbox bind:checked={showDiscountValue}>Ativo</Checkbox>
+            </div>
+        </div>
 		<h2 class="text-xl font-bold mt-4">Descrição do produto:</h2>
 		<div class="my-10">
 			<Editor label="Conteúdo" placeholder="Descrição..." on:change={handleChangeContent} />
