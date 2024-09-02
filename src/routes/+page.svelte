@@ -23,10 +23,27 @@
 				loading = false;
 				return goto('/');
 			}
-
+			console.log(result);
 			if (result.type === 'success') {
-				console.log('sucesso');
-				return goto('/admin');
+				if (data.role === 'ADMIN') {
+					goto('/admin');
+				} else if (data.role === 'AFFILIATE') {
+					goto('/partner');
+				} else {
+					notifications.danger('Erro ao realizar o login!', 3000);
+					loading = false;
+				}
+			}
+		},
+		onUpdated: () => {
+			console.log('On updated');
+			if (data.role === 'ADMIN') {
+				goto('/admin');
+			} else if (data.role === 'AFFILIATE') {
+				goto('/partner');
+			} else {
+				notifications.danger('Erro ao realizar o login!', 3000);
+				loading = false;
 			}
 		}
 	});
@@ -38,6 +55,9 @@
 			goto('/admin');
 		} else if (data.token && data.role === 'AFFILIATE') {
 			goto('/partner');
+		} else {
+			notifications.danger('Erro ao realizar o login!', 3000);
+			loading = false;
 		}
 	});
 </script>

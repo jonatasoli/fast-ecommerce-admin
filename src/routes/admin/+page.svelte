@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import {
-		DatabaseSolid,
 		StoreSolid,
 		TableRowSolid,
 		FileInvoiceSolid,
@@ -19,6 +18,8 @@
 			goto('/admin');
 		} else if (data.token && data.role === 'AFFILIATE') {
 			goto('/partner');
+		} else {
+			goto('/');
 		}
 	});
 </script>

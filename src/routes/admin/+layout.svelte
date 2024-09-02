@@ -21,7 +21,7 @@
 		});
 		const data = await resp.json();
 		if (data.success) {
-			goto('/');
+			goto('/admin');
 		}
 	}
 

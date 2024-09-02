@@ -35,8 +35,6 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 				message: 'INVALID_CREDENTIALS'
 			});
 		}
-		console.log(data.role);
-
 		if (data.role === 'ADMIN') {
 			cookies.set('role', 'ADMIN', { path: '/' }); // Set cookie for ADMIN
 		} else if (data.role === 'AFFILIATE') {
@@ -65,6 +63,7 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 		});
 
 		return json({
+			role: data.role,
 			success: true
 		});
 	} catch {

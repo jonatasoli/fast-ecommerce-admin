@@ -12,6 +12,28 @@
 		TableHeadCell
 	} from 'flowbite-svelte';
 	import { CashSolid, ChevronDownOutline } from 'flowbite-svelte-icons';
+	export let data;
+	console.log('comissoes');
+	console.log(data);
+
+	function formatDate(dateString) {
+		const date = new Date(dateString);
+		return date.toLocaleDateString('pt-BR'); // Formato DD/MM/YYYY
+	}
+	function formatCurrency(value) {
+		return new Intl.NumberFormat('pt-BR', {
+			style: 'currency',
+			currency: 'BRL'
+		}).format(value);
+	}
+
+	const totalCommissions = data.commissions.reduce((total, commission) => {
+		return total + commission.commission;
+	}, 0);
+
+	const totalReleasedCommissions = data.commissions.reduce((total, commission) => {
+		return commission.released ? total + commission.commission : total;
+	}, 0);
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">
@@ -39,39 +61,25 @@
 				<TableHeadCell>Pago</TableHeadCell>
 			</TableHead>
 			<TableBody tableBodyClass="divide-y">
-				<TableBodyRow>
-					<TableBodyCell>1</TableBodyCell>
-					<TableBodyCell>R$10,00</TableBodyCell>
-					<TableBodyCell>21/02/2024</TableBodyCell>
-					<TableBodyCell>21/03/2024</TableBodyCell>
-					<TableBodyCell>Não</TableBodyCell>
-					<TableBodyCell>Não</TableBodyCell>
-				</TableBodyRow>
-				<TableBodyRow>
-					<TableBodyCell>2</TableBodyCell>
-					<TableBodyCell>R$100,00</TableBodyCell>
-					<TableBodyCell>22/02/2024</TableBodyCell>
-					<TableBodyCell>22/03/2024</TableBodyCell>
-					<TableBodyCell>Não</TableBodyCell>
-					<TableBodyCell>Não</TableBodyCell>
-				</TableBodyRow>
-				<TableBodyRow>
-					<TableBodyCell>3</TableBodyCell>
-					<TableBodyCell>R$90,00</TableBodyCell>
-					<TableBodyCell>28/02/2024</TableBodyCell>
-					<TableBodyCell>28/03/2024</TableBodyCell>
-					<TableBodyCell>Não</TableBodyCell>
-					<TableBodyCell>Não</TableBodyCell>
-				</TableBodyRow>
+				{#each data.commissions as commission}
+					<TableBodyRow>
+						<TableBodyCell>{commission.order_id}</TableBodyCell>
+						<TableBodyCell>{formatCurrency(commission.commission)}</TableBodyCell>
+						<TableBodyCell>{formatDate(commission.date_created)}</TableBodyCell>
+						<TableBodyCell>{formatDate(commission.release_date)}</TableBodyCell>
+						<TableBodyCell>{commission.released ? 'Pago' : 'Pendente'}</TableBodyCell>
+						<TableBodyCell>{commission.paid ? 'Pago' : 'Pendente'}</TableBodyCell>
+					</TableBodyRow>
+				{/each}
 			</TableBody>
 		</Table>
 	</div>
 	<div class="flex flex-row justify-between">
 		<div>
 			<Label>Total de crédito à liberar</Label>
-			<p>R$200,00</p>
+			<p>{formatCurrency(totalCommissions)}</p>
 			<Label>Total de crédito disponível</Label>
-			<p>R$100,00</p>
+			<p>{formatCurrency(totalReleasedCommissions)}</p>
 		</div>
 		<div>
 			<Button

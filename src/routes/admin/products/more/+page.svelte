@@ -41,12 +41,11 @@
 			formData.set('active', checkboxValue.toString());
 			if (files && files.length > 0) {
 				formData.set('image', files[0]);
-                const fileSizeInBytes = files[0].size;
-                const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-                if (fileSizeInMB > 2) {
-                    notifications.danger("Imagem é maior que o permitido!", 3000);
-                    
-                }
+				const fileSizeInBytes = files[0].size;
+				const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+				if (fileSizeInMB > 2) {
+					notifications.danger('Imagem é maior que o permitido!', 3000);
+				}
 			}
 		},
 		onResult({ result }) {
@@ -71,9 +70,9 @@
 		howToUse = event.detail.value;
 	}
 
-    function remove_image_path() {
-        data.product.image_path = null;
-    }
+	function remove_image_path() {
+		data.product.image_path = null;
+	}
 </script>
 
 <Toast />
@@ -126,35 +125,35 @@
 					/>
 					<Input label="SKU" name="sku" bind:value={data.product.sku} {...$constraints.sku} />
 				</div>
-                {#if data.product.image_path}
-                    <div class="grid grid-cols-1 justify-center justify-items-center">
-                        <img src={data.product.image_path} width="500" height="600">
-                        <div class="mt-8 w-80">
-                            <Button on:click={remove_image_path}>Remover</Button>
-                        </div>
-                    </div>
-                {/if}
+				{#if data.product.image_path}
+					<div class="grid grid-cols-1 justify-center justify-items-center">
+						<img src={data.product.image_path} width="500" height="600" />
+						<div class="mt-8 w-80">
+							<Button on:click={remove_image_path}>Remover</Button>
+						</div>
+					</div>
+				{/if}
 				<div class="divide-y-2 divide-gray-400">
 					<InputFile label="Imagem" bind:files id="avatar" name="avatar" />
 				</div>
-                <div class="grid grid-cols-4 gap-1">
-                    <div class="grid grid-cols-1 gap-1">
-                        <h2 class="text-xl font-bold mt-4 mb-4 ">Status do produto:</h2>
-                        <Checkbox bind:checked={checkboxValue}>Ativo</Checkbox>
-                    </div>
-                    <div class="grid grid-cols-1 gap-1">
-                        <h2 class="text-xl font-bold mt-4 mb-4 ">Exibir no carrossel:</h2>
-                        <Checkbox bind:checked={showcaseValue}>Ativo</Checkbox>
-                    </div>
-                    <div class="grid grid-cols-1 gap-1">
-                        <h2 class="text-xl font-bold mt-4 mb-4 ">Exibir no destaque:</h2>
-                        <Checkbox bind:checked={featureValue}>Ativo</Checkbox>
-                    </div>
-                    <div class="grid grid-cols-1 gap-1">
-                        <h2 class="text-xl font-bold mt-4 mb-4 ">Exibir no desconto:</h2>
-                        <Checkbox bind:checked={showDiscountValue}>Ativo</Checkbox>
-                    </div>
-                </div>
+				<div class="grid grid-cols-4 gap-1">
+					<div class="grid grid-cols-1 gap-1">
+						<h2 class="text-xl font-bold mt-4 mb-4">Status do produto:</h2>
+						<Checkbox bind:checked={checkboxValue}>Ativo</Checkbox>
+					</div>
+					<div class="grid grid-cols-1 gap-1">
+						<h2 class="text-xl font-bold mt-4 mb-4">Exibir no carrossel:</h2>
+						<Checkbox bind:checked={showcaseValue}>Ativo</Checkbox>
+					</div>
+					<div class="grid grid-cols-1 gap-1">
+						<h2 class="text-xl font-bold mt-4 mb-4">Exibir no destaque:</h2>
+						<Checkbox bind:checked={featureValue}>Ativo</Checkbox>
+					</div>
+					<div class="grid grid-cols-1 gap-1">
+						<h2 class="text-xl font-bold mt-4 mb-4">Exibir no desconto:</h2>
+						<Checkbox bind:checked={showDiscountValue}>Ativo</Checkbox>
+					</div>
+				</div>
 				<h2 class="text-xl font-bold mt-4">Descrição do produto:</h2>
 				<div class="my-10">
 					<Editor

@@ -34,3 +34,13 @@ export interface DataInventory {
 	operation: string;
 	create_at: Date;
 }
+
+export interface Comissions {
+	order_id: number;
+	user_id: number;
+	commission: string;
+	date_created: Date;
+	release_date: Date;
+	released: boolean;
+	paid: boolean;
+}
