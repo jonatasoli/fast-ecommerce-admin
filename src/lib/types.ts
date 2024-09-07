@@ -44,3 +44,34 @@ export interface Comissions {
 	released: boolean;
 	paid: boolean;
 }
+
+export type User = {
+	user_id: number | null;
+	name: string;
+	email: string;
+	document: string;
+	phone: string;
+};
+
+export interface OrderItem {
+	order_id: number;
+	affiliate_id: any;
+	user: User;
+	customer_id: string;
+	order_date: string;
+	discount: string;
+	tracking_number: any;
+	order_status: string;
+	freight: string;
+	coupon_id: any;
+}
+
+
+
+export interface DataOrders {
+	orders: OrderItem[];
+	page: number;
+	offset: number;
+	total_pages: number;
+	total_records: number;
+}

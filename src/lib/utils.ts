@@ -34,3 +34,22 @@ export function currencyFormat(
 
 	return format(value);
 }
+
+export const statusMap: Record<string, string> = {
+	PAYMENT_PENDING: 'Pendente',
+	PAYMENT_PAID: 'Pago',
+	PAYMENT_CANCELLED: 'Cancelado',
+	PREPARING_ORDER: 'Preparando',
+	SHIPPING_ORDER: 'Enviado',
+	GENERATE_INVOICE: 'Nota gerada',
+	SHIPPING_COMPLETE: 'Entregue'
+  };
+  
+  /**
+   * Retorna a tradução do status baseado no código do status.
+   * @param statusCode - O código do status (ex: 'PAYMENT_PENDING')
+   * @returns A tradução do status se encontrada, senão retorna o código original
+   */
+  export function getStatusTranslation(statusCode: string): string {
+	return statusMap[statusCode] || statusCode;
+  }
