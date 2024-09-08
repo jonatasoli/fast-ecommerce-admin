@@ -20,10 +20,12 @@
 		ChevronDoubleLeftOutline,
 		ChevronDoubleRightOutline
 	} from 'flowbite-svelte-icons';
-	import LogisticsModal from '$lib/components/LogisticsModal.svelte';
+	import LogisticsModal from '$lib/components/modal/LogisticsModal.svelte';
+	
 	
 
 	export let data;
+	
 
 	let rowsPerPage = data.offset ?? 10;
 	let currentPage = data.page ?? 1;
@@ -82,6 +84,27 @@
     isModalOpen = false;
   }
 
+//   async function updateTrackingNumber() {
+//     const url = `/order/${selectedOrder.order_id}/tracking_number`;
+
+//     const response = await fetch(url, {
+//       method: 'PATCH',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         // Inclua outros cabeçalhos necessários, como autenticação
+//       },
+//       body: JSON.stringify({
+//         tracking_number: selectedOrder.tracking_number
+//       })
+//     });
+
+//     if (response.ok) {
+//       console.log('Número de rastreamento atualizado com sucesso!');
+//     } else {
+//       console.error('Erro ao atualizar número de rastreamento:', response.statusText);
+//     }
+//   }
+
 
     async function toggleTrackingFilter() {
     trackingFilter = !trackingFilter;
@@ -90,7 +113,12 @@
     await goto(`/admin/logistics?${searchParams.toString()}`);
   }
 
-	async function handleRowsPerPageChange(event) {
+  function refreshPage() {
+    // Redireciona para a mesma URL
+    location.reload();
+  }
+
+	async function handleRowsPerPageChange(event:any) {
 		rowsPerPage = parseInt(event.target.value);
 		currentPage = 1; // Reset to first page
 		searchParams.set('offset', `${rowsPerPage}`);
@@ -163,7 +191,7 @@
 						>
 						<TableBodyCell tdClass="py-2">{getStatusTranslation(order.order_status)}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">
-							<Button variant="primary" on:click={() => openModal(order)}
+							<Button  variant="primary"   on:click={() => openModal(order)} additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
 								>Ver mais</Button
 							>
 						</TableBodyCell>
@@ -224,5 +252,7 @@
   isOpen={isModalOpen}
   selectedOrder={selectedOrder}
   on:close={handleModalClose}
+  on:updated={refreshPage}
+  
 />
 </div>

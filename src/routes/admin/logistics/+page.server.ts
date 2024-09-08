@@ -29,6 +29,16 @@ export const load = async ({ url, cookies }) => {
 	};
 };
 
+
+
+
+
+
+
+
+
+
+
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
 		const token = cookies.get('access_token');
@@ -61,4 +71,8 @@ export const actions: Actions = {
 			totalRecords: receivedOrders.total_records
 		};
 	}
+
+	
 };
+
+
