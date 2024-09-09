@@ -2,7 +2,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-    
+
 	import { currencyFormat, getStatusTranslation } from '$lib/utils.js';
 	import {
 		Label,
@@ -12,34 +12,33 @@
 		TableBodyCell,
 		TableBodyRow,
 		TableHead,
-		TableHeadCell
+		TableHeadCell,
+		Toast
 	} from 'flowbite-svelte';
 	import {
 		AngleLeftOutline,
 		AngleRightOutline,
+		CheckCircleSolid,
 		ChevronDoubleLeftOutline,
 		ChevronDoubleRightOutline
 	} from 'flowbite-svelte-icons';
-	import LogisticsModal from '$lib/components/modal/LogisticsModal.svelte';
-	
-	
+	import LogisticsModal from '$lib/components/logistics/modal/LogisticsModal.svelte';
 
 	export let data;
-	
 
+	let notification = false;
 	let rowsPerPage = data.offset ?? 10;
 	let currentPage = data.page ?? 1;
 	const searchParams = new URLSearchParams($page.url.searchParams);
-    let trackingFilter = searchParams.get('tracking_number') === 'true' ? true : false;
-    let isModalOpen = false;
-  let selectedOrder = {
-    order_id: 0,
-    order_date: '',
-    order_status: '',
-    tracking_number: '',
-    
-
-  };
+	let trackingFilter = searchParams.get('tracking_number') === 'true' ? true : false;
+	let isModalOpen = false;
+	let counter = 6;
+	let selectedOrder = {
+		order_id: 0,
+		order_date: '',
+		order_status: '',
+		tracking_number: ''
+	};
 
 	$: items = data.orders ?? [];
 	console.log(data.orders);
@@ -51,84 +50,83 @@
 		currentPage = endPage;
 	}
 
-// export const statusMap:Record<string, string> = {
-// 		PAYMENT_PENDING: 'Pendente',
-// 		PAYMENT_PAID: 'Pago',
-// 		PAYMENT_CANCELLED: 'Cancelado',
-// 		PREPARING_ORDER: 'Preparando',
-// 		SHIPPING_ORDER: 'Enviado',
-// 		GENERATE_INVOICE: 'Nota gerada',
-// 		SHIPPING_COMPLETE: 'Entregue'
-// 	};
+	interface OrderTracking {
+		order_id: number;
+		order_date: string;
+		tracking_number: any;
+		order_status: string;
+	}
 
- interface OrderTracking {
-	order_id: number;
-	order_date: string;
-	tracking_number: any;
-	order_status: string;
-}
+	function trigger() {
+		notification = true;
+		counter = 6;
+		timeout();
+	}
 
-    function openModal(order: OrderTracking) {
-    selectedOrder = {
-      order_id: order.order_id,
-      order_date: order.order_date,
-      order_status: order.order_status,
-      tracking_number: order.tracking_number
-    };
-    isModalOpen = true;
+	function timeout() {
+		if (--counter > 0) return setTimeout(timeout, 1000);
+		notification = false;
+	}
 
-    
-  }
+	function openModal(order: OrderTracking) {
+		selectedOrder = {
+			order_id: order.order_id,
+			order_date: order.order_date,
+			order_status: order.order_status,
+			tracking_number: order.tracking_number
+		};
+		isModalOpen = true;
+	}
 
-  function handleModalClose() {
-    isModalOpen = false;
-  }
+	function handleModalClose() {
+		isModalOpen = false;
+	}
 
-//   async function updateTrackingNumber() {
-//     const url = `/order/${selectedOrder.order_id}/tracking_number`;
+	async function updateTrackingNumber() {
+		const form = new FormData();
+		form.append('order_id', String(selectedOrder.order_id));
+		form.append('tracking_number', selectedOrder.tracking_number);
 
-//     const response = await fetch(url, {
-//       method: 'PATCH',
-//       headers: {
-//         'Content-Type': 'application/json',
-//         // Inclua outros cabeçalhos necessários, como autenticação
-//       },
-//       body: JSON.stringify({
-//         tracking_number: selectedOrder.tracking_number
-//       })
-//     });
+		const res = await fetch(`/admin/logistics?/${'updateTracking'}`, {
+			method: 'POST',
+			body: form
+		});
 
-//     if (response.ok) {
-//       console.log('Número de rastreamento atualizado com sucesso!');
-//     } else {
-//       console.error('Erro ao atualizar número de rastreamento:', response.statusText);
-//     }
-//   }
+		if (res.ok) {
+			trigger();
+			location.reload();
+		} else {
+			notification = false;
+		}
+	}
 
+	async function toggleTrackingFilter() {
+		trackingFilter = !trackingFilter;
+		searchParams.set('tracking_number', trackingFilter ? 'true' : 'false');
+		searchParams.set('page', '1'); // Reset to first page when filtering
+		await goto(`/admin/logistics?${searchParams.toString()}`);
+	}
 
-    async function toggleTrackingFilter() {
-    trackingFilter = !trackingFilter;
-    searchParams.set('tracking_number', trackingFilter ? 'true' : 'false');
-    searchParams.set('page', '1'); // Reset to first page when filtering
-    await goto(`/admin/logistics?${searchParams.toString()}`);
-  }
+	function refreshPage() {
+		// Redireciona para a mesma URL
+		location.reload();
+	}
 
-  function refreshPage() {
-    // Redireciona para a mesma URL
-    location.reload();
-  }
-
-	async function handleRowsPerPageChange(event:any) {
+	async function handleRowsPerPageChange(event: any) {
 		rowsPerPage = parseInt(event.target.value);
 		currentPage = 1; // Reset to first page
 		searchParams.set('offset', `${rowsPerPage}`);
 		searchParams.set('page', `${currentPage}`);
-		goto(`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`);
+		goto(
+			`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
+		);
 	}
 
 	function firstPage() {
 		currentPage = 1;
-		goto(`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`);
+		goto(
+			`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
+		);
 	}
 
 	function nextPage() {
@@ -136,7 +134,9 @@
 		if (currentPage < endPage) {
 			currentPage++;
 			console.log(currentPage);
-			goto(`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`);
+			goto(
+				`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
+			);
 		}
 	}
 
@@ -145,13 +145,17 @@
 		if (currentPage > 1) {
 			currentPage--;
 			console.log(currentPage);
-			goto(`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`);
+			goto(
+				`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
+			);
 		}
 	}
 
 	function lastPage() {
 		currentPage = data.totalPages;
-		goto(`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`);
+		goto(
+			`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
+		);
 	}
 
 	function productMore(order_id: number) {
@@ -163,14 +167,14 @@
 	<div class="flex justify-between items-center w-full">
 		<h1 class="text-3xl font-semibold">Orders</h1>
 	</div>
-    <div class="my-4">
-        <button
-          class={`px-4 py-2 rounded ${trackingFilter ? 'bg-primary text-white' : 'bg-gray-300 text-gray-700'}`}
-          on:click={toggleTrackingFilter}
-        >
-          Tracking Number
-        </button>
-      </div>
+	<div class="my-4">
+		<button
+			class={`px-4 py-2 rounded ${trackingFilter ? 'bg-primary text-white' : 'bg-gray-300 text-gray-700'}`}
+			on:click={toggleTrackingFilter}
+		>
+			Tracking Number
+		</button>
+	</div>
 
 	<div class="w-full mx-auto mt-12">
 		<Table hoverable={true}>
@@ -191,7 +195,10 @@
 						>
 						<TableBodyCell tdClass="py-2">{getStatusTranslation(order.order_status)}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">
-							<Button  variant="primary"   on:click={() => openModal(order)} additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
+							<Button
+								variant="primary"
+								on:click={() => openModal(order)}
+								additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
 								>Ver mais</Button
 							>
 						</TableBodyCell>
@@ -248,11 +255,20 @@
 			</button>
 		</div>
 	</div>
-    <LogisticsModal
-  isOpen={isModalOpen}
-  selectedOrder={selectedOrder}
-  on:close={handleModalClose}
-  on:updated={refreshPage}
-  
-/>
+	<LogisticsModal
+		isOpen={isModalOpen}
+		{selectedOrder}
+		on:close={handleModalClose}
+		on:updated={updateTrackingNumber}
+	/>
+
+	{#if notification}
+		<Toast color="green" position="top-right">
+			<svelte:fragment slot="icon">
+				<CheckCircleSolid class="w-5 h-5" />
+				<span class="sr-only">Check icon</span>
+			</svelte:fragment>
+			Atualizado com Sucesso!
+		</Toast>
+	{/if}
 </div>
