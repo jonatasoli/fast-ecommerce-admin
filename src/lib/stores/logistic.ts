@@ -1,12 +1,20 @@
 import { writable } from 'svelte/store';
 
+interface OrdersState {
+	orders: Array<any>; // Tipar com o tipo correto se souber a estrutura dos pedidos
+	page: number;
+	offset: number;
+	total_pages: number;
+	total_records: number;
+}
+
 export function logisticStore() {
-	const store = writable({
-		logistic: [],
+	const store = writable<OrdersState>({
+		orders: [],
 		page: 1,
 		offset: 10,
-		totalPages: 0,
-		totalRecords: 0
+		total_pages: 0,
+		total_records: 0
 	});
 	store.request = async (method, url, params = {}, token) => {
 		store.update((data) => {

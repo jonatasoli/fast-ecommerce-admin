@@ -43,13 +43,13 @@ export const statusMap: Record<string, string> = {
 	SHIPPING_ORDER: 'Enviado',
 	GENERATE_INVOICE: 'Nota gerada',
 	SHIPPING_COMPLETE: 'Entregue'
-  };
-  
-  /**
-   * Retorna a tradução do status baseado no código do status.
-   * @param statusCode - O código do status (ex: 'PAYMENT_PENDING')
-   * @returns A tradução do status se encontrada, senão retorna o código original
-   */
-  export function getStatusTranslation(statusCode: string): string {
+};
+
+/**
+ * Retorna a tradução do status baseado no código do status.
+ * @param statusCode - O código do status (ex: 'PAYMENT_PENDING')
+ * @returns A tradução do status se encontrada, senão retorna o código original
+ */
+export function getStatusTranslation(statusCode: string): string {
 	return statusMap[statusCode] || statusCode;
-  }
+}

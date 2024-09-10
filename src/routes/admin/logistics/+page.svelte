@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
-	import { currencyFormat, getStatusTranslation } from '$lib/utils.js';
+	import { getStatusTranslation } from '$lib/utils.js';
 	import {
 		Label,
 		Select,
@@ -23,12 +23,23 @@
 		ChevronDoubleRightOutline
 	} from 'flowbite-svelte-icons';
 	import LogisticsModal from '$lib/components/logistics/modal/LogisticsModal.svelte';
+	import { logisticStore } from '$lib/stores/logistic.js';
+	import { onMount } from 'svelte';
 
-	export let data;
+	export let data: any;
+
+	const logistic = logisticStore();
+	logistic.set({
+		orders: data.orders.orders,
+		page: data.orders.page,
+		offset: data.orders.offset,
+		total_pages: data.orders.total_pages,
+		total_records: data.orders.total_records
+	});
 
 	let notification = false;
-	let rowsPerPage = data.offset ?? 10;
-	let currentPage = data.page ?? 1;
+	let rowsPerPage = data.orders.offset ?? 10;
+	let currentPage = data.orders.page ?? 1;
 	const searchParams = new URLSearchParams($page.url.searchParams);
 	let trackingFilter = searchParams.get('tracking_number') === 'true' ? true : false;
 	let isModalOpen = false;
@@ -40,15 +51,27 @@
 		tracking_number: ''
 	};
 
-	$: items = data.orders ?? [];
-	console.log(data.orders);
+	$: items = data.orders.orders ?? [];
 	$: start = currentPage * rowsPerPage - rowsPerPage;
-	$: end = Math.min(start + rowsPerPage, data.totalRecords);
-	$: endPage = data.totalPages;
+	$: end = Math.min(start + rowsPerPage, data.orders.total_records);
+	$: endPage = data.orders.total_pages;
 
 	$: if (currentPage > endPage) {
 		currentPage = endPage;
 	}
+
+	logistic.subscribe(($store) => {
+		items = $store.orders;
+		rowsPerPage = $store.offset;
+		currentPage = $store.page;
+		start = currentPage * rowsPerPage - rowsPerPage;
+		end = Math.min(start + rowsPerPage, $store.total_records);
+		endPage = $store.total_pages;
+	});
+
+	onMount(() => {
+		refreshLogistic();
+	});
 
 	interface OrderTracking {
 		order_id: number;
@@ -61,6 +84,13 @@
 		notification = true;
 		counter = 6;
 		timeout();
+	}
+
+	async function refreshLogistic() {
+		await logistic.get(
+			`${data.base_url}/order/orders?offset=${rowsPerPage}&page=${currentPage}`,
+			data.access_token
+		);
 	}
 
 	function timeout() {
@@ -94,7 +124,7 @@
 
 		if (res.ok) {
 			trigger();
-			location.reload();
+			await refreshLogistic();
 		} else {
 			notification = false;
 		}
@@ -107,59 +137,42 @@
 		await goto(`/admin/logistics?${searchParams.toString()}`);
 	}
 
-	function refreshPage() {
-		// Redireciona para a mesma URL
-		location.reload();
-	}
-
 	async function handleRowsPerPageChange(event: any) {
 		rowsPerPage = parseInt(event.target.value);
 		currentPage = 1; // Reset to first page
 		searchParams.set('offset', `${rowsPerPage}`);
 		searchParams.set('page', `${currentPage}`);
-		goto(
-			`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
-		);
+		await refreshLogistic();
 	}
 
-	function firstPage() {
+	async function firstPage() {
 		currentPage = 1;
-		goto(
-			`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
-		);
+		searchParams.set('page', currentPage);
+		await refreshLogistic();
 	}
 
-	function nextPage() {
-		console.log(currentPage);
+	async function nextPage() {
 		if (currentPage < endPage) {
-			currentPage++;
 			console.log(currentPage);
-			goto(
-				`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
-			);
+			currentPage++;
+			searchParams.set('page', currentPage);
+			await refreshLogistic();
 		}
 	}
 
-	function prevPage() {
-		console.log(currentPage);
+	async function prevPage() {
 		if (currentPage > 1) {
 			currentPage--;
+			searchParams.set('page', currentPage);
 			console.log(currentPage);
-			goto(
-				`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
-			);
+			await refreshLogistic();
 		}
 	}
 
-	function lastPage() {
-		currentPage = data.totalPages;
-		goto(
-			`/admin/logistics?page=${currentPage}&offset=${rowsPerPage}&tracking_number=${trackingFilter}`
-		);
-	}
-
-	function productMore(order_id: number) {
-		goto(`/admin/logistics/more?order_id=${order_id}`);
+	async function lastPage() {
+		currentPage = data.orders.total_pages;
+		searchParams.set('page', currentPage);
+		await refreshLogistic();
 	}
 </script>
 

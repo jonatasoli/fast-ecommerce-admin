@@ -65,9 +65,6 @@ export interface OrderItem {
 	freight: string;
 	coupon_id: any;
 }
-
-
-
 export interface DataOrders {
 	orders: OrderItem[];
 	page: number;
