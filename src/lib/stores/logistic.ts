@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 
 interface OrdersState {
-	orders: Array<any>; // Tipar com o tipo correto se souber a estrutura dos pedidos
+	orders: Array<any>;
 	page: number;
 	offset: number;
 	total_pages: number;
@@ -24,7 +24,6 @@ export function logisticStore() {
 			return data;
 		});
 
-		// define headers and body
 		const headers = {
 			'Content-type': 'application/json',
 			'Access-Control-Allow-Origin': '*',
@@ -35,17 +34,13 @@ export function logisticStore() {
 				? JSON.stringify(params)
 				: undefined;
 
-		// execute fetch
 		const response = await fetch(`${url}`, { method, body, headers });
-		// pull out json body
+
 		const json = await response.json();
 
-		// if response is 2xx
 		if (response.ok) {
-			// update the store, which will cause subscribers to be notified
 			store.update((data) => ({ ...data, ...json, loading: false }));
 		} else {
-			// response failed, set `errors` and clear `loading` flag
 			store.update((data) => {
 				console.log('dados');
 				console.log(data);
@@ -55,12 +50,11 @@ export function logisticStore() {
 			});
 		}
 	};
-	// convenience wrappers for get, post, patch, and delete
+
 	store.get = (url, token) => store.request('GET', url, token);
 	store.post = (url, params, token) => store.request('POST', url, params, token);
 	store.patch = (url, params, token) => store.request('PATCH', url, params, token);
 	store.delete = (url, params, token) => store.request('DELETE', url, params, token);
 
-	// return the customized store
 	return store;
 }

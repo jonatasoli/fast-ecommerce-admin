@@ -21,29 +21,6 @@ export const load = async ({ url, cookies }) => {
 		access_token: token,
 		base_url: `${SERVER_BASE_URL}`
 	};
-	// const fetchOrders = async (): Promise<DataOrders> => {
-	// 	const res = await fetch(`${SERVER_BASE_URL}/order/orders?offset=${offset}&page=${page}`, {
-	// 		method: 'GET',
-	// 		headers: {
-	// 			'Content-Type': 'application/json',
-	// 			Authorization: `Bearer ${token}`
-	// 		}
-	// 	});
-	// 	if (!res.ok) {
-	// 		throw new Error('Failed to fetch orders');
-	// 	}
-	// 	const data = await res.json();
-	// 	return data;
-	// };
-
-	// const receivedOrders = await fetchOrders();
-	// return {
-	// 	orders: receivedOrders.orders,
-	// 	page: receivedOrders.page,
-	// 	offset: receivedOrders.offset,
-	// 	totalPages: receivedOrders.total_pages,
-	// 	totalRecords: receivedOrders.total_records
-	// };
 };
 export const actions: Actions = {
 	updateTracking: async ({ request, cookies }) => {
