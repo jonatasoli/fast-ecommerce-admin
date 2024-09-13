@@ -80,5 +80,32 @@ export const actions: Actions = {
 			totalPages: receivedOrders.total_pages,
 			totalRecords: receivedOrders.total_records
 		};
+	},
+
+	markAsDelivered: async ({ request, cookies }) => {
+		const token = cookies.get('access_token');
+		const form = await request.formData();
+
+		const data = {
+			order_id: form.get('order_id')
+		};
+
+		const { order_id } = data;
+
+		const res = await fetch(`${SERVER_BASE_URL}/order/${order_id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`
+			}
+		});
+
+		if (!res.ok) {
+			return fail(res.status, { error: 'Failed to update tracking number' });
+		}
+
+		return {
+			success: true
+		};
 	}
 };

@@ -28,7 +28,12 @@
 	}
 
 	function updatedModal() {
-		dispatch('updated');
+		dispatch('updatedTrackingNumber');
+		closeModal();
+	}
+
+	async function markAsDelivered() {
+		dispatch('updatedLogistic');
 		closeModal();
 	}
 </script>
@@ -83,8 +88,10 @@
 			<Button variant="primary" on:click={updatedModal} class="w-full sm:w-auto"
 				>Atualizar Logística</Button
 			>
+
+			{#if selectedOrder.order_status === 'SHIPPING_ORDER' || selectedOrder.order_status === 'GENERATE_INVOICE'}
+				<Button on:click={markAsDelivered} variant="primary">Marcar como entregue</Button>
+			{/if}
 		</div>
 	</div>
 </Modal>
-
-<!-- AB123456789CD -->

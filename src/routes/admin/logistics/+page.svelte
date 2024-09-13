@@ -174,6 +174,22 @@
 		searchParams.set('page', currentPage);
 		await refreshLogistic();
 	}
+
+	async function logisticUpdate() {
+		const form = new FormData();
+		form.append('order_id', String(selectedOrder.order_id));
+		const res = await fetch(`/admin/logistics?/${'markAsDelivered'}`, {
+			method: 'POST',
+			body: form
+		});
+
+		if (res.ok) {
+			trigger();
+			await refreshLogistic();
+		} else {
+			notification = false;
+		}
+	}
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">
@@ -236,7 +252,7 @@
 				on:change={handleRowsPerPageChange}
 			/>
 
-			{start + 1}-{end} de {data.totalRecords}
+			{start + 1}-{end} de {data.orders.total_records}
 
 			<button
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
@@ -272,7 +288,8 @@
 		isOpen={isModalOpen}
 		{selectedOrder}
 		on:close={handleModalClose}
-		on:updated={updateTrackingNumber}
+		on:updatedTrackingNumber={updateTrackingNumber}
+		on:updatedLogistic={logisticUpdate}
 	/>
 
 	{#if notification}
