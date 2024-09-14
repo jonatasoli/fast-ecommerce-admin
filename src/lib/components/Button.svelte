@@ -19,13 +19,15 @@
 		variant?: 'primary' | 'secondary' | 'danger';
 		block?: boolean;
 		loading?: boolean;
+		additionalClass?: string;
 	}
 
 	export let block: boolean = false;
 	export let loading: boolean = false;
+	export let additionalClass: string = '';
 </script>
 
-<Button on:click {...$$restProps} class={button({ block, loading })}>
+<Button on:click {...$$restProps} class={`${button({ block, loading })} ${additionalClass}`}>
 	{#if loading}
 		<Spinner class="me-3" size="4" />
 	{/if}
