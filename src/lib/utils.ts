@@ -1,5 +1,23 @@
 import { CURRENCIES, LOCALES } from './enums';
 
+export function formatDocument(document: string) {
+	// Verifica se já está formatado (document no formato ###.###.###-##)
+	if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(document)) {
+		return document;
+	}
+
+	// Remove qualquer caractere que não seja número
+	document = document.replace(/\D/g, '');
+
+	// Se o document tiver 11 dígitos, aplica a máscara de document (###.###.###-##)
+	if (document.length === 11) {
+		return document.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+	}
+
+	// Retorna o document não formatado se não tiver o número correto de dígitos
+	return document;
+}
+
 export function generateURI(productName: string) {
 	return productName
 		.toString()
@@ -33,6 +51,32 @@ export function currencyFormat(
 	}
 
 	return format(value);
+}
+
+export function getRoleName(roleId: number): string {
+	switch (roleId) {
+		case 1:
+			return 'Admin';
+		case 2:
+			return 'User';
+		case 3:
+			return 'Partner';
+		default:
+			return 'Unknown';
+	}
+}
+
+export function setRoleId(roleName: string): number {
+	switch (roleName.toUpperCase()) {
+		case 'ADMIN':
+			return 1;
+		case 'USER':
+			return 2;
+		case 'PARTNER':
+			return 3;
+		default:
+			return 0;
+	}
 }
 
 export const statusMap: Record<string, string> = {
