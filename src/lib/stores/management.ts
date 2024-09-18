@@ -36,17 +36,12 @@ export function usersStore() {
 
 		const response = await fetch(url, { method, body, headers });
 
-		console.log(url, token);
-
 		const json = await response.json();
 
 		if (response.ok) {
 			store.update((data) => ({ ...data, ...json, loading: false }));
 		} else {
 			store.update((data) => {
-				console.log('dados');
-				console.log(token);
-				console.log(data);
 				data.loading = false;
 				data.errors = json.errors;
 				return data;

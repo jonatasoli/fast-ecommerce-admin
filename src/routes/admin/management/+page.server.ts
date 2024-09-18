@@ -13,7 +13,6 @@ export const load = async ({ url, cookies }) => {
 
 	let currentUsers;
 	users.subscribe((value) => (currentUsers = value))();
-	console.log(currentUsers);
 
 	return {
 		users: currentUsers,
@@ -29,17 +28,20 @@ export const actions: Actions = {
 		const form = await request.formData();
 
 		const data = {
+			search_name: form.get('search_name'),
 			offset: form.get('offset'),
 			page: form.get('page')
 		};
 
-		const { offset, page } = data;
+		const { offset, page, search_name } = data;
 
-		await users.get(`${SERVER_BASE_URL}/users/?offset=${offset}&page=${page}`, token);
+		await users.get(
+			`${SERVER_BASE_URL}/users/?search_name=${search_name}&page=${page}&offset=${offset}`,
+			token
+		);
 
 		let currentUsers;
 		users.subscribe((value) => (currentUsers = value))();
-		console.log(currentUsers);
 
 		return {
 			users: currentUsers,

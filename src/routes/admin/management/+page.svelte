@@ -38,6 +38,7 @@
 		total_records: data.users.total_records
 	});
 
+	let debounceTimeout: ReturnType<typeof setTimeout>;
 	let notification = false;
 	let rowsPerPage = data.users.offset ?? 10;
 	let currentPage = data.users.page ?? 1;
@@ -74,6 +75,7 @@
 	$: start = currentPage * rowsPerPage - rowsPerPage;
 	$: end = Math.min(start + rowsPerPage, data.users.total_records);
 	$: endPage = data.users.total_pages;
+	$: searchTerm, debounceSearch(searchTerm);
 
 	$: if (currentPage > endPage) {
 		currentPage = endPage;
@@ -104,10 +106,51 @@
 		disabled: any;
 	}
 
+	function detectSearchType(query: string) {
+		const isDocument = /^\d+$/.test(query); // Checa se contém apenas números
+		return isDocument ? 'search_document' : 'search_name';
+	}
+
+	async function getUserByFilter(search_type: string, query: string) {
+		await await users.get(
+			`${data.base_url}/users/?${search_type}=${query}&offset=${rowsPerPage}&page=1`,
+			data.access_token
+		);
+	}
+
+	function debounceSearch(query: string) {
+		clearTimeout(debounceTimeout);
+		debounceTimeout = setTimeout(() => {
+			if (query.length > 3) {
+				const searchType = detectSearchType(query);
+				getUserByFilter(searchType, query);
+			} else {
+				refreshUsers();
+			}
+		}, 300);
+	}
+
 	function trigger() {
 		notification = true;
 		counter = 6;
 		timeout();
+	}
+
+	async function handleSaveFromModal(event: any) {
+		console.log('Valor recebido do modal:', event.detail.value);
+
+		// Chamada HTTP usando o valor recebido
+		const res = await users.patch(
+			`${data.base_url}/user/${event.detail.value.user_id}`,
+			event.detail.value,
+			data.access_token
+		);
+
+		if (res) {
+			trigger();
+			refreshUsers();
+		}
+		return;
 	}
 
 	async function refreshUsers() {
@@ -284,7 +327,13 @@
 			</button>
 		</div>
 	</div>
-	<ManagementModal isOpen={isModalOpen} {selectedUser} {originalUser} on:close={handleModalClose} />
+	<ManagementModal
+		isOpen={isModalOpen}
+		{selectedUser}
+		{originalUser}
+		on:close={handleModalClose}
+		on:save={handleSaveFromModal}
+	/>
 
 	{#if notification}
 		<Toast color="green" position="top-right">

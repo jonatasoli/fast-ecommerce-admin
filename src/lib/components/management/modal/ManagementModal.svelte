@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { getRoleName, setRoleId } from '$lib/utils';
+	import { usersStore } from '$lib/stores/management';
+	import { setRoleId } from '$lib/utils';
 	import { Modal, Button, Input, Select } from 'flowbite-svelte';
 	import { createEventDispatcher, onMount } from 'svelte';
 
@@ -41,6 +42,12 @@
 		disabled: ''
 	};
 
+	let roles = [
+		{ value: 1, name: 'Admin' },
+		{ value: 2, name: 'User' },
+		{ value: 3, name: 'Partner' }
+	];
+
 	const dispatch = createEventDispatcher();
 
 	function closeModal() {
@@ -52,31 +59,11 @@
 		closeModal();
 	}
 
-	function getRoleOptions(roleId: number): Array<{ value: string; label: string }> {
-		switch (roleId) {
-			case 1: // Admin
-				return [
-					{ value: 'USER', label: 'User' },
-					{ value: 'PARTNER', label: 'Partner' }
-				];
-			case 2: // User
-				return [
-					{ value: 'ADMIN', label: 'Admin' },
-					{ value: 'PARTNER', label: 'Partner' }
-				];
-			case 3: // Partner
-				return [
-					{ value: 'ADMIN', label: 'Admin' },
-					{ value: 'USER', label: 'User' }
-				];
-			default:
-				return [];
-		}
-	}
-
 	function handleRoleChange(event: Event) {
 		const target = event.target as HTMLSelectElement;
 		selectedUser.role_id = setRoleId(target.value);
+
+		console.log(target.value);
 	}
 
 	function roleChanged(): boolean {
@@ -98,15 +85,11 @@
 		console.log('Updating role...');
 	}
 
-	async function updateUser() {
-		console.log('original user: ' + originalUser + ', selected user: ' + selectedUser);
-
-		console.log('Updating user fields...');
-	}
+	async function updateUser() {}
 
 	async function saveChanges() {
 		if (userFieldsChanged()) {
-			await updateUser();
+			dispatch('save', { value: selectedUser });
 		}
 
 		if (roleChanged()) {
@@ -151,18 +134,15 @@
 		</div>
 
 		<div class="mb-4">
-			<label for="userRole" class="block text-sm font-medium text-gray-700">Papel</label>
-			<Select id="userRole" class="mt-1 w-full" on:change={handleRoleChange}>
-				<!-- Exibir o papel atual como selecionado -->
-				<option value={getRoleName(selectedUser.role_id)} selected>
-					{getRoleName(selectedUser.role_id)}
-				</option>
+			<label for="userRole" class="block text-sm font-medium text-gray-700">Role</label>
 
-				<!-- Exibir outras opções disponíveis -->
-				{#each getRoleOptions(selectedUser.role_id) as option}
-					<option value={option.value}>{option.label}</option>
-				{/each}
-			</Select>
+			<Select
+				id="userRole"
+				class="mt-1 w-full"
+				bind:value={selectedUser.role_id}
+				items={roles}
+				on:input={handleRoleChange}
+			></Select>
 		</div>
 
 		<div class="flex flex-wrap justify-end space-x-2 mt-4">
