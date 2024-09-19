@@ -7,7 +7,6 @@
 	interface selectedUser {
 		user_id: number;
 		name: string;
-		password: string | null;
 		document: string;
 		phone: string;
 		role_id: number;
@@ -21,7 +20,6 @@
 	export let selectedUser: selectedUser = {
 		user_id: 0,
 		name: '',
-		password: '',
 		document: '',
 		phone: '',
 		role_id: 0,
@@ -33,7 +31,6 @@
 	export let originalUser: selectedUser = {
 		user_id: 0,
 		name: '',
-		password: '',
 		document: '',
 		phone: '',
 		role_id: 0,
@@ -52,11 +49,6 @@
 
 	function closeModal() {
 		dispatch('close');
-	}
-
-	function updatedModal() {
-		dispatch('updatedTrackingNumber');
-		closeModal();
 	}
 
 	function handleRoleChange(event: Event) {
@@ -79,29 +71,11 @@
 		);
 	}
 
-	async function updateRole() {
-		console.log('original role:' + originalUser.role_id, 'selected role:' + selectedUser.role_id);
-
-		console.log('Updating role...');
-	}
-
-	async function updateUser() {}
-
 	async function saveChanges() {
-		if (userFieldsChanged()) {
+		if (userFieldsChanged() || roleChanged()) {
 			dispatch('save', { value: selectedUser });
 		}
-
-		if (roleChanged()) {
-			await updateRole();
-		}
-
-		dispatch('updatedUser');
 	}
-
-	onMount(() => {
-		originalUser = selectedUser;
-	});
 </script>
 
 <Modal bind:open={isOpen} on:close={closeModal} size="md">

@@ -6,6 +6,8 @@ interface UsersState {
 	offset: number;
 	total_pages: number;
 	total_records: number;
+	loading?: boolean;
+	errors?: any;
 }
 
 export function usersStore() {
@@ -14,45 +16,66 @@ export function usersStore() {
 		page: 1,
 		offset: 10,
 		total_pages: 0,
-		total_records: 0
+		total_records: 0,
+		loading: false,
+		errors: null
 	});
-	store.request = async (method, url, params = {}, token) => {
-		store.update((data) => {
-			delete data.errors;
-			data.loading = true;
 
+	// Função genérica para realizar requisições
+	store.request = async (method: string, url: string, params = {}, token: string) => {
+		// Atualiza o estado da store para "carregando"
+		store.update((data) => {
+			data.loading = true;
+			data.errors = null; // Limpa erros anteriores
 			return data;
 		});
 
 		const headers = {
-			'Content-type': 'application/json',
-			'Access-Control-Allow-Origin': '*',
+			'Content-Type': 'application/json',
 			Authorization: `Bearer ${token}`
 		};
-		const body =
-			method === 'POST' || method === 'PATCH' || method === 'DELETE'
-				? JSON.stringify(params)
-				: undefined;
 
-		const response = await fetch(url, { method, body, headers });
+		// Define o corpo da requisição apenas para métodos POST, PATCH e DELETE
+		const body = ['POST', 'PATCH', 'DELETE'].includes(method) ? JSON.stringify(params) : undefined;
 
-		const json = await response.json();
+		try {
+			// Faz a requisição
+			const response = await fetch(url, { method, body, headers });
 
-		if (response.ok) {
-			store.update((data) => ({ ...data, ...json, loading: false }));
-		} else {
+			// Verifica se a resposta tem conteúdo, caso contrário não chama `.json()`
+			let json: any;
+			if (response.status !== 204) {
+				json = await response.json();
+			}
+
+			// Atualiza a store caso a requisição tenha sido bem-sucedida
+			if (response.ok) {
+				store.update((data) => ({ ...data, ...json, loading: false }));
+				return json; // Retorna o JSON caso precise utilizá-lo
+			} else {
+				// Lança erro caso o status da resposta não seja OK
+				throw new Error(json?.errors || 'Erro desconhecido');
+			}
+		} catch (error) {
+			// Atualiza o estado de erro na store
 			store.update((data) => {
 				data.loading = false;
-				data.errors = json.errors;
+				data.errors = error.message;
 				return data;
 			});
+			console.error('Erro na requisição:', error);
+			throw error; // Repassa o erro para o chamador
 		}
 	};
 
-	store.get = (url, token) => store.request('GET', url, {}, token);
-	store.post = (url, params, token) => store.request('POST', url, params, token);
-	store.patch = (url, params, token) => store.request('PATCH', url, params, token);
-	store.delete = (url, params, token) => store.request('DELETE', url, params, token);
+	// Definição dos métodos HTTP
+	store.get = (url: string, token: string) => store.request('GET', url, {}, token);
+	store.post = (url: string, params: any, token: string) =>
+		store.request('POST', url, params, token);
+	store.patch = (url: string, params: any, token: string) =>
+		store.request('PATCH', url, params, token);
+	store.delete = (url: string, params: any, token: string) =>
+		store.request('DELETE', url, params, token);
 
 	return store;
 }

@@ -70,6 +70,8 @@
 		disabled: ''
 	};
 	let searchTerm = '';
+	let sortBy = 'user_id';
+	let sortDirection = 'asc';
 
 	$: items = data.users.users ?? [];
 	$: start = currentPage * rowsPerPage - rowsPerPage;
@@ -137,9 +139,6 @@
 	}
 
 	async function handleSaveFromModal(event: any) {
-		console.log('Valor recebido do modal:', event.detail.value);
-
-		// Chamada HTTP usando o valor recebido
 		const res = await users.patch(
 			`${data.base_url}/user/${event.detail.value.user_id}`,
 			event.detail.value,
@@ -149,15 +148,27 @@
 		if (res) {
 			trigger();
 			refreshUsers();
+			isModalOpen = false;
 		}
+		isModalOpen = false;
 		return;
 	}
 
 	async function refreshUsers() {
 		await users.get(
-			`${data.base_url}/users/?offset=${rowsPerPage}&page=${currentPage}`,
+			`${data.base_url}/users/?offset=${rowsPerPage}&page=${currentPage}&order_by=${sortBy}&direction=${sortDirection}`,
 			data.access_token
 		);
+	}
+
+	function orderBy(sort_By: string) {
+		if (sortBy === sort_By) {
+			sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+		} else {
+			sortBy = sort_By;
+			sortDirection = 'asc';
+		}
+		refreshUsers();
 	}
 
 	function timeout() {
@@ -251,10 +262,18 @@
 				bind:inputValue={searchTerm}
 			>
 				<TableHead>
-					<TableHeadCell class="pl-0">ID</TableHeadCell>
-					<TableHeadCell class="pl-0">Nome</TableHeadCell>
-					<TableHeadCell class="pl-0">Documento</TableHeadCell>
-					<TableHeadCell class="pl-0">Username</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('user_id')}
+						>ID</TableHeadCell
+					>
+					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('string_name')}
+						>Nome</TableHeadCell
+					>
+					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('document')}
+						>Documento</TableHeadCell
+					>
+					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('email')}
+						>Username</TableHeadCell
+					>
 
 					<TableHeadCell class="">Ações</TableHeadCell>
 				</TableHead>
