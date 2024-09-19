@@ -14,7 +14,9 @@
 		TableHead,
 		TableHeadCell,
 		Toast,
-		TableSearch
+		TableSearch,
+		Dropdown,
+		DropdownItem
 	} from 'flowbite-svelte';
 	import {
 		AngleLeftOutline,
@@ -72,7 +74,6 @@
 	let searchTerm = '';
 	let sortBy = 'user_id';
 	let sortDirection = 'asc';
-
 	$: items = data.users.users ?? [];
 	$: start = currentPage * rowsPerPage - rowsPerPage;
 	$: end = Math.min(start + rowsPerPage, data.users.total_records);
@@ -171,12 +172,24 @@
 		refreshUsers();
 	}
 
+	async function resetPassword(user: selectedUser, dropdownItem: any) {
+		await users.post(
+			`${data.base_url}/user/request-reset-password?document=${user.document}`,
+
+			data.access_token
+		);
+
+		dropdownItem.blur();
+		trigger();
+		refreshUsers();
+	}
+
 	function timeout() {
 		if (--counter > 0) return setTimeout(timeout, 1000);
 		notification = false;
 	}
 
-	function openModal(user: selectedUser) {
+	function openModal(user: selectedUser, dropdownItem: any) {
 		selectedUser = {
 			user_id: user.user_id,
 			name: user.name,
@@ -202,6 +215,7 @@
 		};
 
 		isModalOpen = true;
+		dropdownItem.blur();
 	}
 
 	function handleModalClose() {
@@ -287,10 +301,17 @@
 							<TableBodyCell tdClass="py-2">
 								<Button
 									variant="primary"
-									on:click={() => openModal(users)}
 									additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
 									>Gerenciar</Button
 								>
+								<Dropdown class="w-48 p-3 space-y-1">
+									<DropdownItem on:click={(event) => openModal(users, event.currentTarget)}
+										>Edit User</DropdownItem
+									>
+									<DropdownItem on:click={(event) => resetPassword(users, event.currentTarget)}
+										>Reset Password</DropdownItem
+									>
+								</Dropdown>
 							</TableBodyCell>
 						</TableBodyRow>
 					{/each}
