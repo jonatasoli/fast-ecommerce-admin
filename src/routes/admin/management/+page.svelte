@@ -289,7 +289,7 @@
 						>Username</TableHeadCell
 					>
 
-					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('email')}
+					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
 						>Role</TableHeadCell
 					>
 
