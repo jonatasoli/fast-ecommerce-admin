@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
-	import { formatDocument } from '$lib/utils.js';
+	import { formatDocument, getRoleName } from '$lib/utils.js';
 	import {
 		Label,
 		Select,
@@ -289,6 +289,10 @@
 						>Username</TableHeadCell
 					>
 
+					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('email')}
+						>Role</TableHeadCell
+					>
+
 					<TableHeadCell class="">Ações</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
@@ -298,6 +302,7 @@
 							<TableBodyCell tdClass="py-2">{users.name}</TableBodyCell>
 							<TableBodyCell tdClass="py-2">{formatDocument(users.document)}</TableBodyCell>
 							<TableBodyCell tdClass="py-2">{users.email}</TableBodyCell>
+							<TableBodyCell tdClass="py-2">{getRoleName(users.role_id)}</TableBodyCell>
 							<TableBodyCell tdClass="py-2">
 								<Button
 									variant="primary"

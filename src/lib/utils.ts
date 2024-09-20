@@ -53,6 +53,18 @@ export function currencyFormat(
 	return format(value);
 }
 
+export function getRoleName(roleId: number): string {
+	switch (roleId) {
+		case 1:
+			return 'Admin';
+		case 2:
+			return 'User';
+		case 3:
+			return 'Partner';
+		default:
+			return 'Unknown';
+	}
+}
 
 export function setRoleId(roleName: string): number {
 	switch (roleName.toUpperCase()) {

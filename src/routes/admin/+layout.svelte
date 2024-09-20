@@ -37,6 +37,9 @@
 			<a href="/admin/inventory" class={active(pathname, '/admin/inventory')}>Estoque</a>
 			<a href="/admin/invoices" class={active(pathname, '/admin/invoices')}>Fiscal</a>
 			<a href="/admin/logistics" class={active(pathname, '/admin/logistics')}>Logistica</a>
+			<a href="/admin/management" class={active(pathname, '/admin/management')}
+				>Gestão de Usuários</a
+			>
 			<a href="/admin/sales" class={active(pathname, '/admin/sales')}>Vendas</a>
 			<a href="/admin/settings" class={active(pathname, '/admin/settings')}>Configurações</a>
 		</nav>
