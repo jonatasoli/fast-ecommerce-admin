@@ -16,7 +16,8 @@
 		Toast,
 		TableSearch,
 		Dropdown,
-		DropdownItem
+		DropdownItem,
+		DropdownDivider
 	} from 'flowbite-svelte';
 	import {
 		AngleLeftOutline,
@@ -313,6 +314,7 @@
 									<DropdownItem on:click={(event) => openModal(users, event.currentTarget)}
 										>Edit User</DropdownItem
 									>
+									<DropdownDivider />
 									<DropdownItem on:click={(event) => resetPassword(users, event.currentTarget)}
 										>Reset Password</DropdownItem
 									>
