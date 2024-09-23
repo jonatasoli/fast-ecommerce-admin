@@ -28,7 +28,7 @@
 		"eslint-plugin-svelte": "^2.30.0",
 		"felte": "^1.2.14",
 		"flowbite": "^2.3.0",
-		"flowbite-svelte": "^0.44.24",
+		"flowbite-svelte": "0.46.17",
 		"flowbite-svelte-icons": "^1.2.1",
 		"postcss": "^8.4.31",
 		"prettier": "^3.0.0",
@@ -36,21 +36,21 @@
 		"svelte": "^4.2.7",
 		"svelte-check": "^3.6.0",
 		"sveltekit-superforms": "^2.6.2",
-		"tailwindcss": "^3.3.5",
+		"tailwindcss": "3.4.13",
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
 		"typescript-svelte-plugin": "^0.3.36",
-		"vite": "^4.4.2",
-		"vitest": "^0.32.2"
+		"vite": "5.4.7",
+		"vitest": "2.1.1"
 	},
 	"type": "module",
 	"dependencies": {
-		"@canutin/svelte-currency-input": "^0.11.3",
+		"@canutin/svelte-currency-input": "0.11.5",
 		"@felte/reporter-svelte": "^1.1.11",
 		"@felte/validator-zod": "^1.0.17",
 		"@imask/svelte": "^7.6.0",
-		"quill": "2.0.0-rc.3",
-		"tailwind-variants": "^0.1.20",
+		"quill": "^2.0.2",
+		"tailwind-variants": "0.2.1",
 		"zod": "^3.22.4"
 	},
 	"packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
