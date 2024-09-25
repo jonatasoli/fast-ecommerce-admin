@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { NumberInput, Toast, Select, Button } from 'flowbite-svelte';
+	import { NumberInput, Toast, Select, Button, Input } from 'flowbite-svelte';
 	import { CheckCircleSolid } from 'flowbite-svelte-icons';
 	import type { ActionData } from '../$types';
 
+	type Transaction = {
+		product_id: number | undefined;
+		quantity: number;
+		operation: 'INCREASE' | 'DECREASE';
+	};
+
 	export let data;
-	let transaction = {
+	let transaction: Transaction = {
 		product_id: undefined,
 		quantity: 1,
 		operation: 'INCREASE'
@@ -15,18 +21,21 @@
 	let notification = false;
 	$: products = data.products.products;
 	// Carregar os dados do pedido
-	onMount(() => {
-		const params = new URLSearchParams($page.url.searchParams);
-		console.log(params);
-	});
+	onMount(() => {});
 	export let form: ActionData;
+
+	function getProductQuantityByTransaction(transaction: number | undefined) {
+		const product = products.find((p: any) => p.product_id === transaction);
+		return product ? product.quantity : 0;
+	}
 
 	async function createOperation(event: Event) {
 		try {
 			const formData = new FormData();
-			formData.append('product_id', transaction.product_id);
-			formData.append('quantity', transaction.quantity);
+			formData.append('product_id', String(transaction.product_id));
+			formData.append('quantity', String(transaction.quantity));
 			formData.append('operation', transaction.operation);
+			console.log(formData);
 			const response = await fetch('new', {
 				method: 'POST',
 				body: formData
@@ -36,7 +45,7 @@
 			console.log(result);
 
 			if (response.ok) {
-				// Operação criada com sucesso
+				invalidate('/admin/inventory/new');
 				notification = true;
 				await new Promise((resolve) => setTimeout(resolve, 2000));
 			} else {
@@ -77,6 +86,15 @@
 					<option value={product_id}>{name}</option>
 				{/each}
 			</Select>
+
+			<label for="quantity">Estoque Atual</label>
+			<Input
+				id="quantity"
+				type="text"
+				value={getProductQuantityByTransaction(transaction.product_id)}
+				readonly
+				class="mt-1 w-full"
+			/>
 
 			<label for="quantity">Quantidade</label>
 			<NumberInput id="quantity" bind:value={transaction.quantity} />
