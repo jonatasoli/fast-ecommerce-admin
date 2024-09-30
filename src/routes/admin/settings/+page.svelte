@@ -7,12 +7,37 @@
 	import CrmTab from '$lib/components/settings/tabs/crm/+page.svelte';
 	import GeraisTab from '$lib/components/settings/tabs/gerais/+page.svelte';
 
-	let selectedCode = 'pt-BR';
+	interface selectedLogistics {
+		provider: string;
+		value: string;
+		locale: string;
+		description: string;
+		is_default: boolean;
+		settings_id: number;
+		field: string;
+		is_active: boolean;
+	}
+
+	interface Items {
+		selectedCode: string;
+		base_url: string;
+		token_access: string;
+	}
+
+	export let data;
+
+	let selectedCode: string = 'pt-br';
+
+	let items: Items = {
+		selectedCode,
+		base_url: data.base_url,
+		token_access: data.access_token
+	};
 
 	let locales = [
 		{ name: 'Inglês (Estados Unidos)', value: 'en-US', isDefault: false },
 		{ name: 'Inglês (Reino Unido)', value: 'en-GB', isDefault: false },
-		{ name: 'Português (Brasil)', value: 'pt-BR', isDefault: true },
+		{ name: 'Português (Brasil)', value: 'pt-br', isDefault: true },
 		{ name: 'Português (Portugal)', value: 'pt-PT', isDefault: false },
 		{ name: 'Espanhol (Espanha)', value: 'es-ES', isDefault: false },
 		{ name: 'Espanhol (México)', value: 'es-MX', isDefault: false },
@@ -66,7 +91,7 @@
 		<PaymentTab />
 	</TabItem>
 	<TabItem title="Logistica">
-		<LogisticsTab />
+		<LogisticsTab {items} />
 	</TabItem>
 	<TabItem title="Notificação">
 		<NotificationTab />
