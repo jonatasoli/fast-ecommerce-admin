@@ -88,22 +88,22 @@
 
 <Tabs contentClass="p-4 rounded-lg dark:bg-gray-800 h-full flex flex-col bg-gray-50">
 	<TabItem open title="Pagamento">
-		<PaymentTab />
+		<PaymentTab {items} />
 	</TabItem>
 	<TabItem title="Logistica">
 		<LogisticsTab {items} />
 	</TabItem>
 	<TabItem title="Notificação">
-		<NotificationTab />
+		<NotificationTab {items} />
 	</TabItem>
 	<TabItem title="CDN">
-		<CdnTab />
+		<CdnTab {items} />
 	</TabItem>
 	<TabItem title="CRM">
-		<CrmTab />
+		<CrmTab {items} />
 	</TabItem>
 
 	<TabItem title="Gerais">
-		<GeraisTab />
+		<GeraisTab {items} />
 	</TabItem>
 </Tabs>

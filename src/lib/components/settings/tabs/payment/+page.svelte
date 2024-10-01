@@ -1,18 +1,100 @@
 <script lang="ts">
+	import { settingsStore } from '$lib/stores/settings';
 	import { Button, Input, Select } from 'flowbite-svelte';
+	import { onMount } from 'svelte';
 
-	let selectedGateway = 'mercado_pago';
+	interface Items {
+		selectedCode: string;
+		base_url: string;
+		token_access: string;
+	}
 
-	let paymentGateway = {
-		name: '',
-		url: '',
-		key: '',
-		secretKey: ''
+	interface PaymentGatewayConfig {
+		provider: string;
+		value: {
+			gateway_name: string;
+			gateway_url: string;
+			gateway_key: string;
+			gateway_secret_key: string;
+		};
+		locale: string;
+		description: string;
+		is_default: boolean;
+		settings_id: number;
+		field: string;
+		is_active: boolean;
+	}
+
+	export let items: Items;
+	export let field: string = 'PAYMENT';
+
+	const settings = settingsStore();
+
+	let paymentGateway: PaymentGatewayConfig = {
+		provider: '',
+		value: {
+			gateway_name: '',
+			gateway_url: '',
+			gateway_key: '',
+			gateway_secret_key: ''
+		},
+		locale: '',
+		description: '',
+		is_default: false,
+		settings_id: 0,
+		field: '',
+		is_active: false
 	};
 
 	function handleSavePaymentGateway() {
 		console.log('Saved payment gateway:', paymentGateway);
 	}
+
+	function valuesObject(values: string) {
+		try {
+			const parsedValues = JSON.parse(values);
+			paymentGateway.value = {
+				gateway_name: parsedValues.gateway_name || '',
+				gateway_url: parsedValues.gateway_url || '',
+				gateway_key: parsedValues.gateway_key || '',
+				gateway_secret_key: parsedValues.gateway_secret_key || ''
+			};
+		} catch (error) {
+			console.error('Erro ao fazer o parse do JSON de valores de logística:', error);
+		}
+	}
+
+	async function getSettings(field: string) {
+		try {
+			const res = await settings.get(
+				`${items.base_url}/settings/?locale=${items.selectedCode}&field=${field}`,
+				items.token_access
+			);
+
+			if (res) {
+				paymentGateway = res;
+
+				if (typeof paymentGateway.value === 'string') {
+					valuesObject(paymentGateway.value);
+				}
+			} else {
+				console.warn(
+					'Nenhuma configuração de logística encontrada para o locale e field especificados.'
+				);
+			}
+		} catch (error) {
+			console.error('Erro ao buscar as configurações de logística:', error);
+		}
+	}
+
+	$: {
+		paymentGateway.value.gateway_name = paymentGateway.value.gateway_name.toLowerCase();
+	}
+
+	onMount(async () => {
+		await getSettings(field);
+		console.log(paymentGateway);
+	});
 </script>
 
 <div class="container mt-8 space-y-8">
@@ -23,9 +105,9 @@
 				<label class="block text-sm font-medium text-gray-700 mb-1">Nome do Gateway:</label>
 
 				<Select
-					bind:value={selectedGateway}
+					bind:value={paymentGateway.value.gateway_name}
 					items={[
-						{ value: 'mercado_pago', name: 'Mercado Pago' },
+						{ value: 'mercado pago', name: 'Mercado Pago' },
 						{ value: 'stripe', name: 'Stripe' },
 						{ value: 'pagarme', name: 'Pagarme' },
 						{ value: 'cielo', name: 'Cielo' }
@@ -37,7 +119,7 @@
 				<label class="block text-sm font-medium text-gray-700 mb-1">URL do Gateway:</label>
 				<Input
 					type="text"
-					bind:value={paymentGateway.url}
+					bind:value={paymentGateway.value.gateway_url}
 					placeholder="URL da API"
 					class="input border rounded-md px-3 py-2 w-full"
 				/>
@@ -47,7 +129,7 @@
 				<label class="block text-sm font-medium text-gray-700 mb-1">Chave:</label>
 				<Input
 					type="text"
-					bind:value={paymentGateway.key}
+					bind:value={paymentGateway.value.gateway_key}
 					placeholder="Chave API"
 					class="input border rounded-md px-3 py-2 w-full"
 				/>
@@ -57,7 +139,7 @@
 				<label class="block text-sm font-medium text-gray-700 mb-1">Chave Secreta:</label>
 				<Input
 					type="text"
-					bind:value={paymentGateway.secretKey}
+					bind:value={paymentGateway.value.gateway_secret_key}
 					placeholder="Chave Secreta"
 					class="input border rounded-md px-3 py-2 w-full"
 				/>
