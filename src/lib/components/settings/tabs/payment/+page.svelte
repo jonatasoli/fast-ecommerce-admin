@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { settingsStore } from '$lib/stores/settings';
-	import { Button, Input, Select, Spinner } from 'flowbite-svelte';
+	import { Button, Input, Select, Spinner, Toast } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
+	import Notification from '$lib/components/notification/notification.svelte';
 
 	interface Items {
 		selectedCode: string;
@@ -28,6 +29,9 @@
 	export let items: Items;
 	export let field: string = 'PAYMENT';
 	let isLoading = true;
+	let statusToast = false;
+	let statusMessage = 'This is a custom message';
+	let typeToast = 'success';
 
 	const settings = settingsStore();
 
@@ -69,8 +73,63 @@
 		};
 	}
 
-	function handleSavePaymentGateway() {
-		console.log('Saved payment gateway:', paymentGateway);
+	function handleSaveNotification(res: string, type: string) {
+		statusMessage = res;
+		typeToast = type;
+		statusToast = true;
+
+		setTimeout(() => {
+			statusToast = false;
+		}, 3000);
+	}
+
+	async function handleSavePaymentGateway() {
+		const data = {
+			is_default: paymentGateway.is_default,
+			locale: paymentGateway.locale,
+			crm: null,
+			payment: {
+				provider: paymentGateway.provider,
+				field: 'PAYMENT',
+				description: paymentGateway.description,
+				gateway_name: paymentGateway.value.gateway_name,
+				gateway_url: paymentGateway.value.gateway_url,
+				gateway_key: paymentGateway.value.gateway_key,
+				gateway_secret_key: paymentGateway.value.gateway_secret_key
+			},
+			logistics: null,
+			notification: null,
+			cdn: null,
+			company: null
+		};
+
+		try {
+			isLoading = true;
+			const res = await settings.patch(
+				`${items.base_url}/settings/?locale=${items.selectedCode}`,
+				data,
+				items.token_access
+			);
+
+			if (res) {
+				handleSaveNotification('Success Update!', 'success');
+				isLoading = false;
+				paymentGateway = {
+					provider: res.provider,
+					value: JSON.parse(res.value), // Faz o parsing da string JSON
+					locale: res.locale,
+					description: res.description,
+					is_default: res.is_default,
+					settings_id: res.settings_id,
+					field: res.field,
+					is_active: res.is_active
+				};
+			}
+		} catch (error) {
+			handleSaveNotification('Error in update', 'error');
+			isLoading = false;
+			console.error('Erro ao buscar as configurações de logística:', error);
+		}
 	}
 
 	function valuesObject(values: string) {
@@ -180,4 +239,7 @@
 			</form>
 		{/if}
 	</div>
+	{#if statusToast}
+		<Notification message={statusMessage} {statusToast} type={typeToast} />
+	{/if}
 </div>
