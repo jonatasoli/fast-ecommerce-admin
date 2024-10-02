@@ -7,17 +7,6 @@
 	import CrmTab from '$lib/components/settings/tabs/crm/+page.svelte';
 	import GeraisTab from '$lib/components/settings/tabs/gerais/+page.svelte';
 
-	interface selectedLogistics {
-		provider: string;
-		value: string;
-		locale: string;
-		description: string;
-		is_default: boolean;
-		settings_id: number;
-		field: string;
-		is_active: boolean;
-	}
-
 	interface Items {
 		selectedCode: string;
 		base_url: string;
@@ -62,7 +51,7 @@
 	}
 
 	function handleSaveLocales() {
-		console.log('Saved locales:', locales);
+		items.selectedCode = selectedCode;
 	}
 </script>
 
@@ -78,6 +67,7 @@
 				class="w-auto"
 				placeholder="Escolha uma opção"
 				items={locales}
+				on:change={handleSaveLocales}
 			/>
 
 			<label class="block text-sm font-medium text-gray-700">Padrão:</label>

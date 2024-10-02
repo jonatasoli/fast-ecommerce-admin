@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { settingsStore } from '$lib/stores/settings';
-	import { Button, Input, Select } from 'flowbite-svelte';
+	import { Button, Input, Select, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
 	interface Items {
@@ -27,6 +27,7 @@
 
 	export let items: Items;
 	export let field: string = 'PAYMENT';
+	let isLoading = true;
 
 	const settings = settingsStore();
 
@@ -45,6 +46,28 @@
 		field: '',
 		is_active: false
 	};
+
+	$: if (items.selectedCode) {
+		getSettings(field);
+	}
+
+	function clearFieldsPayments(): PaymentGatewayConfig {
+		return {
+			provider: '',
+			value: {
+				gateway_name: '',
+				gateway_url: '',
+				gateway_key: '',
+				gateway_secret_key: ''
+			},
+			locale: '',
+			description: '',
+			is_default: false,
+			settings_id: 0,
+			field: '',
+			is_active: false
+		};
+	}
 
 	function handleSavePaymentGateway() {
 		console.log('Saved payment gateway:', paymentGateway);
@@ -72,12 +95,15 @@
 			);
 
 			if (res) {
+				isLoading = false;
 				paymentGateway = res;
 
 				if (typeof paymentGateway.value === 'string') {
 					valuesObject(paymentGateway.value);
 				}
 			} else {
+				paymentGateway = clearFieldsPayments();
+				isLoading = false;
 				console.warn(
 					'Nenhuma configuração de logística encontrada para o locale e field especificados.'
 				);
@@ -87,69 +113,71 @@
 		}
 	}
 
-	$: {
-		paymentGateway.value.gateway_name = paymentGateway.value.gateway_name.toLowerCase();
-	}
-
 	onMount(async () => {
 		await getSettings(field);
-		console.log(paymentGateway);
 	});
 </script>
 
 <div class="container mt-8 space-y-8">
 	<div>
 		<h2 class="text-2xl font-bold mb-4">Configuração do Gateway de Pagamento</h2>
-		<form on:submit|preventDefault={handleSavePaymentGateway} class="space-y-4">
-			<div>
-				<label class="block text-sm font-medium text-gray-700 mb-1">Nome do Gateway:</label>
 
-				<Select
-					bind:value={paymentGateway.value.gateway_name}
-					items={[
-						{ value: 'mercado pago', name: 'Mercado Pago' },
-						{ value: 'stripe', name: 'Stripe' },
-						{ value: 'pagarme', name: 'Pagarme' },
-						{ value: 'cielo', name: 'Cielo' }
-					]}
-				/>
+		{#if isLoading}
+			<div class="flex justify-center items-center">
+				<Spinner size="10" />
 			</div>
+		{:else}
+			<form on:submit|preventDefault={handleSavePaymentGateway} class="space-y-4">
+				<div>
+					<label class="block text-sm font-medium text-gray-700 mb-1">Nome do Gateway:</label>
 
-			<div>
-				<label class="block text-sm font-medium text-gray-700 mb-1">URL do Gateway:</label>
-				<Input
-					type="text"
-					bind:value={paymentGateway.value.gateway_url}
-					placeholder="URL da API"
-					class="input border rounded-md px-3 py-2 w-full"
-				/>
-			</div>
+					<Select
+						bind:value={paymentGateway.value.gateway_name}
+						items={[
+							{ value: 'Mercado Pago', name: 'Mercado Pago' },
+							{ value: 'Stripe', name: 'Stripe' },
+							{ value: 'Pagarme', name: 'Pagarme' },
+							{ value: 'Cielo', name: 'Cielo' }
+						]}
+					/>
+				</div>
 
-			<div>
-				<label class="block text-sm font-medium text-gray-700 mb-1">Chave:</label>
-				<Input
-					type="text"
-					bind:value={paymentGateway.value.gateway_key}
-					placeholder="Chave API"
-					class="input border rounded-md px-3 py-2 w-full"
-				/>
-			</div>
+				<div>
+					<label class="block text-sm font-medium text-gray-700 mb-1">URL do Gateway:</label>
+					<Input
+						type="text"
+						bind:value={paymentGateway.value.gateway_url}
+						placeholder="URL da API"
+						class="input border rounded-md px-3 py-2 w-full"
+					/>
+				</div>
 
-			<div>
-				<label class="block text-sm font-medium text-gray-700 mb-1">Chave Secreta:</label>
-				<Input
-					type="text"
-					bind:value={paymentGateway.value.gateway_secret_key}
-					placeholder="Chave Secreta"
-					class="input border rounded-md px-3 py-2 w-full"
-				/>
-			</div>
+				<div>
+					<label class="block text-sm font-medium text-gray-700 mb-1">Chave:</label>
+					<Input
+						type="text"
+						bind:value={paymentGateway.value.gateway_key}
+						placeholder="Chave API"
+						class="input border rounded-md px-3 py-2 w-full"
+					/>
+				</div>
 
-			<div class="flex justify-end">
-				<Button type="submit" class="btn-primary text-white rounded-md px-4 py-2 mt-4"
-					>Salvar Configurações</Button
-				>
-			</div>
-		</form>
+				<div>
+					<label class="block text-sm font-medium text-gray-700 mb-1">Chave Secreta:</label>
+					<Input
+						type="text"
+						bind:value={paymentGateway.value.gateway_secret_key}
+						placeholder="Chave Secreta"
+						class="input border rounded-md px-3 py-2 w-full"
+					/>
+				</div>
+
+				<div class="flex justify-end">
+					<Button type="submit" class="btn-primary text-white rounded-md px-4 py-2 mt-4"
+						>Salvar Configurações</Button
+					>
+				</div>
+			</form>
+		{/if}
 	</div>
 </div>
