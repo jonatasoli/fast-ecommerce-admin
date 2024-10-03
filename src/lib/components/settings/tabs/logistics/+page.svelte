@@ -2,7 +2,7 @@
 	import { settingsStore } from '$lib/stores/settings';
 	import { Input, Select, Button, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-
+	import Notification from '$lib/components/notification/notification.svelte';
 	interface Items {
 		selectedCode: string;
 		base_url: string;
@@ -11,12 +11,14 @@
 
 	interface LogisticsConfig {
 		provider: string;
+		locale: string;
 		description: string;
 		is_active: boolean;
 		is_default: boolean;
 		settings_id: number;
 		field: string;
 		value: {
+			name: string;
 			logistics_user: string;
 			logistics_pass: string;
 			logistics_api_secret: string;
@@ -25,14 +27,16 @@
 		};
 	}
 
-	let logistics = {
+	let logistics: LogisticsConfig = {
 		provider: '',
 		description: '',
+		locale: '',
 		is_active: false,
 		is_default: false,
 		settings_id: 0,
 		field: '',
 		value: {
+			name: '',
 			logistics_user: '',
 			logistics_pass: '',
 			logistics_api_secret: '',
@@ -45,11 +49,13 @@
 		return {
 			provider: '',
 			description: '',
+			locale: '',
 			is_active: false,
 			is_default: false,
 			settings_id: 0,
 			field: '',
 			value: {
+				name: '',
 				logistics_user: '',
 				logistics_pass: '',
 				logistics_api_secret: '',
@@ -66,6 +72,9 @@
 	export let items: Items;
 	export let field: string = 'LOGISTICS';
 	let isLoading = true;
+	let statusToast = false;
+	let statusMessage = 'This is a custom message';
+	let typeToast = 'success';
 	const settings = settingsStore();
 
 	async function getSettings(field: string) {
@@ -98,6 +107,7 @@
 		try {
 			const parsedValues = JSON.parse(values);
 			logistics.value = {
+				name: parsedValues.name || '',
 				logistics_user: parsedValues.logistics_user || '',
 				logistics_pass: parsedValues.logistics_pass || '',
 				logistics_api_secret: parsedValues.logistics_api_secret || '',
@@ -109,14 +119,71 @@
 		}
 	}
 
-	function handleSaveLogistics() {
-		console.log('Configurações de logística salvas:', logistics);
+	function handleSaveNotification(res: string, type: string) {
+		statusMessage = res;
+		typeToast = type;
+		statusToast = true;
+
+		setTimeout(() => {
+			statusToast = false;
+		}, 3000);
 	}
 
 	const providers = [
 		{ name: 'Correios', value: 'Correios' },
 		{ name: 'DHL', value: 'Dhl' }
 	];
+
+	async function handleSaveLogistics() {
+		const data = {
+			is_default: logistics.is_default,
+			locale: logistics.locale,
+			crm: null,
+			logistics: {
+				provider: logistics.provider,
+				field: 'LOGISTICS',
+				description: logistics.description,
+				name: logistics.value.name,
+				logistics_user: logistics.value.logistics_user,
+				logistics_pass: logistics.value.logistics_pass,
+				logistics_api_secret: logistics.value.logistics_api_secret,
+				logistics_postal_card: logistics.value.logistics_postal_card,
+				zip_origin: logistics.value.zip_origin
+			},
+			payment: null,
+			notification: null,
+			cdn: null,
+			company: null
+		};
+
+		try {
+			isLoading = true;
+			const res = await settings.patch(
+				`${items.base_url}/settings/?locale=${items.selectedCode}`,
+				data,
+				items.token_access
+			);
+
+			if (res) {
+				handleSaveNotification('Success Update!', 'success');
+				isLoading = false;
+				logistics = {
+					provider: res.provider,
+					value: JSON.parse(res.value), // Faz o parsing da string JSON
+					locale: res.locale,
+					description: res.description,
+					is_default: res.is_default,
+					settings_id: res.settings_id,
+					field: res.field,
+					is_active: res.is_active
+				};
+			}
+		} catch (error) {
+			handleSaveNotification('Error in update', 'error');
+			isLoading = false;
+			console.error('Erro ao buscar as configurações de logística:', error);
+		}
+	}
 
 	onMount(async () => {
 		await getSettings(field);
@@ -194,5 +261,8 @@
 				>
 			</div>
 		</form>
+	{/if}
+	{#if statusToast}
+		<Notification message={statusMessage} {statusToast} type={typeToast} />
 	{/if}
 </div>

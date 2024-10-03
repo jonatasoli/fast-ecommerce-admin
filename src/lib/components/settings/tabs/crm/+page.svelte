@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
 	import { Input, Select, Button, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
@@ -54,6 +55,9 @@
 	export let items: Items;
 	export let field: string = 'CRM';
 	let isLoading = true;
+	let statusToast = false;
+	let statusMessage = 'This is a custom message';
+	let typeToast = 'success';
 	const settings = settingsStore();
 
 	function clearFieldsCrm(): CrmSettings {
@@ -75,6 +79,65 @@
 			settings_id: 0,
 			is_active: false
 		};
+	}
+
+	function handleNotification(res: string, type: string) {
+		statusMessage = res;
+		typeToast = type;
+		statusToast = true;
+
+		setTimeout(() => {
+			statusToast = false;
+		}, 3000);
+	}
+
+	async function handleSaveCrmConfig() {
+		const data = {
+			is_default: crmSettings.is_default,
+			locale: crmSettings.locale,
+			crm: {
+				provider: crmSettings.provider,
+				field: 'CRM',
+				description: crmSettings.value.description,
+				access_key: crmSettings.value.access_key,
+				url: crmSettings.value.url,
+				deal_stage_id: crmSettings.value.deal_stage_id,
+				deal_stage_name: crmSettings.value.deal_stage_name
+			},
+			cdn: null,
+			notification: null,
+			payment: null,
+			logistics: null,
+			company: null
+		};
+
+		try {
+			isLoading = true;
+			const res = await settings.patch(
+				`${items.base_url}/settings/?locale=${items.selectedCode}`,
+				data,
+				items.token_access
+			);
+
+			if (res) {
+				handleNotification('Success Update!', 'success');
+				isLoading = false;
+				crmSettings = {
+					provider: res.provider,
+					value: JSON.parse(res.value),
+					locale: res.locale,
+					description: res.description,
+					is_default: res.is_default,
+					settings_id: res.settings_id,
+					field: res.field,
+					is_active: res.is_active
+				};
+			}
+		} catch (error) {
+			handleNotification('Error in update', 'error');
+			isLoading = false;
+			console.error('Erro ao buscar as configurações de logística:', error);
+		}
 	}
 
 	async function getSettings(field: string) {
@@ -120,10 +183,6 @@
 		}
 	}
 
-	function handleSaveLogistics() {
-		console.log('Configurações de logística salvas:', crmSettings);
-	}
-
 	const providers = [{ name: 'Rd Station', value: 'RD Station' }];
 
 	onMount(async () => {
@@ -138,7 +197,7 @@
 			<Spinner size="10" />
 		</div>
 	{:else}
-		<form on:submit|preventDefault={handleSaveLogistics}>
+		<form on:submit|preventDefault={handleSaveCrmConfig}>
 			<div class="my-2">
 				<label for="provider" class="block text-sm font-medium text-gray-700 mb-1"
 					>Nome do Fornecedor:</label
@@ -155,7 +214,7 @@
 				<label class="block text-sm font-medium text-gray-700 mb-1">Descrição:</label>
 				<Input
 					type="text"
-					bind:value={crmSettings.description}
+					bind:value={crmSettings.value.description}
 					placeholder="Usuário"
 					class="input w-full"
 				/>
@@ -196,5 +255,8 @@
 				>
 			</div>
 		</form>
+	{/if}
+	{#if statusToast}
+		<Notification message={statusMessage} {statusToast} type={typeToast} />
 	{/if}
 </div>

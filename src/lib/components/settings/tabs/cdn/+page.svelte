@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
 	import { Button, Input, Select, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
@@ -49,13 +50,12 @@
 	export let items: Items;
 	export let field: string = 'CDN';
 	let isLoading = true;
+	let statusToast = false;
+	let statusMessage = 'This is a custom message';
+	let typeToast = 'success';
 	const settings = settingsStore();
 
 	const cdnProviders = [{ name: 'S3', value: 'S3' }];
-
-	function handleSaveCdnConfig() {
-		console.log('Configurações de CDN salvas:', cdnConfig);
-	}
 
 	function clearFieldsCdn(): CdnConfig {
 		return {
@@ -76,6 +76,16 @@
 		};
 	}
 
+	function handleNotification(res: string, type: string) {
+		statusMessage = res;
+		typeToast = type;
+		statusToast = true;
+
+		setTimeout(() => {
+			statusToast = false;
+		}, 3000);
+	}
+
 	function valuesObject(values: string) {
 		try {
 			const parsedValues = JSON.parse(values);
@@ -88,6 +98,56 @@
 			};
 		} catch (error) {
 			console.error('Erro ao fazer o parse do JSON de valores de logística:', error);
+		}
+	}
+
+	async function handleSaveCdnConfig() {
+		const data = {
+			is_default: cdnConfig.is_default,
+			locale: cdnConfig.locale,
+			cdn: {
+				provider: cdnConfig.provider,
+				field: 'CDN',
+				description: cdnConfig.description,
+				url: cdnConfig.value.url,
+				region: cdnConfig.value.region,
+				bucket_name: cdnConfig.value.bucket_name,
+				api_key: cdnConfig.value.api_key,
+				secret_key: cdnConfig.value.secret_key
+			},
+			crm: null,
+			notification: null,
+			payment: null,
+			logistics: null,
+			company: null
+		};
+
+		try {
+			isLoading = true;
+			const res = await settings.patch(
+				`${items.base_url}/settings/?locale=${items.selectedCode}`,
+				data,
+				items.token_access
+			);
+
+			if (res) {
+				handleNotification('Success Update!', 'success');
+				isLoading = false;
+				cdnConfig = {
+					provider: res.provider,
+					value: JSON.parse(res.value),
+					locale: res.locale,
+					description: res.description,
+					is_default: res.is_default,
+					settings_id: res.settings_id,
+					field: res.field,
+					is_active: res.is_active
+				};
+			}
+		} catch (error) {
+			handleNotification('Error in update', 'error');
+			isLoading = false;
+			console.error('Erro ao buscar as configurações de logística:', error);
 		}
 	}
 
@@ -191,5 +251,8 @@
 				</Button>
 			</div>
 		</form>
+	{/if}
+	{#if statusToast}
+		<Notification message={statusMessage} {statusToast} type={typeToast} />
 	{/if}
 </div>

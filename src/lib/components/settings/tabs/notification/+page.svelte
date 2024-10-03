@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
 	import { Button, Input, Select, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
@@ -48,7 +49,24 @@
 	export let items: Items;
 	export let field: string = 'NOTIFICATION';
 	let isLoading = true;
+	let statusToast = false;
+	let statusMessage = 'This is a custom message';
+	let typeToast = 'success';
 	const settings = settingsStore();
+
+	function valuesObject(values: string) {
+		try {
+			const parsedValues = JSON.parse(values);
+			notification.value = {
+				type: parsedValues.type || '',
+				contact: parsedValues.contact || '',
+				api_key: parsedValues.api_key || '',
+				secret_key: parsedValues.secret_key || ''
+			};
+		} catch (error) {
+			console.error('Erro ao fazer o parse do JSON de valores de logística:', error);
+		}
+	}
 
 	function clearFieldsNotification(): NotificationSettings {
 		return {
@@ -68,6 +86,16 @@
 		};
 	}
 
+	function handleNotification(res: string, type: string) {
+		statusMessage = res;
+		typeToast = type;
+		statusToast = true;
+
+		setTimeout(() => {
+			statusToast = false;
+		}, 3000);
+	}
+
 	async function getSettings(field: string) {
 		try {
 			const res = await settings.get(
@@ -78,6 +106,10 @@
 			if (res) {
 				isLoading = false;
 				notification = res;
+
+				if (typeof notification.value === 'string') {
+					valuesObject(notification.value);
+				}
 			} else {
 				notification = clearFieldsNotification();
 				isLoading = false;
@@ -96,8 +128,53 @@
 		{ name: 'SMS', value: 'Sms' }
 	];
 
-	function handleSaveNotification() {
-		console.log('Configurações de notificação salvas:', notification);
+	async function handleSaveNotification() {
+		const data = {
+			is_default: notification.is_default,
+			locale: notification.locale,
+			crm: null,
+			notification: {
+				provider: notification.provider,
+				field: 'NOTIFICATION',
+				description: notification.description,
+				type: notification.value.type,
+				contact: notification.value.contact,
+				api_key: notification.value.api_key,
+				secret_key: notification.value.secret_key
+			},
+			payment: null,
+			logistics: null,
+			cdn: null,
+			company: null
+		};
+
+		try {
+			isLoading = true;
+			const res = await settings.patch(
+				`${items.base_url}/settings/?locale=${items.selectedCode}`,
+				data,
+				items.token_access
+			);
+
+			if (res) {
+				handleNotification('Success Update!', 'success');
+				isLoading = false;
+				notification = {
+					provider: res.provider,
+					value: JSON.parse(res.value),
+					locale: res.locale,
+					description: res.description,
+					is_default: res.is_default,
+					settings_id: res.settings_id,
+					field: res.field,
+					is_active: res.is_active
+				};
+			}
+		} catch (error) {
+			handleNotification('Error in update', 'error');
+			isLoading = false;
+			console.error('Erro ao buscar as configurações de logística:', error);
+		}
 	}
 
 	function isEmail() {
@@ -175,5 +252,8 @@
 				</Button>
 			</div>
 		</form>
+	{/if}
+	{#if statusToast}
+		<Notification message={statusMessage} {statusToast} type={typeToast} />
 	{/if}
 </div>
