@@ -1,16 +1,9 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import type { OrderTracking } from '$lib/types';
 	import { getStatusTranslation } from '$lib/utils';
 
 	import { Modal, Button, Input } from 'flowbite-svelte';
 	import { createEventDispatcher } from 'svelte';
-
-	interface OrderTracking {
-		order_id: number;
-		order_date: string;
-		tracking_number: any;
-		order_status: string;
-	}
 
 	export let isOpen: boolean = false;
 

@@ -3,29 +3,7 @@
 	import { Input, Select, Button, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 	import Notification from '$lib/components/notification/notification.svelte';
-	interface Items {
-		selectedCode: string;
-		base_url: string;
-		token_access: string;
-	}
-
-	interface LogisticsConfig {
-		provider: string;
-		locale: string;
-		description: string;
-		is_active: boolean;
-		is_default: boolean;
-		settings_id: number;
-		field: string;
-		value: {
-			name: string;
-			logistics_user: string;
-			logistics_pass: string;
-			logistics_api_secret: string;
-			logistics_postal_card: string;
-			zip_origin: string;
-		};
-	}
+	import type { Items, LogisticsConfig } from '$lib/types';
 
 	let logistics: LogisticsConfig = {
 		provider: '',
@@ -73,7 +51,7 @@
 	export let field: string = 'LOGISTICS';
 	let isLoading = true;
 	let statusToast = false;
-	let statusMessage = 'This is a custom message';
+	let statusMessage = 'Default Message';
 	let typeToast = 'success';
 	const settings = settingsStore();
 
@@ -94,12 +72,10 @@
 			} else {
 				logistics = clearFieldsLogistics();
 				isLoading = false;
-				console.warn(
-					'Nenhuma configuração de logística encontrada para o locale e field especificados.'
-				);
+				console.warn('No logistics configuration found for the specified locale and field.');
 			}
 		} catch (error) {
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 
@@ -115,7 +91,7 @@
 				zip_origin: parsedValues.zip_origin || ''
 			};
 		} catch (error) {
-			console.error('Erro ao fazer o parse do JSON de valores de logística:', error);
+			console.error('Error parsing logistics values JSON.', error);
 		}
 	}
 
@@ -181,7 +157,7 @@
 		} catch (error) {
 			handleSaveNotification('Error in update', 'error');
 			isLoading = false;
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 

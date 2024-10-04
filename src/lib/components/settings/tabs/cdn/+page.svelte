@@ -1,31 +1,10 @@
 <script lang="ts">
 	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
+	import type { CdnConfig, Items } from '$lib/types';
 	import { Button, Input, Select, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
-	interface Items {
-		selectedCode: string;
-		base_url: string;
-		token_access: string;
-	}
-
-	interface CdnConfig {
-		provider: string;
-		value: {
-			url: string;
-			region: string;
-			bucket_name: string;
-			api_key: string;
-			secret_key: string;
-		};
-		locale: string;
-		description: string;
-		is_default: boolean;
-		field: string;
-		settings_id: number;
-		is_active: boolean;
-	}
 	let cdnConfig: CdnConfig = {
 		provider: 'S3',
 		value: {
@@ -51,7 +30,7 @@
 	export let field: string = 'CDN';
 	let isLoading = true;
 	let statusToast = false;
-	let statusMessage = 'This is a custom message';
+	let statusMessage = 'Default Message';
 	let typeToast = 'success';
 	const settings = settingsStore();
 
@@ -59,7 +38,7 @@
 
 	function clearFieldsCdn(): CdnConfig {
 		return {
-			provider: '', // Define o provider como 'S3'
+			provider: '',
 			value: {
 				url: '',
 				region: '',
@@ -97,7 +76,7 @@
 				secret_key: parsedValues.secret_key || ''
 			};
 		} catch (error) {
-			console.error('Erro ao fazer o parse do JSON de valores de logística:', error);
+			console.error('Error parsing logistics values JSON', error);
 		}
 	}
 
@@ -147,7 +126,7 @@
 		} catch (error) {
 			handleNotification('Error in update', 'error');
 			isLoading = false;
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 
@@ -168,12 +147,10 @@
 			} else {
 				cdnConfig = clearFieldsCdn();
 				isLoading = false;
-				console.warn(
-					'Nenhuma configuração de logística encontrada para o locale e field especificados.'
-				);
+				console.warn('No logistics configuration found for the specified locale and field.');
 			}
 		} catch (error) {
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 

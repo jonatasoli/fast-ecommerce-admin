@@ -1,33 +1,9 @@
 <script lang="ts">
 	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
+	import type { CrmSettings, Items } from '$lib/types';
 	import { Input, Select, Button, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-
-	interface Items {
-		selectedCode: string;
-		base_url: string;
-		token_access: string;
-	}
-
-	interface CrmSettings {
-		provider: string;
-		value: {
-			provider: string;
-			field: string;
-			description: string;
-			access_key: string;
-			url: string;
-			deal_stage_id: string;
-			deal_stage_name: string;
-		};
-		locale: string;
-		description: string;
-		is_default: boolean;
-		field: string;
-		settings_id: number;
-		is_active: boolean;
-	}
 
 	let crmSettings: CrmSettings = {
 		provider: '',
@@ -56,7 +32,7 @@
 	export let field: string = 'CRM';
 	let isLoading = true;
 	let statusToast = false;
-	let statusMessage = 'This is a custom message';
+	let statusMessage = 'Default Message';
 	let typeToast = 'success';
 	const settings = settingsStore();
 
@@ -136,7 +112,7 @@
 		} catch (error) {
 			handleNotification('Error in update', 'error');
 			isLoading = false;
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 
@@ -157,12 +133,10 @@
 			} else {
 				crmSettings = clearFieldsCrm();
 				isLoading = false;
-				console.warn(
-					'Nenhuma configuração de logística encontrada para o locale e field especificados.'
-				);
+				console.warn('No logistics configuration found for the specified locale and field.');
 			}
 		} catch (error) {
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 
@@ -179,7 +153,7 @@
 				field: parsedValues.field || ''
 			};
 		} catch (error) {
-			console.error('Erro ao fazer o parse do JSON de valores de logística:', error);
+			console.error('Error parsing logistics values JSON.', error);
 		}
 	}
 

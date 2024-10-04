@@ -5,13 +5,9 @@
 	import NotificationTab from '$lib/components/settings/tabs/notification/+page.svelte';
 	import CdnTab from '$lib/components/settings/tabs/cdn/+page.svelte';
 	import CrmTab from '$lib/components/settings/tabs/crm/+page.svelte';
-	import GeraisTab from '$lib/components/settings/tabs/gerais/+page.svelte';
-
-	interface Items {
-		selectedCode: string;
-		base_url: string;
-		token_access: string;
-	}
+	import GeraisTab from '$lib/components/settings/tabs/general/+page.svelte';
+	import type { Items } from '$lib/types.js';
+	import { locales } from '$lib/utils.js';
 
 	export let data;
 
@@ -22,29 +18,6 @@
 		base_url: data.base_url,
 		token_access: data.access_token
 	};
-
-	let locales = [
-		{ name: 'Inglês (Estados Unidos)', value: 'en-US', isDefault: false },
-		{ name: 'Inglês (Reino Unido)', value: 'en-GB', isDefault: false },
-		{ name: 'Português (Brasil)', value: 'pt-br', isDefault: true },
-		{ name: 'Português (Portugal)', value: 'pt-PT', isDefault: false },
-		{ name: 'Espanhol (Espanha)', value: 'es-ES', isDefault: false },
-		{ name: 'Espanhol (México)', value: 'es-MX', isDefault: false },
-		{ name: 'Francês (França)', value: 'fr-FR', isDefault: false },
-		{ name: 'Francês (Canadá)', value: 'fr-CA', isDefault: false },
-		{ name: 'Alemão (Alemanha)', value: 'de-DE', isDefault: false },
-		{ name: 'Italiano (Itália)', value: 'it-IT', isDefault: false },
-		{ name: 'Japonês (Japão)', value: 'ja-JP', isDefault: false },
-		{ name: 'Chinês Simplificado (China)', value: 'zh-CN', isDefault: false },
-		{ name: 'Chinês Tradicional (Taiwan)', value: 'zh-TW', isDefault: false },
-		{ name: 'Russo (Rússia)', value: 'ru-RU', isDefault: false },
-		{ name: 'Coreano (Coreia do Sul)', value: 'ko-KR', isDefault: false },
-		{ name: 'Árabe (Arábia Saudita)', value: 'ar-SA', isDefault: false },
-		{ name: 'Holandês (Países Baixos)', value: 'nl-NL', isDefault: false },
-		{ name: 'Sueco (Suécia)', value: 'sv-SE', isDefault: false },
-		{ name: 'Norueguês (Noruega)', value: 'no-NO', isDefault: false },
-		{ name: 'Finlandês (Finlândia)', value: 'fi-FI', isDefault: false }
-	];
 
 	function isDefaultCode(code: string) {
 		return locales.find((locale) => locale.value === code)?.isDefault ?? false;

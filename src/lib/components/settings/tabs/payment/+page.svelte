@@ -3,34 +3,13 @@
 	import { Button, Input, Select, Spinner, Toast } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 	import Notification from '$lib/components/notification/notification.svelte';
-
-	interface Items {
-		selectedCode: string;
-		base_url: string;
-		token_access: string;
-	}
-
-	interface PaymentGatewayConfig {
-		provider: string;
-		value: {
-			gateway_name: string;
-			gateway_url: string;
-			gateway_key: string;
-			gateway_secret_key: string;
-		};
-		locale: string;
-		description: string;
-		is_default: boolean;
-		settings_id: number;
-		field: string;
-		is_active: boolean;
-	}
+	import type { Items, PaymentGatewayConfig } from '$lib/types';
 
 	export let items: Items;
 	export let field: string = 'PAYMENT';
 	let isLoading = true;
 	let statusToast = false;
-	let statusMessage = 'This is a custom message';
+	let statusMessage = 'Default Message';
 	let typeToast = 'success';
 
 	const settings = settingsStore();
@@ -128,7 +107,7 @@
 		} catch (error) {
 			handleSaveNotification('Error in update', 'error');
 			isLoading = false;
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 
@@ -142,7 +121,7 @@
 				gateway_secret_key: parsedValues.gateway_secret_key || ''
 			};
 		} catch (error) {
-			console.error('Erro ao fazer o parse do JSON de valores de logística:', error);
+			console.error('Error parsing logistics values JSON.', error);
 		}
 	}
 
@@ -163,12 +142,10 @@
 			} else {
 				paymentGateway = clearFieldsPayments();
 				isLoading = false;
-				console.warn(
-					'Nenhuma configuração de logística encontrada para o locale e field especificados.'
-				);
+				console.warn('No logistics configuration found for the specified locale and field.');
 			}
 		} catch (error) {
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 

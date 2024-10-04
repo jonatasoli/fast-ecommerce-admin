@@ -1,30 +1,9 @@
 <script lang="ts">
 	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
+	import type { CompanySettings, Items } from '$lib/types';
 	import { Input, Button, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-
-	interface Items {
-		selectedCode: string;
-		base_url: string;
-		token_access: string;
-	}
-
-	interface CompanySettings {
-		provider: string;
-		value: {
-			provider: string;
-			field: string;
-			description: string;
-			name: string;
-		};
-		locale: string;
-		description: string;
-		is_default: boolean;
-		settings_id: number;
-		field: string;
-		is_active: boolean;
-	}
 
 	let generalConfig: CompanySettings = {
 		provider: '',
@@ -48,9 +27,9 @@
 
 	export let items: Items;
 	export let field: string = 'COMPANY';
-	let isLoading = false;
+	let isLoading = true;
 	let statusToast = false;
-	let statusMessage = 'This is a custom message';
+	let statusMessage = 'Default Message';
 	let typeToast = 'success';
 	const settings = settingsStore();
 
@@ -124,7 +103,7 @@
 		} catch (error) {
 			handleNotification('Error in update', 'error');
 			isLoading = false;
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 
@@ -138,7 +117,7 @@
 				provider: parsedValues.provider || ''
 			};
 		} catch (error) {
-			console.error('Erro ao fazer o parse do JSON de valores de logística:', error);
+			console.error('Error parsing logistics values JSON.', error);
 		}
 	}
 
@@ -159,12 +138,10 @@
 			} else {
 				generalConfig = clearFieldsCompany();
 				isLoading = false;
-				console.warn(
-					'Nenhuma configuração de logística encontrada para o locale e field especificados.'
-				);
+				console.warn('No logistics configuration found for the specified locale and field.');
 			}
 		} catch (error) {
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 

@@ -1,30 +1,9 @@
 <script lang="ts">
 	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
+	import type { Items, NotificationSettings } from '$lib/types';
 	import { Button, Input, Select, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-
-	interface Items {
-		selectedCode: string;
-		base_url: string;
-		token_access: string;
-	}
-
-	interface NotificationSettings {
-		provider: string;
-		value: {
-			api_key: string;
-			contact: string;
-			secret_key: string;
-			type: string;
-		};
-		locale: string;
-		description: string;
-		is_default: boolean;
-		settings_id: number;
-		field: string;
-		is_active: boolean;
-	}
 
 	let notification: NotificationSettings = {
 		provider: '',
@@ -50,7 +29,7 @@
 	export let field: string = 'NOTIFICATION';
 	let isLoading = true;
 	let statusToast = false;
-	let statusMessage = 'This is a custom message';
+	let statusMessage = 'Default Message';
 	let typeToast = 'success';
 	const settings = settingsStore();
 
@@ -64,7 +43,7 @@
 				secret_key: parsedValues.secret_key || ''
 			};
 		} catch (error) {
-			console.error('Erro ao fazer o parse do JSON de valores de logística:', error);
+			console.error('Error parsing logistics values JSON.', error);
 		}
 	}
 
@@ -113,12 +92,10 @@
 			} else {
 				notification = clearFieldsNotification();
 				isLoading = false;
-				console.warn(
-					'Nenhuma configuração de logística encontrada para o locale e field especificados.'
-				);
+				console.warn('No logistics configuration found for the specified locale and field.');
 			}
 		} catch (error) {
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 
@@ -173,7 +150,7 @@
 		} catch (error) {
 			handleNotification('Error in update', 'error');
 			isLoading = false;
-			console.error('Erro ao buscar as configurações de logística:', error);
+			console.error('Error fetching logistics settings.', error);
 		}
 	}
 
