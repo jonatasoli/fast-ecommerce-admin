@@ -1,23 +1,13 @@
 <script lang="ts">
 	import { usersStore } from '$lib/stores/management';
+	import type { SelectedUser } from '$lib/types';
 	import { setRoleId } from '$lib/utils';
 	import { Modal, Button, Input, Select } from 'flowbite-svelte';
 	import { createEventDispatcher, onMount } from 'svelte';
 
-	interface selectedUser {
-		user_id: number;
-		name: string;
-		document: string;
-		phone: string;
-		role_id: number;
-		email: string;
-		full_name: any;
-		disabled: any;
-	}
-
 	export let isOpen: boolean = false;
 
-	export let selectedUser: selectedUser = {
+	export let selectedUser: SelectedUser = {
 		user_id: 0,
 		name: '',
 		document: '',
@@ -28,7 +18,7 @@
 		disabled: ''
 	};
 
-	export let originalUser: selectedUser = {
+	export let originalUser: SelectedUser = {
 		user_id: 0,
 		name: '',
 		document: '',

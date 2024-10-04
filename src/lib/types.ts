@@ -72,3 +72,129 @@ export interface DataOrders {
 	total_pages: number;
 	total_records: number;
 }
+
+export interface Items {
+	selectedCode: string;
+	base_url: string;
+	token_access: string;
+}
+
+export interface CdnConfig {
+	provider: string;
+	value: {
+		url: string;
+		region: string;
+		bucket_name: string;
+		api_key: string;
+		secret_key: string;
+	};
+	locale: string;
+	description: string;
+	is_default: boolean;
+	field: string;
+	settings_id: number;
+	is_active: boolean;
+}
+
+export interface OrderTracking {
+	order_id: number;
+	order_date: string;
+	tracking_number: any;
+	order_status: string;
+}
+
+export interface SelectedUser {
+	user_id: number;
+	name: string;
+	document: string;
+	phone: string;
+	role_id: number;
+	email: string;
+	full_name: any;
+	disabled: any;
+}
+
+export interface CrmSettings {
+	provider: string;
+	value: {
+		provider: string;
+		field: string;
+		description: string;
+		access_key: string;
+		url: string;
+		deal_stage_id: string;
+		deal_stage_name: string;
+	};
+	locale: string;
+	description: string;
+	is_default: boolean;
+	field: string;
+	settings_id: number;
+	is_active: boolean;
+}
+
+export interface CompanySettings {
+	provider: string;
+	value: {
+		provider: string;
+		field: string;
+		description: string;
+		name: string;
+	};
+	locale: string;
+	description: string;
+	is_default: boolean;
+	settings_id: number;
+	field: string;
+	is_active: boolean;
+}
+
+export interface LogisticsConfig {
+	provider: string;
+	locale: string;
+	description: string;
+	is_active: boolean;
+	is_default: boolean;
+	settings_id: number;
+	field: string;
+	value: {
+		name: string;
+		logistics_user: string;
+		logistics_pass: string;
+		logistics_api_secret: string;
+		logistics_postal_card: string;
+		zip_origin: string;
+	};
+}
+
+export interface NotificationSettings {
+	provider: string;
+	value: {
+		api_key: string;
+		contact: string;
+		secret_key: string;
+		type: string;
+	};
+	locale: string;
+	description: string;
+	is_default: boolean;
+	settings_id: number;
+	field: string;
+	is_active: boolean;
+}
+
+export interface PaymentGatewayConfig {
+	provider: string;
+	value: {
+		gateway_name: string;
+		gateway_url: string;
+		gateway_key: string;
+		gateway_secret_key: string;
+	};
+	locale: string;
+	description: string;
+	is_default: boolean;
+	settings_id: number;
+	field: string;
+	is_active: boolean;
+}

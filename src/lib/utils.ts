@@ -18,6 +18,29 @@ export function formatDocument(document: string) {
 	return document;
 }
 
+export const locales = [
+	{ name: 'Inglês (Estados Unidos)', value: 'en-US', isDefault: false },
+	{ name: 'Inglês (Reino Unido)', value: 'en-GB', isDefault: false },
+	{ name: 'Português (Brasil)', value: 'pt-br', isDefault: true },
+	{ name: 'Português (Portugal)', value: 'pt-PT', isDefault: false },
+	{ name: 'Espanhol (Espanha)', value: 'es-ES', isDefault: false },
+	{ name: 'Espanhol (México)', value: 'es-MX', isDefault: false },
+	{ name: 'Francês (França)', value: 'fr-FR', isDefault: false },
+	{ name: 'Francês (Canadá)', value: 'fr-CA', isDefault: false },
+	{ name: 'Alemão (Alemanha)', value: 'de-DE', isDefault: false },
+	{ name: 'Italiano (Itália)', value: 'it-IT', isDefault: false },
+	{ name: 'Japonês (Japão)', value: 'ja-JP', isDefault: false },
+	{ name: 'Chinês Simplificado (China)', value: 'zh-CN', isDefault: false },
+	{ name: 'Chinês Tradicional (Taiwan)', value: 'zh-TW', isDefault: false },
+	{ name: 'Russo (Rússia)', value: 'ru-RU', isDefault: false },
+	{ name: 'Coreano (Coreia do Sul)', value: 'ko-KR', isDefault: false },
+	{ name: 'Árabe (Arábia Saudita)', value: 'ar-SA', isDefault: false },
+	{ name: 'Holandês (Países Baixos)', value: 'nl-NL', isDefault: false },
+	{ name: 'Sueco (Suécia)', value: 'sv-SE', isDefault: false },
+	{ name: 'Norueguês (Noruega)', value: 'no-NO', isDefault: false },
+	{ name: 'Finlandês (Finlândia)', value: 'fi-FI', isDefault: false }
+];
+
 export function generateURI(productName: string) {
 	return productName
 		.toString()
