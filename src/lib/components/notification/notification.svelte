@@ -6,7 +6,7 @@
         const DEFAULT_MESSAGE = 'Default Message'
         
 	export let message = DEFAULT_MESSAGE
-	export let statusToast = false; // Controla a exibição do Toast
+	export let statusExibitionToast = false;
 	export let type = 'success';
 </script>
 
