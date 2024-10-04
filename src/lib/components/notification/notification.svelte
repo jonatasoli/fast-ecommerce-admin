@@ -3,7 +3,9 @@
 	import { slide } from 'svelte/transition';
 	import { CheckCircleSolid, CloseCircleSolid } from 'flowbite-svelte-icons';
 
-	export let message = 'Default message'; // Mensagem padrão
+        const DEFAULT_MESSAGE = 'Default Message'
+        
+	export let message = DEFAULT_MESSAGE
 	export let statusToast = false; // Controla a exibição do Toast
 	export let type = 'success';
 </script>
