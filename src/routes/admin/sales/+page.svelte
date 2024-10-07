@@ -51,7 +51,7 @@
 	async function refreshOrders() {
 		if (data?.orders) {
 			await ordersStore.get(
-				`${data.base_url}/order/orders?page=${currentPage}&offset=${rowsPerPage}`,
+				`${data.base_url}/order/orders/?page=${currentPage}&offset=${rowsPerPage}`,
 				data.orders.access_token
 			);
 		} else {
