@@ -13,7 +13,8 @@
 		TableBodyCell,
 		TableBodyRow,
 		TableHead,
-		TableHeadCell
+		TableHeadCell,
+		Badge
 	} from 'flowbite-svelte';
 	import {
 		AngleLeftOutline,
@@ -21,8 +22,9 @@
 		ChevronDoubleLeftOutline,
 		ChevronDoubleRightOutline
 	} from 'flowbite-svelte-icons';
+	import { getStatusTranslation } from '$lib/utils';
 
-	export let data;
+	export let data: any;
 
 	let rowsPerPage = data.orders.offset;
 	let currentPage = data.orders.page;
@@ -30,8 +32,8 @@
 
 	$: items = data.orders.orders;
 	$: start = currentPage * rowsPerPage - rowsPerPage;
-	$: end = Math.min(start + rowsPerPage, data.orders.total_records);
-	$: endPage = data.orders.total_pages;
+	$: end = Math.min(start + rowsPerPage, data.orders.totalRecords);
+	$: endPage = data.orders.totalPages;
 	$: if (currentPage > endPage) {
 		currentPage = endPage;
 	}
@@ -93,7 +95,7 @@
 	}
 
 	function lastPage() {
-		currentPage = data.orders.total_pages;
+		currentPage = data.orders.totalPages;
 		searchParams.set('page', currentPage);
 		refreshOrders();
 	}
@@ -107,33 +109,36 @@
 	<div class="w-full mx-auto mt-12">
 		<Table hoverable={true}>
 			<TableHead>
-				<TableHeadCell>Id</TableHeadCell>
-				<TableHeadCell>ID Affiliado</TableHeadCell>
-				<TableHeadCell>Data</TableHeadCell>
-				<TableHeadCell>Desconto</TableHeadCell>
-				<TableHeadCell>Rastreio</TableHeadCell>
-				<TableHeadCell>Status do pedido</TableHeadCell>
-				<TableHeadCell>ID do comprador</TableHeadCell>
-				<TableHeadCell>Nome do comprador</TableHeadCell>
-				<TableHeadCell>Email do comprador</TableHeadCell>
-				<TableHeadCell>Tipo de frete</TableHeadCell>
-				<TableHeadCell>ID do Cupom</TableHeadCell>
-				<TableHeadCell>Motivo do cancelamento</TableHeadCell>
-				<TableHeadCell>Data do cancelamento</TableHeadCell>
-				<TableHeadCell>Editar</TableHeadCell>
+				<TableHeadCell class="pl-0 cursor-pointer">Id</TableHeadCell>
+				<TableHeadCell class=" cursor-pointer">Data</TableHeadCell>
+				<TableHeadCell class="cursor-pointer">Rastreio</TableHeadCell>
+				<TableHeadCell class="pl-0 cursor-pointer">Status do pedido</TableHeadCell>
+				<TableHeadCell class="pl-0 cursor-pointer">Nome do comprador</TableHeadCell>
+				<TableHeadCell class="pl-0 cursor-pointer">Tipo de frete</TableHeadCell>
+				<TableHeadCell class="pl-0 cursor-pointer">ID do Cupom</TableHeadCell>
+				<TableHeadCell class="pl-0 cursor-pointer">Motivo do cancelamento</TableHeadCell>
+				<TableHeadCell class="pl-0 cursor-pointer">Data do cancelamento</TableHeadCell>
+				<TableHeadCell class="pl-0 cursor-pointer">Editar</TableHeadCell>
 			</TableHead>
 			<TableBody tableBodyClass="divide-y">
 				{#each items as order}
 					<TableBodyRow>
 						<TableBodyCell tdClass="py-2">{order.order_id}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{order.affiliate_id ?? ''}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{order.order_date}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{order.discount}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{order.tracking_number ?? 'não enviado'}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{order.order_status}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{order.user.user_id}</TableBodyCell>
+						<TableBodyCell tdClass="p-2"
+							>{new Date(order.order_date).toLocaleDateString()}</TableBodyCell
+						>
+						<TableBodyCell tdClass="py-2">
+							<Badge
+								class="w-32 text-center px-2 py-1 rounded-full border"
+								border
+								color={order.tracking_number ? 'green' : 'red'}
+							>
+								{order.tracking_number ? 'Enviado' : 'não enviado'}
+							</Badge>
+						</TableBodyCell>
+
+						<TableBodyCell tdClass="py-2">{getStatusTranslation(order.order_status)}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.user.name}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{order.user.email}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.freight}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.coupon_id ?? 'sem cupom'}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.cancelled_reason ?? ''}</TableBodyCell>
@@ -142,7 +147,7 @@
 							><Button
 								variant="primary"
 								on:click={() => {
-									goto(`sales/new?order_id=${order.order_id}`);
+									goto(`/admin/sales/new?order_id=${order.order_id}`);
 								}}>Editar</Button
 							></TableBodyCell
 						>
@@ -168,7 +173,7 @@
 				on:change={handleRowsPerPageChange}
 			/>
 
-			{start + 1}-{end} de {data.orders.total_records}
+			{start + 1}-{end} de {data.orders.totalRecords}
 
 			<button
 				on:click={firstPage}
