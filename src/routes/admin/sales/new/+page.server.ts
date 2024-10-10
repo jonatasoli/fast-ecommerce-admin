@@ -1,16 +1,19 @@
 import { SERVER_BASE_URL } from '$env/static/private';
-import { ordersStore } from '$lib/stores/sales';
 
 /** @type {import('./$types').PageLoad} */
-export const load = async ({ cookies }) => {
+export const load = async ({ url, cookies }) => {
 	const token = cookies.get('access_token');
-	// gambiarra
-	await ordersStore.get(`${SERVER_BASE_URL}/order/orders?page=1&offset=1000`, token);
-	let currentOrders;
-	ordersStore.subscribe((value) => (currentOrders = value))();
-
+	const order_id = new URL(url).searchParams.get('order_id') || '';
+	const res = await fetch(`${SERVER_BASE_URL}/order/${order_id}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`
+		}
+	});
+	const data = await res.json();
 	return {
-		orders: currentOrders,
+		orders: data,
 		access_token: token,
 		base_url: `${SERVER_BASE_URL}`
 	};

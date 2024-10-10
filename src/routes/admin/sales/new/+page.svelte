@@ -2,12 +2,13 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { Button, Input } from 'flowbite-svelte';
+	import { Button, Input, Spinner } from 'flowbite-svelte';
 	import { getOrderById } from '$lib/stores/sales';
 	import { getStatusTranslation } from '$lib/utils.js';
 
 	export let orderId;
 	export let data;
+	let isLoading = true;
 	let order = {
 		order_id: '',
 		affiliate_id: '',
@@ -33,16 +34,10 @@
 	let invoiceLink = '';
 	let trackingCode = '';
 
-	onMount(() => {
-		const params = new URLSearchParams($page.url.searchParams);
-		orderId = params.get('order_id');
-		if (data.orders !== undefined) {
-			order = getOrderById(orderId, data.orders.orders ?? []);
-		} else {
-			console.log('erros');
-			console.log(data);
-		}
-	});
+	function getOrder() {
+		order = data.orders;
+		isLoading = false;
+	}
 
 	async function cancelOrder() {
 		// Lógica para cancelar o pedido
@@ -76,6 +71,10 @@
 		console.log(showInvoiceLink);
 		console.log(showCancelReason);
 	}
+
+	onMount(() => {
+		getOrder();
+	});
 </script>
 
 <div class="w-[60vw] mt-8 mx-auto">
@@ -85,73 +84,77 @@
 	</div>
 
 	<div class="w-full mx-auto mt-12">
-		<form class="flex flex-col gap-4">
-			<div class="mb-4">
-				<label for="IdOrder" class="block text-sm font-medium text-gray-700">ID do Pedido</label>
-				<Input id="IdOrder" value={order.order_id} readonly />
+		{#if isLoading}
+			<div class="flex justify-center items-center">
+				<Spinner size="10" />
 			</div>
-			<div>
-				<label for="IdAffiliate" class="block text-sm font-medium text-gray-700"
-					>ID da Afiliação
-				</label>
+		{:else}
+			<form class="flex flex-col gap-4">
+				<div class="mb-4">
+					<label for="IdOrder" class="block text-sm font-medium text-gray-700">ID do Pedido</label>
+					<Input id="IdOrder" value={order.order_id} readonly />
+				</div>
+				<div>
+					<label for="IdAffiliate" class="block text-sm font-medium text-gray-700"
+						>ID da Afiliação
+					</label>
 
-				<Input id="IdAffiliate" bind:value={order.affiliate_id} />
-			</div>
+					<Input id="IdAffiliate" bind:value={order.affiliate_id} />
+				</div>
 
-			<div>
-				<label for="orderDate" class="block text-sm font-medium text-gray-700"
-					>Data do Pedido
-				</label>
-				<Input
-					id="Data do Pedido"
-					value={new Date(order.order_date).toLocaleDateString()}
-					readonly
-				/>
-			</div>
-			<div>
-				<label for="ID do Pedido" class="block text-sm font-medium text-gray-700">Deconto</label>
-				<Input id="Desconto" bind:value={order.discount} />
-			</div>
+				<div>
+					<label for="orderDate" class="block text-sm font-medium text-gray-700"
+						>Data do Pedido
+					</label>
+					<Input
+						id="Data do Pedido"
+						value={new Date(order.order_date).toLocaleDateString()}
+						readonly
+					/>
+				</div>
+				<div>
+					<label for="ID do Pedido" class="block text-sm font-medium text-gray-700">Desconto</label>
+					<Input id="Desconto" bind:value={order.discount} />
+				</div>
 
-			<div>
-				<label for="ID do Pedido" class="block text-sm font-medium text-gray-700"
-					>Status do Pedido
-				</label><Input
-					id="Status do Pedido"
-					value={getStatusTranslation(order.order_status)}
-					readonly
-				/>
-			</div>
-			<div>
-				<label for="IdUser" class="block text-sm font-medium text-gray-700"
-					>ID do Usuário
-				</label><Input id="IdUser" value={order.user.user_id} readonly />
-			</div>
-			<div>
-				<label for="username" class="block text-sm font-medium text-gray-700">Usuário </label><Input
-					id="username"
-					value={order.user.name}
-					readonly
-				/>
-			</div>
-			<div>
-				<label for="email" class="block text-sm font-medium text-gray-700">E-mail </label><Input
-					id="email"
-					value={order.user.email}
-					readonly
-				/>
-			</div>
-			<div>
-				<label for="frete" class="block text-sm font-medium text-gray-700"
-					>Tipo do Frete
-				</label><Input id="frete" bind:value={order.freight} />
-			</div>
-			<div>
-				<label for="IdCoupon" class="block text-sm font-medium text-gray-700"
-					>ID do Cupom
-				</label><Input id="IdCoupon" value={order.coupon_id ?? 'sem cupom'} />
-			</div>
-		</form>
+				<div>
+					<label for="ID do Pedido" class="block text-sm font-medium text-gray-700"
+						>Status do Pedido
+					</label><Input
+						id="Status do Pedido"
+						value={getStatusTranslation(order.order_status)}
+						readonly
+					/>
+				</div>
+				<div>
+					<label for="IdUser" class="block text-sm font-medium text-gray-700"
+						>ID do Usuário
+					</label><Input id="IdUser" value={order.user.user_id} readonly />
+				</div>
+				<div>
+					<label for="username" class="block text-sm font-medium text-gray-700"
+						>Usuário
+					</label><Input id="username" value={order.user.name} readonly />
+				</div>
+				<div>
+					<label for="email" class="block text-sm font-medium text-gray-700">E-mail </label><Input
+						id="email"
+						value={order.user.email}
+						readonly
+					/>
+				</div>
+				<div>
+					<label for="frete" class="block text-sm font-medium text-gray-700"
+						>Tipo do Frete
+					</label><Input id="frete" bind:value={order.freight} />
+				</div>
+				<div>
+					<label for="IdCoupon" class="block text-sm font-medium text-gray-700"
+						>ID do Cupom
+					</label><Input id="IdCoupon" value={order.coupon_id ?? 'sem cupom'} />
+				</div>
+			</form>
+		{/if}
 		<div class="my-8 space-y-4" role="group">
 			<Button variant="primary" on:click={cancelOrder}>Cancelar Venda</Button>
 			<Button variant="primary" on:click={submitInvoice}>Anexar nota fiscal</Button>
