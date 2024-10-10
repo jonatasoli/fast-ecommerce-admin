@@ -81,7 +81,7 @@
 		try {
 			isLoading = true;
 			const res = await settings.patch(
-				`${items.base_url}/settings/?locale=${items.selectedCode}`,
+				`${items.base_url}/settings?locale=${items.selectedCode}`,
 				data,
 				items.token_access
 			);

@@ -9,8 +9,6 @@ export const load = async ({ url, cookies }) => {
 	await ordersStore.get(`${SERVER_BASE_URL}/order/orders?page=${page}&offset=${offset}`, token);
 	let currentOrders;
 	ordersStore.subscribe((value) => (currentOrders = value))();
-	console.log('retorno');
-	console.log(currentOrders);
 
 	return {
 		orders: currentOrders,

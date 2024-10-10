@@ -78,7 +78,7 @@
 	async function getSettings(field: string) {
 		try {
 			const res = await settings.get(
-				`${items.base_url}/settings/?locale=${items.selectedCode}&field=${field}`,
+				`${items.base_url}/settings?locale=${items.selectedCode}&field=${field}`,
 				items.token_access
 			);
 
