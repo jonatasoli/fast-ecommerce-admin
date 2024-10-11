@@ -35,7 +35,6 @@
 			formData.append('product_id', String(transaction.product_id));
 			formData.append('quantity', String(transaction.quantity));
 			formData.append('operation', transaction.operation);
-
 			const response = await fetch('new', {
 				method: 'POST',
 				body: formData

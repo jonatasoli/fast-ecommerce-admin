@@ -1,20 +1,19 @@
 import { SERVER_BASE_URL } from '$env/static/private';
-import { ordersStore, getOrderById } from '$lib/stores/sales';
-import type Orders from '$lib/stores/sales';
-import type { Action } from 'svelte/action';
 
 /** @type {import('./$types').PageLoad} */
 export const load = async ({ url, cookies }) => {
-	//const page = new URL(url).searchParams.get('page') || 1;
-	//const offset = new URL(url).searchParams.get('offset') || 10;
 	const token = cookies.get('access_token');
-	//await ordersStore.get(`${SERVER_BASE_URL}/order/orders?page=${page}&offset=${offset}`, token )
-
-	let currentOrders;
-	ordersStore.subscribe((value) => (currentOrders = value))();
-
+	const order_id = new URL(url).searchParams.get('order_id') || '';
+	const res = await fetch(`${SERVER_BASE_URL}/order/${order_id}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`
+		}
+	});
+	const data = await res.json();
 	return {
-		orders: currentOrders,
+		orders: data,
 		access_token: token,
 		base_url: `${SERVER_BASE_URL}`
 	};
