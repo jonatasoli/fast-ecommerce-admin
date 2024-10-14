@@ -1,7 +1,26 @@
-# fast-ecommerce-admin
+# Fast-Ecommerce-Admin
 
-Admin for fast-ecommerce
+ Admin for fast-ecommerce
 
+## Admin Panel - README
+
+###  This repository contains the admin panel for managing GattoRosa operations. Built using Svelte, this panel provides administrators with a streamlined interface for handling backend operations such as order management, user administration, and content updates.
+
+## Configuration
+
+To configure the project, add the following environment variable to your **.env** file:
+
+```bash
+SERVER_BASE_URL='https://api.exemplo.com'
+```
+
+This points to the staging API server, where all API calls made from the admin panel will be directed.
+
+## Features
+ - Svelte Framework: Fast and reactive front-end framework.
+ - Admin Operations: Manage orders, users, products, and content.
+ - API Integration: Communicates with the GattoRosa backend using the provided SERVER_BASE_URL.
+ 
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
