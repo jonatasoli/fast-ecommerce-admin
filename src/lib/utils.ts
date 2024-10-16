@@ -109,7 +109,8 @@ export const statusMap: Record<string, string> = {
 	PREPARING_ORDER: 'Preparando',
 	SHIPPING_ORDER: 'Enviado',
 	GENERATE_INVOICE: 'Nota gerada',
-	SHIPPING_COMPLETE: 'Entregue'
+	SHIPPING_COMPLETE: 'Entregue',
+	CANCELLED: 'Cancelado'
 };
 
 /**

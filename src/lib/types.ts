@@ -8,6 +8,10 @@ export interface Product {
 	category_id: number;
 }
 
+export interface CancelledReason {
+	cancel_reason: string;
+}
+
 export interface DataProducts {
 	products: Product[];
 	page: number;

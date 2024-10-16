@@ -95,11 +95,6 @@
 		{:else}
 			<form class="flex flex-col gap-4">
 				<div class="mb-4">
-					<label for="IdOrder" class="block text-sm font-medium text-gray-700">ID do Pedido</label>
-					<Input id="IdOrder" value={order.order_id} readonly />
-				</div>
-
-				<div>
 					<label for="produtos" class="block text-sm font-medium text-gray-700">Produtos </label>
 					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
 						{#each order.items as items}
@@ -118,6 +113,11 @@
 						{/each}
 					</div>
 				</div>
+				<div>
+					<label for="IdOrder" class="block text-sm font-medium text-gray-700">ID do Pedido</label>
+					<Input id="IdOrder" value={order.order_id} readonly />
+				</div>
+
 				<div>
 					<label for="IdAffiliate" class="block text-sm font-medium text-gray-700"
 						>ID da Afiliação
