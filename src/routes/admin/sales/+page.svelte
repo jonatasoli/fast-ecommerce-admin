@@ -14,18 +14,27 @@
 		TableBodyRow,
 		TableHead,
 		TableHeadCell,
-		Badge
+		Badge,
+		Dropdown,
+		DropdownItem,
+		DropdownDivider,
+		Toast
 	} from 'flowbite-svelte';
 	import {
 		AngleLeftOutline,
 		AngleRightOutline,
+		CheckCircleSolid,
 		ChevronDoubleLeftOutline,
 		ChevronDoubleRightOutline
 	} from 'flowbite-svelte-icons';
 	import { getStatusTranslation } from '$lib/utils';
+	import CancelOrder from '$lib/components/sales/SalesModal.svelte';
 
 	export let data: any;
-
+	let isModalOpen = false;
+	let order_id: number = 0;
+	let notification = false;
+	let counter = 6;
 	let rowsPerPage = data.orders.offset;
 	let currentPage = data.orders.page;
 	const searchParams = new URLSearchParams($page.url.searchParams);
@@ -50,6 +59,17 @@
 		refreshOrders();
 	});
 
+	function timeout() {
+		if (--counter > 0) return setTimeout(timeout, 1000);
+		notification = false;
+	}
+
+	function trigger() {
+		notification = true;
+		counter = 6;
+		timeout();
+	}
+
 	async function refreshOrders() {
 		if (data?.orders) {
 			await ordersStore.get(
@@ -61,7 +81,7 @@
 		}
 	}
 
-	async function handleRowsPerPageChange(event) {
+	async function handleRowsPerPageChange(event: any) {
 		rowsPerPage = parseInt(event.target.value);
 		currentPage = 1; // Reset to first page
 		searchParams.set('offset', rowsPerPage);
@@ -73,6 +93,10 @@
 		currentPage = 1;
 		searchParams.set('page', currentPage);
 		refreshOrders();
+	}
+
+	function handleModalClose() {
+		isModalOpen = false;
 	}
 
 	async function nextPage() {
@@ -98,6 +122,39 @@
 		currentPage = data.orders.totalPages;
 		searchParams.set('page', currentPage);
 		refreshOrders();
+	}
+
+	function handleCancelOrder(orderId: number) {
+		isModalOpen = true;
+		order_id = orderId;
+	}
+
+	async function handleSaveFromModal(event: any) {
+		console.log(event);
+
+		try {
+			const res = await ordersStore.delete(
+				`${data.base_url}/order/${event.detail.selectedOrder}`,
+				event.detail.cancelled_reason,
+				data.access_token
+			);
+
+			if (res.status === 204) {
+				trigger();
+				refreshOrders();
+				isModalOpen = false;
+			} else {
+				console.error('Erro: o status da resposta não é 204', res);
+			}
+		} catch (error) {
+			trigger();
+			refreshOrders();
+			isModalOpen = false;
+			console.error('Erro durante a requisição:', error);
+		}
+
+		isModalOpen = false;
+		return;
 	}
 </script>
 
@@ -143,14 +200,28 @@
 						<TableBodyCell tdClass="py-2">{order.coupon_id ?? 'sem cupom'}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.cancelled_reason ?? ''}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.cancelled_at ?? ''}</TableBodyCell>
-						<TableBodyCell tdClass="py-2"
-							><Button
+						<TableBodyCell tdClass="py-2">
+							<Button
 								variant="primary"
-								on:click={() => {
-									goto(`/admin/sales/new?order_id=${order.order_id}`);
-								}}>Editar</Button
-							></TableBodyCell
-						>
+								additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
+								>Gerenciar</Button
+							>
+							<Dropdown class="w-48 p-3 space-y-1">
+								<DropdownItem
+									on:click={() => {
+										goto(`/admin/sales/new?order_id=${order.order_id}`);
+									}}>Detalhes</DropdownItem
+								>
+								{#if order.order_status !== 'CANCELLED'}
+									<DropdownDivider />
+									<DropdownItem
+										on:click={() => {
+											handleCancelOrder(order.order_id);
+										}}>Cancelar pedido</DropdownItem
+									>
+								{/if}
+							</Dropdown>
+						</TableBodyCell>
 					</TableBodyRow>
 				{/each}
 			</TableBody>
@@ -205,4 +276,19 @@
 			</button>
 		</div>
 	</div>
+	<CancelOrder
+		isOpen={isModalOpen}
+		selectedOrder={order_id}
+		on:close={handleModalClose}
+		on:save={handleSaveFromModal}
+	/>
+	{#if notification}
+		<Toast color="green" position="top-right">
+			<svelte:fragment slot="icon">
+				<CheckCircleSolid class="w-5 h-5" />
+				<span class="sr-only">Check icon</span>
+			</svelte:fragment>
+			Atualizado com Sucesso!
+		</Toast>
+	{/if}
 </div>

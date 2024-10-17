@@ -2,29 +2,33 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { Button, Input, Spinner } from 'flowbite-svelte';
+	import { Button, Input, Spinner, Card } from 'flowbite-svelte';
 	import { getOrderById } from '$lib/stores/sales';
 	import { getStatusTranslation } from '$lib/utils.js';
+	import type { DataSalesOrders } from '$lib/types';
+	import { currencyFormat } from '$lib/utils';
 
 	export let orderId;
 	export let data;
 	let isLoading = true;
-	let order = {
-		order_id: '',
+	let order: DataSalesOrders = {
+		order_id: 0,
 		affiliate_id: '',
 		order_date: '',
 		discount: '',
 		tracking_number: '',
 		order_status: '',
 		user: {
-			user_id: '',
+			user_id: 0,
 			name: '',
-			email: ''
+			email: '',
+			document: '',
+			phone: ''
 		},
 		freight: '',
 		coupon_id: '',
-		cancelled_reason: '',
-		cancelled_at: ''
+		customer_id: '',
+		items: []
 	};
 
 	let showCancelReason = false;
@@ -91,9 +95,29 @@
 		{:else}
 			<form class="flex flex-col gap-4">
 				<div class="mb-4">
+					<label for="produtos" class="block text-sm font-medium text-gray-700">Produtos </label>
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+						{#each order.items as items}
+							<Card
+								class="mt-4 sm:max-w-md xl:max-w-lg shadow-md transition-transform transform hover:scale-105"
+							>
+								<div class="sm:p-6 flex flex-col items-center">
+									<h3 class="text-lg font-semibold text-center mb-2">{items.product.name}</h3>
+									<p class="text-gray-600">Preço: {currencyFormat(items.product.price)}</p>
+									<p class="text-gray-600">Quantidade: {items.quantity}</p>
+									<p class="text-gray-600 mt-2">
+										Desconto: {currencyFormat(Number(items.discount_price))}
+									</p>
+								</div>
+							</Card>
+						{/each}
+					</div>
+				</div>
+				<div>
 					<label for="IdOrder" class="block text-sm font-medium text-gray-700">ID do Pedido</label>
 					<Input id="IdOrder" value={order.order_id} readonly />
 				</div>
+
 				<div>
 					<label for="IdAffiliate" class="block text-sm font-medium text-gray-700"
 						>ID da Afiliação
@@ -159,10 +183,6 @@
 			<Button variant="primary" on:click={cancelOrder}>Cancelar Venda</Button>
 			<Button variant="primary" on:click={submitInvoice}>Anexar nota fiscal</Button>
 			<Button variant="primary" on:click={submitTrackingCode}>Código de Rastreio</Button>
-			{#if showCancelReason}
-				<Input label="Motivo do Cancelamento" bind:value={order.cancelled_reason} />
-				<Button variant="secondary">Confirmar Cancelamento</Button>
-			{/if}
 			{#if showInvoiceLink}
 				<Input label="Link da Nota Fiscal" bind:value={invoiceLink} />
 				<Button variant="secondary" on:click={submitInvoice}>Enviar Nota Fiscal</Button>

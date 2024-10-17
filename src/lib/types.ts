@@ -8,6 +8,10 @@ export interface Product {
 	category_id: number;
 }
 
+export interface CancelledReason {
+	cancel_reason: string;
+}
+
 export interface DataProducts {
 	products: Product[];
 	page: number;
@@ -23,6 +27,30 @@ export interface Category {
 	menu: boolean;
 	showcase: boolean;
 	image_path: string;
+}
+
+export interface DataProductItems {
+	order_items_id: number;
+	order_id: number;
+	product_id: number;
+	product: Product;
+	quantity: number;
+	price: string;
+	discount_price: string;
+}
+
+export interface DataSalesOrders {
+	order_id: number;
+	affiliate_id: any;
+	user: User;
+	customer_id: string;
+	order_date: string;
+	discount: string;
+	tracking_number: string;
+	order_status: string;
+	freight: any;
+	coupon_id: any;
+	items: DataProductItems[];
 }
 
 export interface DataInventory {
