@@ -23,12 +23,26 @@
 			name: '',
 			email: '',
 			document: '',
-			phone: ''
+			phone: '',
+			addresses: []
 		},
 		freight: '',
 		coupon_id: '',
 		customer_id: '',
-		items: []
+		items: [],
+		payment: {
+			payment_id: 0,
+			order_id: 0,
+			amount: '',
+			token: ',',
+			gateway_payment_id: 0,
+			status: '',
+			authorization: '',
+			payment_method: '',
+			payment_gateway: '',
+			amount_with_fee: '',
+			freight_amount: ''
+		}
 	};
 
 	let showCancelReason = false;
@@ -63,6 +77,25 @@
 		showCancelReason = false;
 		console.log(showTrackingCode);
 		console.log(showCancelReason);
+	}
+
+	function getAdress(orderUser: any) {
+		return `${orderUser.addresses[0].street} , ${orderUser.addresses[0].neighborhood}, ${orderUser.addresses[0].street_number}`;
+	}
+
+	function getState(orderUser: any) {
+		return `${orderUser.addresses[0].city} , ${orderUser.addresses[0].state}, ${orderUser.addresses[0].country} `;
+	}
+
+	function currencyFormatFreight(value: number, locale = 'pt-BR', type?: string): string {
+		if (value === 0.01 && type === 'freight') {
+			return 'Grátis';
+		}
+
+		return new Intl.NumberFormat(locale, {
+			style: 'currency',
+			currency: 'BRL'
+		}).format(value);
 	}
 
 	async function submitTrackingCode() {
@@ -124,7 +157,13 @@
 				<div>
 					<label for="address" class="block text-sm font-medium text-gray-700"
 						>Endereço
-					</label><Input id="address" value={'Avenida das torres, 1600'} readonly />
+					</label><Input id="address" value={getAdress(order.user)} readonly />
+				</div>
+
+				<div>
+					<label for="state" class="block text-sm font-medium text-gray-700"
+						>Residencia
+					</label><Input id="state" value={getState(order.user)} readonly />
 				</div>
 				<!-- ajustar -->
 
@@ -175,11 +214,25 @@
 					</label><Input id="frete" bind:value={order.freight} readonly />
 				</div>
 
+				<div>
+					<label for="freight_amount" class="block text-sm font-medium text-gray-700"
+						>Valor do Frete
+					</label><Input
+						id="freight_amount"
+						value={currencyFormatFreight(
+							Number(order.payment.freight_amount),
+							undefined,
+							'freight'
+						)}
+						readonly
+					/>
+				</div>
+
 				<!-- ajustar -->
 				<div>
 					<label for="total" class="block text-sm font-medium text-gray-700"
 						>Valor Total
-					</label><Input id="total" value={currencyFormat(Number(order.items[0].price))} readonly />
+					</label><Input id="total" value={currencyFormat(Number(order.payment.amount))} readonly />
 				</div>
 				<!-- ajustar -->
 			</form>
