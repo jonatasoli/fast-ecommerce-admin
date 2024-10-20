@@ -23,12 +23,26 @@
 			name: '',
 			email: '',
 			document: '',
-			phone: ''
+			phone: '',
+			addresses: []
 		},
 		freight: '',
 		coupon_id: '',
 		customer_id: '',
-		items: []
+		items: [],
+		payment: {
+			payment_id: 0,
+			order_id: 0,
+			amount: '',
+			token: ',',
+			gateway_payment_id: 0,
+			status: '',
+			authorization: '',
+			payment_method: '',
+			payment_gateway: '',
+			amount_with_fee: '',
+			freight_amount: ''
+		}
 	};
 
 	let showCancelReason = false;
@@ -63,6 +77,25 @@
 		showCancelReason = false;
 		console.log(showTrackingCode);
 		console.log(showCancelReason);
+	}
+
+	function getAdress(orderUser: any) {
+		return `${orderUser.addresses[0].street} , ${orderUser.addresses[0].neighborhood}, ${orderUser.addresses[0].street_number}`;
+	}
+
+	function getState(orderUser: any) {
+		return `${orderUser.addresses[0].city} , ${orderUser.addresses[0].state}, ${orderUser.addresses[0].country} `;
+	}
+
+	function currencyFormatFreight(value: number, locale = 'pt-BR', type?: string): string {
+		if (value === 0.01 && type === 'freight') {
+			return 'Grátis';
+		}
+
+		return new Intl.NumberFormat(locale, {
+			style: 'currency',
+			currency: 'BRL'
+		}).format(value);
 	}
 
 	async function submitTrackingCode() {
@@ -113,17 +146,39 @@
 						{/each}
 					</div>
 				</div>
+
 				<div>
-					<label for="IdOrder" class="block text-sm font-medium text-gray-700">ID do Pedido</label>
-					<Input id="IdOrder" value={order.order_id} readonly />
+					<label for="username" class="block text-sm font-medium text-gray-700"
+						>Usuário
+					</label><Input id="username" value={order.user.name} readonly />
+				</div>
+
+				<!-- ajustar -->
+				<div>
+					<label for="address" class="block text-sm font-medium text-gray-700"
+						>Endereço
+					</label><Input id="address" value={getAdress(order.user)} readonly />
 				</div>
 
 				<div>
-					<label for="IdAffiliate" class="block text-sm font-medium text-gray-700"
-						>ID da Afiliação
-					</label>
+					<label for="state" class="block text-sm font-medium text-gray-700"
+						>Residencia
+					</label><Input id="state" value={getState(order.user)} readonly />
+				</div>
+				<!-- ajustar -->
 
-					<Input id="IdAffiliate" bind:value={order.affiliate_id} />
+				<div>
+					<label for="document" class="block text-sm font-medium text-gray-700"
+						>Documento
+					</label><Input id="document" value={order.user.document} readonly />
+				</div>
+
+				<div>
+					<label for="phone" class="block text-sm font-medium text-gray-700">Telefone </label><Input
+						id="phone"
+						value={order.user.phone}
+						readonly
+					/>
 				</div>
 
 				<div>
@@ -136,10 +191,6 @@
 						readonly
 					/>
 				</div>
-				<div>
-					<label for="ID do Pedido" class="block text-sm font-medium text-gray-700">Desconto</label>
-					<Input id="Desconto" bind:value={order.discount} />
-				</div>
 
 				<div>
 					<label for="ID do Pedido" class="block text-sm font-medium text-gray-700"
@@ -151,16 +202,6 @@
 					/>
 				</div>
 				<div>
-					<label for="IdUser" class="block text-sm font-medium text-gray-700"
-						>ID do Usuário
-					</label><Input id="IdUser" value={order.user.user_id} readonly />
-				</div>
-				<div>
-					<label for="username" class="block text-sm font-medium text-gray-700"
-						>Usuário
-					</label><Input id="username" value={order.user.name} readonly />
-				</div>
-				<div>
 					<label for="email" class="block text-sm font-medium text-gray-700">E-mail </label><Input
 						id="email"
 						value={order.user.email}
@@ -170,13 +211,30 @@
 				<div>
 					<label for="frete" class="block text-sm font-medium text-gray-700"
 						>Tipo do Frete
-					</label><Input id="frete" bind:value={order.freight} />
+					</label><Input id="frete" bind:value={order.freight} readonly />
 				</div>
+
 				<div>
-					<label for="IdCoupon" class="block text-sm font-medium text-gray-700"
-						>ID do Cupom
-					</label><Input id="IdCoupon" value={order.coupon_id ?? 'sem cupom'} />
+					<label for="freight_amount" class="block text-sm font-medium text-gray-700"
+						>Valor do Frete
+					</label><Input
+						id="freight_amount"
+						value={currencyFormatFreight(
+							Number(order.payment.freight_amount),
+							undefined,
+							'freight'
+						)}
+						readonly
+					/>
 				</div>
+
+				<!-- ajustar -->
+				<div>
+					<label for="total" class="block text-sm font-medium text-gray-700"
+						>Valor Total
+					</label><Input id="total" value={currencyFormat(Number(order.payment.amount))} readonly />
+				</div>
+				<!-- ajustar -->
 			</form>
 		{/if}
 		<div class="my-8 space-y-4" role="group">

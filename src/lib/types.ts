@@ -12,6 +12,32 @@ export interface CancelledReason {
 	cancel_reason: string;
 }
 
+export interface Address {
+	user_id: number;
+	street: string;
+	street_number: string;
+	address_complement: string;
+	neighborhood: string;
+	city: string;
+	state: string;
+	country: string;
+	zipcode: string;
+}
+
+export interface Payment {
+	payment_id: number;
+	order_id: number;
+	amount: string;
+	token: string;
+	gateway_payment_id: number;
+	status: string;
+	authorization: string;
+	payment_method: string;
+	payment_gateway: string;
+	amount_with_fee: string;
+	freight_amount: string;
+}
+
 export interface DataProducts {
 	products: Product[];
 	page: number;
@@ -51,6 +77,7 @@ export interface DataSalesOrders {
 	freight: any;
 	coupon_id: any;
 	items: DataProductItems[];
+	payment: Payment;
 }
 
 export interface DataInventory {
@@ -79,6 +106,7 @@ export type User = {
 	email: string;
 	document: string;
 	phone: string;
+	addresses: Address[];
 };
 
 export interface OrderItem {
