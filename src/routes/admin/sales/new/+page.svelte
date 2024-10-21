@@ -153,7 +153,6 @@
 					</label><Input id="username" value={order.user.name} readonly />
 				</div>
 
-				<!-- ajustar -->
 				<div>
 					<label for="address" class="block text-sm font-medium text-gray-700"
 						>Endereço
@@ -161,11 +160,18 @@
 				</div>
 
 				<div>
+					<label for="cep" class="block text-sm font-medium text-gray-700">CEP </label><Input
+						id="cep"
+						value={order.user.addresses[0].zipcode}
+						readonly
+					/>
+				</div>
+
+				<div>
 					<label for="state" class="block text-sm font-medium text-gray-700"
 						>Residencia
 					</label><Input id="state" value={getState(order.user)} readonly />
 				</div>
-				<!-- ajustar -->
 
 				<div>
 					<label for="document" class="block text-sm font-medium text-gray-700"
