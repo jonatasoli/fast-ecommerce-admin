@@ -159,11 +159,13 @@
 					</label><Input id="username" value={order.user.name} readonly />
 				</div>
 
+				<!-- ajustar -->
 				<div>
 					<label for="address" class="block text-sm font-medium text-gray-700"
 						>Endereço
 					</label><Input id="address" value={getAdress(order.user)} readonly />
 				</div>
+
 
 				<div>
 					<label for="cep" class="block text-sm font-medium text-gray-700">CEP </label><Input
@@ -186,6 +188,7 @@
 				</div>
 
 				<div>
+
 					<label for="phone" class="block text-sm font-medium text-gray-700">Telefone </label><Input
 						id="phone"
 						value={order.user.phone}
@@ -226,6 +229,7 @@
 					</label><Input id="frete" bind:value={order.freight} readonly />
 				</div>
 
+
 				<div>
 					<label for="freight_amount" class="block text-sm font-medium text-gray-700"
 						>Valor do Frete
@@ -241,10 +245,12 @@
 				</div>
 
 				<div>
+
 					<label for="total" class="block text-sm font-medium text-gray-700"
 						>Valor Total
 					</label><Input id="total" value={currencyFormat(Number(order.payment.amount))} readonly />
 				</div>
+	
 			</form>
 		{/if}
 		<div class="my-8 space-y-4" role="group">
