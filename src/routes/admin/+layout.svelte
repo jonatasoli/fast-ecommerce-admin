@@ -29,7 +29,9 @@
 </script>
 
 <main>
-	<header class="flex items-center justify-between gap-4 border-b border-b-gray-200 shadow-sm p-4">
+	<header
+		class="flex items-center justify-between gap-4 border-b border-b-gray-200 shadow-sm p-4 print:hidden"
+	>
 		<h1 class="text-primary text-xl font-bold">Gatto Rosa Admin</h1>
 		<nav class="flex gap-4">
 			<a href="/admin" class={active(pathname, '/admin')}>Inicio</a>
