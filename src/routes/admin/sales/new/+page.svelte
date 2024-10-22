@@ -105,16 +105,6 @@
 		}).format(value);
 	}
 
-	async function submitTrackingCode() {
-		console.log('Submit tracking code', trackingCode);
-		showTrackingCode = !showTrackingCode;
-		console.log(showTrackingCode);
-		showInvoiceLink = false;
-		showCancelReason = false;
-		console.log(showInvoiceLink);
-		console.log(showCancelReason);
-	}
-
 	onMount(() => {
 		getOrder();
 	});
@@ -166,7 +156,6 @@
 					</label><Input id="address" value={getAdress(order.user)} readonly />
 				</div>
 
-
 				<div>
 					<label for="cep" class="block text-sm font-medium text-gray-700">CEP </label><Input
 						id="cep"
@@ -188,7 +177,6 @@
 				</div>
 
 				<div>
-
 					<label for="phone" class="block text-sm font-medium text-gray-700">Telefone </label><Input
 						id="phone"
 						value={order.user.phone}
@@ -229,7 +217,6 @@
 					</label><Input id="frete" bind:value={order.freight} readonly />
 				</div>
 
-
 				<div>
 					<label for="freight_amount" class="block text-sm font-medium text-gray-700"
 						>Valor do Frete
@@ -245,28 +232,19 @@
 				</div>
 
 				<div>
-
 					<label for="total" class="block text-sm font-medium text-gray-700"
 						>Valor Total
 					</label><Input id="total" value={currencyFormat(Number(order.payment.amount))} readonly />
 				</div>
-	
 			</form>
 		{/if}
 		<div class="my-8 space-y-4" role="group">
 			<Button variant="primary" on:click={cancelOrder}>Cancelar Venda</Button>
 			<Button variant="primary" on:click={submitInvoice}>Anexar nota fiscal</Button>
-			<Button variant="primary" on:click={submitTrackingCode}>Código de Rastreio</Button>
 			<Button variant="primary" on:click={printPage}>Imprimir Pedido</Button>
 			{#if showInvoiceLink}
 				<Input label="Link da Nota Fiscal" bind:value={invoiceLink} />
 				<Button variant="secondary" on:click={submitInvoice}>Enviar Nota Fiscal</Button>
-			{/if}
-			{#if showTrackingCode}
-				<Input label="Código de Rastreamento" bind:value={trackingCode} />
-				<Button variant="secondary" on:click={submitTrackingCode}
-					>Enviar Código de Rastreamento</Button
-				>
 			{/if}
 		</div>
 	</div>
