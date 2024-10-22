@@ -48,9 +48,18 @@
 	let showCancelReason = false;
 	let showInvoiceLink = false;
 	let showTrackingCode = false;
+	let printContent = false;
 
 	let invoiceLink = '';
 	let trackingCode = '';
+
+	function printPage() {
+		printContent = true;
+		setTimeout(() => {
+			window.print();
+			printContent = false;
+		}, 150);
+	}
 
 	function getOrder() {
 		order = data.orders;
@@ -58,7 +67,6 @@
 	}
 
 	async function cancelOrder() {
-		// Lógica para cancelar o pedido
 		console.log('Cancel order');
 		showCancelReason = !showCancelReason;
 		console.log(showCancelReason);
@@ -69,7 +77,6 @@
 	}
 
 	async function submitInvoice() {
-		// Lógica para enviar link da nota fiscal
 		console.log('Submit invoice', invoiceLink);
 		showInvoiceLink = !showInvoiceLink;
 		console.log(showInvoiceLink);
@@ -99,7 +106,6 @@
 	}
 
 	async function submitTrackingCode() {
-		// Lógica para enviar código de rastreamento
 		console.log('Submit tracking code', trackingCode);
 		showTrackingCode = !showTrackingCode;
 		console.log(showTrackingCode);
@@ -114,7 +120,7 @@
 	});
 </script>
 
-<div class="w-[60vw] mt-8 mx-auto">
+<div class="w-[60vw] mt-8 mx-auto print:hidden">
 	<div class="flex justify-between items-center w-full">
 		<h1 class="text-3xl font-semibold">Editar Pedido {order.order_id}</h1>
 		<Button variant="secondary" on:click={() => goto('/admin/sales')}>Voltar</Button>
@@ -160,12 +166,20 @@
 					</label><Input id="address" value={getAdress(order.user)} readonly />
 				</div>
 
+
+				<div>
+					<label for="cep" class="block text-sm font-medium text-gray-700">CEP </label><Input
+						id="cep"
+						value={order.user.addresses[0].zipcode}
+						readonly
+					/>
+				</div>
+
 				<div>
 					<label for="state" class="block text-sm font-medium text-gray-700"
 						>Residencia
 					</label><Input id="state" value={getState(order.user)} readonly />
 				</div>
-				<!-- ajustar -->
 
 				<div>
 					<label for="document" class="block text-sm font-medium text-gray-700"
@@ -174,6 +188,7 @@
 				</div>
 
 				<div>
+
 					<label for="phone" class="block text-sm font-medium text-gray-700">Telefone </label><Input
 						id="phone"
 						value={order.user.phone}
@@ -214,6 +229,7 @@
 					</label><Input id="frete" bind:value={order.freight} readonly />
 				</div>
 
+
 				<div>
 					<label for="freight_amount" class="block text-sm font-medium text-gray-700"
 						>Valor do Frete
@@ -228,19 +244,20 @@
 					/>
 				</div>
 
-				<!-- ajustar -->
 				<div>
+
 					<label for="total" class="block text-sm font-medium text-gray-700"
 						>Valor Total
 					</label><Input id="total" value={currencyFormat(Number(order.payment.amount))} readonly />
 				</div>
-				<!-- ajustar -->
+	
 			</form>
 		{/if}
 		<div class="my-8 space-y-4" role="group">
 			<Button variant="primary" on:click={cancelOrder}>Cancelar Venda</Button>
 			<Button variant="primary" on:click={submitInvoice}>Anexar nota fiscal</Button>
 			<Button variant="primary" on:click={submitTrackingCode}>Código de Rastreio</Button>
+			<Button variant="primary" on:click={printPage}>Imprimir Pedido</Button>
 			{#if showInvoiceLink}
 				<Input label="Link da Nota Fiscal" bind:value={invoiceLink} />
 				<Button variant="secondary" on:click={submitInvoice}>Enviar Nota Fiscal</Button>
@@ -254,3 +271,67 @@
 		</div>
 	</div>
 </div>
+{#if printContent}
+	<div class="print:block p-6 max-w-5xl mx-auto mt-8 bg-white shadow-lg">
+		<div class="flex justify-between items-center mb-6 border-b pb-4">
+			<div>
+				<h1 class="text-2xl font-bold">Detalhes do Pedido</h1>
+				<p class="text-sm text-gray-500">Pedido ID: {order.order_id}</p>
+			</div>
+			<div>
+				<p class="text-lg font-semibold">Data: {new Date(order.order_date).toLocaleDateString()}</p>
+			</div>
+		</div>
+
+		<div class="grid grid-cols-2 gap-4 mb-8">
+			<div>
+				<h2 class="text-xl font-semibold mb-2">Informações do Cliente</h2>
+				<p><strong>Nome:</strong> {order.user.name}</p>
+				<p><strong>Documento:</strong> {order.user.document}</p>
+				<p><strong>Telefone:</strong> {order.user.phone}</p>
+				<p><strong>E-mail:</strong> {order.user.email}</p>
+			</div>
+			<div>
+				<h2 class="text-xl font-semibold mb-2">Endereço de Entrega</h2>
+				<p><strong>Endereço:</strong> {getAdress(order.user)}</p>
+				<p><strong>CEP:</strong> {order.user.addresses[0].zipcode}</p>
+				<p><strong>Residência:</strong> {getState(order.user)}</p>
+			</div>
+		</div>
+
+		<div class="mb-8">
+			<h2 class="text-xl font-semibold mb-4">Produtos</h2>
+			<table class="w-full table-auto">
+				<thead class="bg-gray-100 border-b">
+					<tr>
+						<th class="text-left py-2 px-4">Produto</th>
+						<th class="text-right py-2 px-4">Preço</th>
+						<th class="text-right py-2 px-4">Quantidade</th>
+						<th class="text-right py-2 px-4">Desconto</th>
+						<th class="text-right py-2 px-4">Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each order.items as item}
+						<tr class="border-b odd:bg-white even:bg-gray-100">
+							<td class="py-2 px-4">{item.product.name}</td>
+							<td class="text-right py-2 px-4">{currencyFormat(item.product.price)}</td>
+							<td class="text-right py-2 px-4">{item.quantity}</td>
+							<td class="text-right py-2 px-4">{currencyFormat(Number(item.discount_price))}</td>
+							<td class="text-right py-2 px-4">
+								{currencyFormat(item.product.price * item.quantity - Number(item.discount_price))}
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+
+		<div class="mt-8 flex justify-end space-x-8">
+			<div class="text-right">
+				<p><strong>Frete:</strong> {currencyFormatFreight(Number(order.payment.freight_amount))}</p>
+				<p><strong>Total do Pedido:</strong> {currencyFormat(Number(order.payment.amount))}</p>
+			</div>
+		</div>
+	</div>
+{/if}
