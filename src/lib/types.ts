@@ -254,3 +254,25 @@ export interface PaymentGatewayConfig {
 	field: string;
 	is_active: boolean;
 }
+
+export interface Coupon {
+	coupon_id: number;
+	code: string;
+	user_id: number;
+	product_id: number;
+	discount_price: number;
+	limit_price: number;
+	active: boolean;
+	qty: number;
+	affiliate_id: number;
+	discount: number;
+	commission_percentage: number;
+}
+
+export interface CouponsResponse {
+	page: number;
+	offset: number;
+	total_pages: number;
+	total_records: number;
+	coupons: Coupon[];
+}
