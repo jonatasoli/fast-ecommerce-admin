@@ -12,6 +12,24 @@ export interface CancelledReason {
 	cancel_reason: string;
 }
 
+export interface Coupon {
+	code: string;
+	user_id: number | null;
+	product_id: number | null;
+	discount_price: number | null;
+	limit_price: number | null;
+	active: boolean;
+	qty: number;
+	affiliate_id: number;
+	discount: string;
+	coupon_id: number;
+	commission_percentage: number | null;
+}
+
+export interface CouponData {
+	coupon: Coupon[];
+}
+
 export interface Address {
 	user_id: number;
 	street: string;
