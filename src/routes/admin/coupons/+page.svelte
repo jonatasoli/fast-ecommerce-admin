@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Button from '$lib/components/Button.svelte';
 	import { couponsStore } from '$lib/stores/coupons';
 	import { currencyFormat, formatPercentage } from '$lib/utils';
 	import {
@@ -15,7 +14,9 @@
 		TableHead,
 		TableHeadCell,
 		TableSearch,
-		Toast
+		Toast,
+		Button,
+		Badge
 	} from 'flowbite-svelte';
 	import {
 		AngleLeftOutline,
@@ -24,6 +25,7 @@
 		ChevronDoubleLeftOutline,
 		ChevronDoubleRightOutline
 	} from 'flowbite-svelte-icons';
+	import CreateCoupon from '$lib/components/coupon/modal/CreateCoupon.svelte';
 
 	export let data: any;
 
@@ -44,6 +46,7 @@
 	let sortBy = 'user_id';
 	let sortDirection = 'asc';
 	let notification = false;
+	let isModalOpen = false;
 
 	$: items = data.coupons.coupons ?? [];
 	$: start = currentPage * rowsPerPage - rowsPerPage;
@@ -64,6 +67,10 @@
 		notification = true;
 		counter = 6;
 		timeout();
+	}
+
+	function handleModalClose() {
+		isModalOpen = false;
 	}
 
 	async function refreshCoupons() {
@@ -117,13 +124,23 @@
 
 		await refreshCoupons();
 	}
+
+	function addCoupon() {
+		isModalOpen = true;
+	}
+
+	async function inactiveCoupon(coupon_id: number) {
+		const res = await coupons.delete(`${data.base_url}/coupon/${coupon_id}`, data.access_token);
+
+		console.log(res);
+	}
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
 		<h1 class="text-3xl font-semibold">Gestão de Cupons</h1>
+		<Button class="bg-primary " on:click={addCoupon}>Novo Cupom</Button>
 	</div>
-	<div class="my-4"></div>
 
 	<div class="w-full mx-auto mt-12">
 		<Table hoverable={true}>
@@ -151,7 +168,7 @@
 						>desconto</TableHeadCell
 					>
 
-					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
+					<TableHeadCell class="cursor-pointer" on:click={() => orderBy('role_id')}
 						>situação</TableHeadCell
 					>
 
@@ -177,8 +194,16 @@
 							<TableBodyCell tdClass="py-2">{coupon.user_id}</TableBodyCell>
 							<TableBodyCell tdClass="py-2">{coupon.product_id}</TableBodyCell>
 							<TableBodyCell tdClass="py-2">{currencyFormat(coupon.discount_price)}</TableBodyCell>
-							<TableBodyCell tdClass="py-2">{coupon.active}</TableBodyCell>
-							<TableBodyCell tdClass="py-2">{currencyFormat(coupon.qty)}</TableBodyCell>
+							<TableBodyCell tdClass="py-2">
+								<Badge
+									class="w-32 text-center px-2 py-1 rounded-full border"
+									border
+									color={coupon.active ? 'green' : 'red'}
+								>
+									{coupon.active === true ? 'Ativo' : 'Inativo'}
+								</Badge></TableBodyCell
+							>
+							<TableBodyCell tdClass="py-2">{coupon.qty}</TableBodyCell>
 							<TableBodyCell tdClass="py-2">{coupon.limit_price}</TableBodyCell>
 							<TableBodyCell tdClass="py-2"
 								>{coupon.commission_percentage
@@ -196,7 +221,9 @@
 										<DropdownItem>Detalhes</DropdownItem>
 									</a>
 									<DropdownDivider />
-									<DropdownItem>Desativar Cupom</DropdownItem>
+									<DropdownItem on:click={() => inactiveCoupon(coupon.coupon_id)}
+										>Desativar Cupom</DropdownItem
+									>
 								</Dropdown>
 							</TableBodyCell>
 						</TableBodyRow>
@@ -253,6 +280,8 @@
 			</button>
 		</div>
 	</div>
+
+	<CreateCoupon isOpen={isModalOpen} on:close={handleModalClose} />
 
 	{#if notification}
 		<Toast color="green" position="top-right">

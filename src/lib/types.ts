@@ -16,14 +16,14 @@ export interface Coupon {
 	code: string;
 	user_id: number | null;
 	product_id: number | null;
-	discount_price: number | null;
-	limit_price: number | null;
+	discount_price: string | null;
+	limit_price: string | null;
 	active: boolean;
 	qty: number;
 	affiliate_id: number;
 	discount: string;
-	coupon_id: number;
-	commission_percentage: number | null;
+	coupon_id?: number;
+	commission_percentage: string | null;
 }
 
 export interface CouponData {
@@ -271,20 +271,6 @@ export interface PaymentGatewayConfig {
 	settings_id: number;
 	field: string;
 	is_active: boolean;
-}
-
-export interface Coupon {
-	coupon_id: number;
-	code: string;
-	user_id: number;
-	product_id: number;
-	discount_price: number;
-	limit_price: number;
-	active: boolean;
-	qty: number;
-	affiliate_id: number;
-	discount: number;
-	commission_percentage: number;
 }
 
 export interface CouponsResponse {
