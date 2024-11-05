@@ -21,15 +21,16 @@ export const load = async ({ params, cookies }) => {
 };
 
 export const actions: Actions = {
-	saveCoupon: async ({ request, fetch, params }) => {
+	default: async ({ request, fetch, params }) => {
 		const formData = await request.formData();
 		const coupon = params.coupon;
 
 		const couponData = {
 			coupon_id: Number(coupon),
-			code: formData.get('code') || '',
+			code: formData.get('code') || null,
 			user_id: formData.get('user_id') || null,
 			product_id: formData.get('product_id') || null,
+			discount: formData.get('discount') || '0',
 			discount_price: formData.get('discount_price') || null,
 			limit_price: formData.get('limit_price') || null,
 			qty: Number(formData.get('qty')) || null,
@@ -40,10 +41,10 @@ export const actions: Actions = {
 			active: formData.get('active') === 'Ativo' ? true : false
 		};
 
-		console.log(couponData);
+		console.log(JSON.stringify(couponData));
 
 		try {
-			const response = await fetch(`/coupon/${coupon}`, {
+			const response = await fetch(`${SERVER_BASE_URL}/coupon/${coupon}`, {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(couponData)
@@ -52,6 +53,8 @@ export const actions: Actions = {
 			if (!response.ok) {
 				return fail(response.status, { error: 'Falha ao atualizar o cupom' });
 			}
+
+			console.log(response.error);
 
 			return { success: true };
 		} catch (error) {

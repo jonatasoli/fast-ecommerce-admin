@@ -192,11 +192,11 @@
 									>Gerenciar</Button
 								>
 								<Dropdown class="w-48 p-3 space-y-1">
-									<DropdownItem
-										><a href={`/admin/coupons/${coupon.coupon_id}`}>Detalhes</a></DropdownItem
-									>
+									<a href={`/admin/coupons/${coupon.coupon_id}`}>
+										<DropdownItem>Detalhes</DropdownItem>
+									</a>
 									<DropdownDivider />
-									<DropdownItem>Deletar cupom</DropdownItem>
+									<DropdownItem>Desativar Cupom</DropdownItem>
 								</Dropdown>
 							</TableBodyCell>
 						</TableBodyRow>

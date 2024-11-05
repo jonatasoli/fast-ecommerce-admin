@@ -2,12 +2,14 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { Button, Input, Spinner, Card } from 'flowbite-svelte';
+	import { Button, Input, Spinner, Card, Select } from 'flowbite-svelte';
 
 	import type { Coupon, CouponData } from '$lib/types';
-	import { currencyFormat, formatPercentage } from '$lib/utils';
+	import { currencyFormat, formatPercentage, parsePercentage } from '$lib/utils';
+	import { couponsStore } from '$lib/stores/coupons';
 
 	export let data: any;
+	const coupons = couponsStore();
 	let isLoading = false;
 	let isEditing = false;
 	let coupon: Coupon = {
@@ -27,12 +29,54 @@
 	$: coupon = data.coupon;
 	$: coupon ? coupon : (isLoading = true);
 
+	let roles = [
+		{ value: false, name: 'Inativo' },
+		{ value: true, name: 'Ativo' }
+	];
+
 	function toggleEdit() {
 		isEditing = !isEditing;
 	}
+
+	function statusCoupon() {
+		return coupon.active ? 'Ativo' : 'Inativo';
+	}
+
+	async function handleSaveCoupon() {
+		const req = {
+			coupon_id: coupon.coupon_id,
+			code: coupon.code,
+			user_id: coupon.user_id,
+			product_id: coupon.product_id,
+			discount: coupon.discount,
+			discount_price: coupon.discount_price,
+			limit_price: coupon.limit_price,
+			qty: Number(coupon.qty) || null,
+			commission_percentage: coupon.commission_percentage,
+			active: coupon.active ? true : false
+		};
+
+		try {
+			isLoading = true;
+			const res = await coupons.patch(
+				`
+			${data.base_url}/coupon/${coupon.coupon_id}`,
+				req,
+				data.access_token
+			);
+
+			if (res) {
+				isLoading = false;
+				console.log(res);
+			}
+		} catch (error) {
+			isLoading = false;
+			console.log('Error fetching coupons:' + error);
+		}
+	}
 </script>
 
-<form class="md:w-[80vw] mt-8 mx-auto p-4 print:hidden" method="POST" action="?/saveCoupon">
+<form class="md:w-[80vw] mt-8 mx-auto p-4 print:hidden">
 	<div class="flex justify-between items-center w-full">
 		<h1 class="text-3xl font-semibold">Detalhes do Cupom {coupon.code}</h1>
 		<Button variant="secondary" on:click={() => goto('/admin/coupons')}>Voltar</Button>
@@ -48,12 +92,17 @@
 				<div class="w-full">
 					<label for="code" class="block my-2 text-sm font-medium text-gray-700"
 						>Código do Cupom
-					</label><Input id="code" value={coupon.code} name="code" disabled={!isEditing} />
+					</label><Input id="code" bind:value={coupon.code} name="code" disabled={!isEditing} />
 
 					{#if coupon.user_id}
 						<label for="user" class="block my-2 text-sm font-medium text-gray-700"
 							>Usuário
-						</label><Input id="user" name="user_id" value={coupon.user_id} disabled={!isEditing} />
+						</label><Input
+							id="user"
+							name="user_id"
+							bind:value={coupon.user_id}
+							disabled={!isEditing}
+						/>
 					{/if}
 
 					{#if coupon.product_id}
@@ -62,42 +111,59 @@
 						</label><Input
 							id="product"
 							name="product_id"
-							value={coupon.product_id}
+							bind:value={coupon.product_id}
 							disabled={!isEditing}
 						/>
 					{/if}
-					<label for="discount" class="block my-2 text-sm font-medium text-gray-700"
+
+					{#if coupon.discount !== '0'}
+						<label for="discount" class="block my-2 text-sm font-medium text-gray-700"
+							>discount
+						</label><Input
+							id="discount"
+							name="discount"
+							bind:value={coupon.discount}
+							disabled={!isEditing}
+						/>
+					{/if}
+					<label for="discount_price" class="block my-2 text-sm font-medium text-gray-700"
 						>Desconto
 					</label><Input
-						id="discount"
+						id="discount_price"
 						name="discount_price"
-						value={currencyFormat(Number(coupon.discount_price))}
+						bind:value={coupon.discount_price}
 						disabled={!isEditing}
 					/>
 
-					<label for="status" class="block my-2 text-sm font-medium text-gray-700"
-						>Status
-					</label><Input
+					<label for="status" class="block my-2 text-sm font-medium text-gray-700">Status </label>
+
+					<Select
 						id="status"
-						value={coupon.active ? 'Ativo' : 'Inativo'}
+						class="mt-1 w-full"
+						bind:value={coupon.active}
 						disabled={!isEditing}
+						items={roles}
 					/>
 
 					<label for="limit" class="block my-2 text-sm font-medium text-gray-700"
 						>Limite de uso
-					</label><Input id="limit" value={coupon.limit_price} disabled={!isEditing} />
+					</label><Input
+						id="limit"
+						name="limit_price"
+						bind:value={coupon.limit_price}
+						disabled={!isEditing}
+					/>
 
 					<label for="quantity" class="block my-2 text-sm font-medium text-gray-700"
 						>Quantidade
-					</label><Input id="quantity" value={coupon.qty} disabled={!isEditing} />
+					</label><Input id="quantity" name="qty" bind:value={coupon.qty} disabled={!isEditing} />
 
 					<label for="commission" class="block my-2 text-sm font-medium text-gray-700"
-						>Comissão
+						>Percentual de Comissão
 					</label><Input
 						id="commission"
-						value={coupon.commission_percentage
-							? formatPercentage(coupon.commission_percentage)
-							: ''}
+						name="commission_percentage"
+						bind:value={coupon.commission_percentage}
 						disabled={!isEditing}
 					/>
 				</div>
@@ -106,7 +172,9 @@
 				<Button variant="primary" on:click={toggleEdit}>
 					{isEditing ? 'Cancelar' : 'Editar'}
 				</Button>
-				<Button variant="primary" disabled={!isEditing} type="submit" class="">Salvar</Button>
+				<Button variant="primary" disabled={!isEditing} on:click={handleSaveCoupon} class=""
+					>Salvar</Button
+				>
 			</div>
 		{/if}
 	</div>

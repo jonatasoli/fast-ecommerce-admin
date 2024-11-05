@@ -34,7 +34,7 @@ export function couponsStore() {
 
 			if (response.ok) {
 				store.update((data) => ({ ...data, ...json, loading: false }));
-				return json; // Retorna o JSON caso precise utilizá-lo
+				return json;
 			} else {
 				throw new Error(json?.errors || 'Erro desconhecido');
 			}
