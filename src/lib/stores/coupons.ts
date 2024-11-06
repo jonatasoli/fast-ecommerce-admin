@@ -54,8 +54,7 @@ export function couponsStore() {
 		store.request('POST', url, params, token);
 	store.patch = (url: string, params: any, token: string) =>
 		store.request('PATCH', url, params, token);
-	store.delete = (url: string, params: any, token: string) =>
-		store.request('DELETE', url, params, token);
+	store.delete = (url: string, token: string) => store.request('DELETE', url, {}, token);
 
 	return store;
 }

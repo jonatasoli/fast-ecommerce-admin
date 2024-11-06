@@ -15,15 +15,15 @@ export interface CancelledReason {
 export interface Coupon {
 	code: string;
 	user_id: number | null;
-	product_id: number | null;
+	product_id: any | null;
 	discount_price: string | null;
 	limit_price: string | null;
 	active: boolean;
 	qty: number;
-	affiliate_id: number;
+	affiliate_id: any | null;
 	discount: string;
 	coupon_id?: number;
-	commission_percentage: string | null;
+	commission_percentage: any | null;
 }
 
 export interface CouponData {

@@ -26,6 +26,7 @@
 		ChevronDoubleRightOutline
 	} from 'flowbite-svelte-icons';
 	import CreateCoupon from '$lib/components/coupon/modal/CreateCoupon.svelte';
+	import { onMount } from 'svelte';
 
 	export let data: any;
 
@@ -47,6 +48,13 @@
 	let sortDirection = 'asc';
 	let notification = false;
 	let isModalOpen = false;
+	let products = data.products;
+	let users = data.users;
+	let userDetails = data.userDetails;
+	let details = {
+		token: data.access_token,
+		base_url: data.base_url
+	};
 
 	$: items = data.coupons.coupons ?? [];
 	$: start = currentPage * rowsPerPage - rowsPerPage;
@@ -69,13 +77,16 @@
 		timeout();
 	}
 
-	function handleModalClose() {
+	async function handleModalClose() {
 		isModalOpen = false;
+		refreshCoupons();
+		trigger();
 	}
 
 	async function refreshCoupons() {
+		console.log('funcionando');
 		await coupons.get(
-			`${data.base_url}/coupon/?offset=${rowsPerPage}&page=${currentPage}&order_by=${sortBy}&direction=${sortDirection}`,
+			`${data.base_url}/coupon/?offset=${rowsPerPage}&page=${currentPage}`,
 			data.access_token
 		);
 	}
@@ -92,7 +103,7 @@
 
 	async function handleRowsPerPageChange(event: any) {
 		rowsPerPage = parseInt(event.target.value);
-		currentPage = 1; // Reset to first page
+		currentPage = 1;
 
 		await refreshCoupons();
 	}
@@ -130,10 +141,24 @@
 	}
 
 	async function inactiveCoupon(coupon_id: number) {
-		const res = await coupons.delete(`${data.base_url}/coupon/${coupon_id}`, data.access_token);
+		await coupons.delete(`${data.base_url}/coupon/${coupon_id}`, data.access_token);
 
-		console.log(res);
+		trigger();
+		await refreshCoupons();
 	}
+
+	coupons.subscribe(($store) => {
+		items = $store.coupons;
+		rowsPerPage = $store.offset;
+		currentPage = $store.page;
+		start = currentPage * rowsPerPage - rowsPerPage;
+		end = Math.min(start + rowsPerPage, $store.total_records);
+		endPage = $store.total_pages;
+	});
+
+	onMount(() => {
+		refreshCoupons();
+	});
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">
@@ -281,7 +306,14 @@
 		</div>
 	</div>
 
-	<CreateCoupon isOpen={isModalOpen} on:close={handleModalClose} />
+	<CreateCoupon
+		isOpen={isModalOpen}
+		{details}
+		{products}
+		{users}
+		{userDetails}
+		on:close={handleModalClose}
+	/>
 
 	{#if notification}
 		<Toast color="green" position="top-right">
@@ -289,7 +321,7 @@
 				<CheckCircleSolid class="w-5 h-5" />
 				<span class="sr-only">Check icon</span>
 			</svelte:fragment>
-			Atualizado com Sucesso!
+			Criado com Sucesso!
 		</Toast>
 	{/if}
 </div>
