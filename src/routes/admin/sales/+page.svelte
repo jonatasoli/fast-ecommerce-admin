@@ -188,7 +188,11 @@
 							<Badge
 								class="w-32 text-center px-2 py-1 rounded-full border"
 								border
-								color={order.tracking_number ? 'green' : 'red'}
+								color={order.tracking_number && order.order_status === 'PAYMENT_PENDING'
+									? 'yellow'
+									: order.tracking_number
+										? 'green'
+										: 'red'}
 							>
 								{order.tracking_number ? 'Enviado' : 'não enviado'}
 							</Badge>
