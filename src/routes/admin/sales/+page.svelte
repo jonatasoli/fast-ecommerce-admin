@@ -101,11 +101,9 @@
 
 	async function nextPage() {
 		if (currentPage < endPage) {
-			console.log(currentPage);
 			currentPage++;
 			searchParams.set('page', currentPage);
 			await refreshOrders();
-			console.log(searchParams.get('page'));
 		}
 	}
 
@@ -113,7 +111,6 @@
 		if (currentPage > 1) {
 			currentPage--;
 			searchParams.set('page', currentPage);
-			console.log(currentPage);
 			refreshOrders();
 		}
 	}
@@ -130,8 +127,6 @@
 	}
 
 	async function handleSaveFromModal(event: any) {
-		console.log(event);
-
 		try {
 			const res = await ordersStore.delete(
 				`${data.base_url}/order/${event.detail.selectedOrder}`,
