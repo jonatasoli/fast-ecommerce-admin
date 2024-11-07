@@ -2,9 +2,6 @@
 	import { couponsStore } from '$lib/stores/coupons';
 	import { currencyFormat, formatPercentage } from '$lib/utils';
 	import {
-		Dropdown,
-		DropdownDivider,
-		DropdownItem,
 		Label,
 		Select,
 		Table,
@@ -16,7 +13,8 @@
 		TableSearch,
 		Toast,
 		Button,
-		Badge
+		Badge,
+		Popover
 	} from 'flowbite-svelte';
 	import {
 		AngleLeftOutline,
@@ -59,7 +57,7 @@
 	$: items = data.coupons.coupons ?? [];
 	$: start = currentPage * rowsPerPage - rowsPerPage;
 	$: end = Math.min(start + rowsPerPage, data.coupons.total_records);
-	$: endPage = data.coupons.total_pages;
+	$: endPage = data.coupons.total_records;
 	$: searchTerm, debounceSearch(searchTerm);
 
 	function debounceSearch(query: string) {
@@ -84,8 +82,7 @@
 	}
 
 	async function refreshCoupons() {
-		console.log('funcionando');
-		await coupons.get(
+		const res = await coupons.get(
 			`${data.base_url}/coupon/?offset=${rowsPerPage}&page=${currentPage}`,
 			data.access_token
 		);
@@ -143,8 +140,8 @@
 	async function inactiveCoupon(coupon_id: number) {
 		await coupons.delete(`${data.base_url}/coupon/${coupon_id}`, data.access_token);
 
+		refreshCoupons();
 		trigger();
-		await refreshCoupons();
 	}
 
 	coupons.subscribe(($store) => {
@@ -153,7 +150,7 @@
 		currentPage = $store.page;
 		start = currentPage * rowsPerPage - rowsPerPage;
 		end = Math.min(start + rowsPerPage, $store.total_records);
-		endPage = $store.total_pages;
+		endPage = $store.total_records;
 	});
 
 	onMount(() => {
@@ -236,20 +233,25 @@
 									: '0'}</TableBodyCell
 							>
 							<TableBodyCell tdClass="py-2">
-								<Button
-									variant="primary"
-									additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
-									>Gerenciar</Button
+								<Button id={`btn-${coupon.coupon_id}`}>Gerenciar</Button>
+								<Popover
+									class="w-64 text-sm font-light"
+									title={`Opções do Cupom ${coupon.code}`}
+									triggeredBy={`#btn-${coupon.coupon_id}`}
 								>
-								<Dropdown class="w-48 p-3 space-y-1">
-									<a href={`/admin/coupons/${coupon.coupon_id}`}>
-										<DropdownItem>Detalhes</DropdownItem>
-									</a>
-									<DropdownDivider />
-									<DropdownItem on:click={() => inactiveCoupon(coupon.coupon_id)}
-										>Desativar Cupom</DropdownItem
-									>
-								</Dropdown>
+									<div class="flex flex-col space-y-2">
+										<a href={`/admin/coupons/${coupon.coupon_id}`}>
+											<Button variant="secondary" class="w-full text-left">Detalhes</Button>
+										</a>
+										<Button
+											variant="danger"
+											class="w-full text-left"
+											on:click={() => inactiveCoupon(coupon.coupon_id)}
+										>
+											Desativar Cupom
+										</Button>
+									</div>
+								</Popover>
 							</TableBodyCell>
 						</TableBodyRow>
 					{/each}
@@ -273,7 +275,7 @@
 				on:change={handleRowsPerPageChange}
 			/>
 
-			{start + 1}-{end} de {data.coupons.total_records}
+			{start + 1}-{end} de {endPage}
 
 			<button
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
@@ -313,6 +315,7 @@
 		{users}
 		{userDetails}
 		on:close={handleModalClose}
+		on:cancel={() => (isModalOpen = false)}
 	/>
 
 	{#if notification}

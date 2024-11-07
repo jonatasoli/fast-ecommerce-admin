@@ -39,6 +39,10 @@
 		dispatch('close');
 	}
 
+	function cancelModal() {
+		dispatch('cancel');
+	}
+
 	async function createCoupon() {
 		coupon.affiliate_id = coupon.affiliate_id.value;
 		coupon.product_id = coupon.product_id.value;
@@ -67,7 +71,7 @@
 	}
 </script>
 
-<Modal bind:open={isOpen} on:close={closeModal} size="md">
+<Modal bind:open={isOpen} on:close={cancelModal} size="md">
 	<div class="p-4 space-y-4">
 		<h3 class="text-lg font-semibold mb-4">Detalhes do Cupom</h3>
 
@@ -173,7 +177,7 @@
 		</div>
 
 		<div class="flex flex-wrap justify-end space-x-2 mt-4">
-			<Button variant="secondary" on:click={closeModal} class="w-full sm:w-auto">Cancelar</Button>
+			<Button variant="secondary" on:click={cancelModal} class="w-full sm:w-auto">Cancelar</Button>
 			<Button variant="primary" on:click={createCoupon} class="w-full sm:w-auto">Salvar</Button>
 		</div>
 	</div>
