@@ -193,7 +193,21 @@
 							</Badge>
 						</TableBodyCell>
 
-						<TableBodyCell tdClass="py-2">{getStatusTranslation(order.order_status)}</TableBodyCell>
+						<TableBodyCell tdClass="py-2">
+							<Badge
+								class="w-32 text-center px-2 py-1 rounded-full border"
+								border
+								color={order.order_status === 'PAYMENT_PENDING'
+									? 'yellow'
+									: order.order_status === 'SHIPPING_COMPLETE'
+										? 'green'
+										: order.order_status === 'PAYMENT_PAID'
+											? 'green'
+											: 'red'}
+							>
+								{getStatusTranslation(order.order_status)}
+							</Badge>
+						</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.user.name}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.freight}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.coupon_id ?? 'sem cupom'}</TableBodyCell>
