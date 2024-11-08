@@ -39,6 +39,7 @@
 			<a href="/admin/inventory" class={active(pathname, '/admin/inventory')}>Estoque</a>
 			<a href="/admin/invoices" class={active(pathname, '/admin/invoices')}>Fiscal</a>
 			<a href="/admin/logistics" class={active(pathname, '/admin/logistics')}>Logistica</a>
+			<a href="/admin/coupons" class={active(pathname, '/admin/coupons')}>Cupons</a>
 			<a href="/admin/management" class={active(pathname, '/admin/management')}
 				>Gestão de Usuários</a
 			>

@@ -14,7 +14,6 @@ export const load = async ({ url, cookies }) => {
 
 	let currentLogistic;
 	logistic.subscribe((value) => (currentLogistic = value))();
-	console.log(currentLogistic);
 
 	return {
 		orders: currentLogistic,

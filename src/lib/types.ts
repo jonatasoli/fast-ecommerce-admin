@@ -12,6 +12,24 @@ export interface CancelledReason {
 	cancel_reason: string;
 }
 
+export interface Coupon {
+	code: string;
+	user_id: number | null;
+	product_id: any | null;
+	discount_price: string | null;
+	limit_price: string | null;
+	active: boolean;
+	qty: number;
+	affiliate_id: any | null;
+	discount: string;
+	coupon_id?: number;
+	commission_percentage: any | null;
+}
+
+export interface CouponData {
+	coupon: Coupon[];
+}
+
 export interface Address {
 	user_id: number;
 	street: string;
@@ -253,4 +271,12 @@ export interface PaymentGatewayConfig {
 	settings_id: number;
 	field: string;
 	is_active: boolean;
+}
+
+export interface CouponsResponse {
+	page: number;
+	offset: number;
+	total_pages: number;
+	total_records: number;
+	coupons: Coupon[];
 }

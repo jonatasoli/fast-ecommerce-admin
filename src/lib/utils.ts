@@ -113,6 +113,18 @@ export const statusMap: Record<string, string> = {
 	CANCELLED: 'Cancelado'
 };
 
+export function formatPercentage(value: number): string {
+	return `${(value * 100).toFixed(2)}%`;
+}
+
+export function parsePercentage(value: string | null): string {
+	if (!value) return '0';
+
+	const numericValue = parseFloat(value.replace('%', ''));
+
+	return (numericValue / 100).toString();
+}
+
 /**
  * Retorna a tradução do status baseado no código do status.
  * @param statusCode - O código do status (ex: 'PAYMENT_PENDING')

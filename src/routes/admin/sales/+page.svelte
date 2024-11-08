@@ -101,11 +101,9 @@
 
 	async function nextPage() {
 		if (currentPage < endPage) {
-			console.log(currentPage);
 			currentPage++;
 			searchParams.set('page', currentPage);
 			await refreshOrders();
-			console.log(searchParams.get('page'));
 		}
 	}
 
@@ -113,7 +111,6 @@
 		if (currentPage > 1) {
 			currentPage--;
 			searchParams.set('page', currentPage);
-			console.log(currentPage);
 			refreshOrders();
 		}
 	}
@@ -130,8 +127,6 @@
 	}
 
 	async function handleSaveFromModal(event: any) {
-		console.log(event);
-
 		try {
 			const res = await ordersStore.delete(
 				`${data.base_url}/order/${event.detail.selectedOrder}`,
@@ -188,13 +183,31 @@
 							<Badge
 								class="w-32 text-center px-2 py-1 rounded-full border"
 								border
-								color={order.tracking_number ? 'green' : 'red'}
+								color={order.tracking_number && order.order_status === 'PAYMENT_PENDING'
+									? 'yellow'
+									: order.tracking_number
+										? 'green'
+										: 'red'}
 							>
 								{order.tracking_number ? 'Enviado' : 'não enviado'}
 							</Badge>
 						</TableBodyCell>
 
-						<TableBodyCell tdClass="py-2">{getStatusTranslation(order.order_status)}</TableBodyCell>
+						<TableBodyCell tdClass="py-2">
+							<Badge
+								class="w-32 text-center px-2 py-1 rounded-full border"
+								border
+								color={order.order_status === 'PAYMENT_PENDING'
+									? 'yellow'
+									: order.order_status === 'SHIPPING_COMPLETE'
+										? 'green'
+										: order.order_status === 'PAYMENT_PAID'
+											? 'green'
+											: 'red'}
+							>
+								{getStatusTranslation(order.order_status)}
+							</Badge>
+						</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.user.name}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.freight}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">{order.coupon_id ?? 'sem cupom'}</TableBodyCell>
