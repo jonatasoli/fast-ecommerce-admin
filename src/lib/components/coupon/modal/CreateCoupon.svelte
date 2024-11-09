@@ -176,7 +176,7 @@
 			</div>
 		</div>
 
-		<div class="flex flex-wrap justify-end space-x-2 mt-4">
+		<div class="my-8 space-y-4 flex flex-col md:inline-block">
 			<Button variant="secondary" on:click={cancelModal} class="w-full sm:w-auto">Cancelar</Button>
 			<Button variant="primary" on:click={createCoupon} class="w-full sm:w-auto">Salvar</Button>
 		</div>
