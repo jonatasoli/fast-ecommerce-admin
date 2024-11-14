@@ -44,11 +44,15 @@
 	}
 
 	async function createCoupon() {
-		coupon.affiliate_id = coupon.affiliate_id.value;
-		coupon.product_id = coupon.product_id.value;
-		coupon.commission_percentage = coupon.commission_percentage.value;
+		const payload = {
+			...coupon,
+			product_id: coupon.product_id.value === 0 ? null : coupon.product_id.value,
+			affiliate_id: coupon.affiliate_id.value === 0 ? null : coupon.affiliate_id.value,
+			commission_percentage:
+				coupon.commission_percentage.value === 0 ? null : coupon.commission_percentage.value
+		};
 
-		const res = coupons.post(`${details.base_url}/coupon/`, coupon, details.token);
+		const res = coupons.post(`${details.base_url}/coupon/`, payload, details.token);
 
 		if (res) {
 			closeModal();
@@ -64,10 +68,7 @@
 	}
 
 	function handlePercentChange(event: any) {
-		console.log(coupon.commission_percentage);
 		coupon.commission_percentage.value = Number(event.target.value);
-
-		console.log(coupon.commission_percentage);
 	}
 </script>
 
