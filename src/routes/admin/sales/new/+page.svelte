@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { Button, Input, Spinner, Card } from 'flowbite-svelte';
 	import { getOrderById } from '$lib/stores/sales';
-	import { getStatusTranslation } from '$lib/utils.js';
+	import { getStatusTranslation, paymentMethodMap } from '$lib/utils';
 	import type { DataSalesOrders } from '$lib/types';
 	import { currencyFormat } from '$lib/utils';
 
@@ -168,6 +168,16 @@
 					<label for="state" class="block text-sm font-medium text-gray-700"
 						>Residencia
 					</label><Input id="state" value={getState(order.user)} readonly />
+				</div>
+
+				<div>
+					<label for="payment_type" class="block text-sm font-medium text-gray-700"
+						>Método de pagamento
+					</label><Input
+						id="payment_type"
+						value={paymentMethodMap[order.payment.payment_method]}
+						readonly
+					/>
 				</div>
 
 				<div>
