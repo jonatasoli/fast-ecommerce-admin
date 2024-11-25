@@ -113,6 +113,14 @@ export const statusMap: Record<string, string> = {
 	CANCELLED: 'Cancelado'
 };
 
+export const paymentMethodMap: Record<string, string> = {
+	credit_card: 'Cartão de Crédito',
+	boleto: 'Boleto',
+	pix: 'Pix',
+	debit_card: 'Cartão de Débito',
+	cash: 'Dinheiro'
+};
+
 export function formatPercentage(value: number): string {
 	return `${(value * 100).toFixed(2)}%`;
 }
