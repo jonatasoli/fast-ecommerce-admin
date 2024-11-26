@@ -226,8 +226,10 @@
 							<TableBodyCell tdClass="py-2">{order.freight}</TableBodyCell>
 							<TableBodyCell tdClass="py-2">{order.coupon_id ?? 'sem cupom'}</TableBodyCell>
 							<TableBodyCell tdClass="py-2">{order.cancelled_reason ?? ''}</TableBodyCell>
-							<TableBodyCell tdClass="py-2"
-								>{paymentMethodMap[order.payment.payment_method]}</TableBodyCell
+							<TableBodyCell tdClass="py-2">
+								{order.payment?.payment_method
+									? paymentMethodMap[order.payment.payment_method]
+									: ''}</TableBodyCell
 							>
 							<TableBodyCell tdClass="py-2">
 								<Button
