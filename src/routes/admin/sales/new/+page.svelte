@@ -175,7 +175,9 @@
 						>Método de pagamento
 					</label><Input
 						id="payment_type"
-						value={paymentMethodMap[order.payment.payment_method]}
+						value={order.payment?.payment_method
+							? paymentMethodMap[order.payment.payment_method]
+							: ''}
 						readonly
 					/>
 				</div>
@@ -233,7 +235,7 @@
 					</label><Input
 						id="freight_amount"
 						value={currencyFormatFreight(
-							Number(order.payment.freight_amount),
+							Number(order.payment?.freight_amount),
 							undefined,
 							'freight'
 						)}
@@ -244,7 +246,11 @@
 				<div>
 					<label for="total" class="block text-sm font-medium text-gray-700"
 						>Valor Total
-					</label><Input id="total" value={currencyFormat(Number(order.payment.amount))} readonly />
+					</label><Input
+						id="total"
+						value={currencyFormat(Number(order.payment?.amount))}
+						readonly
+					/>
 				</div>
 			</form>
 		{/if}
@@ -317,8 +323,11 @@
 
 		<div class="mt-8 flex justify-end space-x-8">
 			<div class="text-right">
-				<p><strong>Frete:</strong> {currencyFormatFreight(Number(order.payment.freight_amount))}</p>
-				<p><strong>Total do Pedido:</strong> {currencyFormat(Number(order.payment.amount))}</p>
+				<p>
+					<strong>Frete:</strong>
+					{currencyFormatFreight(Number(order.payment?.freight_amount))}
+				</p>
+				<p><strong>Total do Pedido:</strong> {currencyFormat(Number(order.payment?.amount))}</p>
 			</div>
 		</div>
 	</div>
