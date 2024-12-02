@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { couponsStore } from '$lib/stores/coupons';
 	import { currencyFormat, formatPercentage } from '$lib/utils';
 	import {
@@ -160,53 +161,53 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Gestão de Cupons</h1>
-		<Button class="bg-primary " on:click={addCoupon}>Novo Cupom</Button>
+		<h1 class="text-3xl font-semibold">{$_('coupons.title')}</h1>
+		<Button class="bg-primary " on:click={addCoupon}>{$_('coupons.newCoupon')}</Button>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
 		<Table hoverable={true}>
 			<TableSearch
 				innerDivClass="p-0 my-2"
-				placeholder="Buscar por cupom ou produto"
+				placeholder={$_('coupons.placeholderSearch')}
 				hoverable={true}
 				bind:inputValue={searchTerm}
 			>
 				<TableHead>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('user_id')}
-						>ID</TableHeadCell
+						>{$_('coupons.table.id')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('string_name')}
-						>código</TableHeadCell
+						>{$_('coupons.table.code')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('document')}
-						>usuário</TableHeadCell
+						>{$_('coupons.table.user')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('email')}
-						>produto</TableHeadCell
+						>{$_('coupons.table.product')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>desconto</TableHeadCell
+						>{$_('coupons.table.discount')}</TableHeadCell
 					>
 
 					<TableHeadCell class="cursor-pointer" on:click={() => orderBy('role_id')}
-						>situação</TableHeadCell
+						>{$_('coupons.table.status')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>Quantidade</TableHeadCell
+						>{$_('coupons.table.quantity')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>limite</TableHeadCell
+						>{$_('coupons.table.limit')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>comissão</TableHeadCell
+						>{$_('coupons.table.commission')}</TableHeadCell
 					>
 
-					<TableHeadCell class="">Ações</TableHeadCell>
+					<TableHeadCell>{$_('coupons.table.actions')}</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
 					{#each items as coupon}
@@ -241,14 +242,16 @@
 								>
 									<div class="flex flex-col space-y-2">
 										<a href={`/admin/coupons/${coupon.coupon_id}`}>
-											<Button variant="secondary" class="w-full text-left">Detalhes</Button>
+											<Button variant="secondary" class="w-full text-left"
+												>{$_('coupons.details')}</Button
+											>
 										</a>
 										<Button
 											variant="danger"
 											class="w-full text-left"
 											on:click={() => inactiveCoupon(coupon.coupon_id)}
 										>
-											Desativar Cupom
+											{$_('coupons.desactiveCoupon')}
 										</Button>
 									</div>
 								</Popover>
@@ -259,13 +262,13 @@
 			</TableSearch>
 		</Table>
 		<div class="w-full flex justify-end items-center gap-2 my-3">
-			<Label>Quantidade por página</Label>
+			<Label>{$_('tables.quantityPerPage')}</Label>
 			<Select
 				variant="outlined"
 				bind:value={rowsPerPage}
 				noLabel
 				class="w-24"
-				placeholder="Escolha uma opção"
+				placeholder={$_('tables.placeholderChoice')}
 				items={[
 					{ value: 10, name: '10' },
 					{ value: 20, name: '20' },
@@ -324,7 +327,7 @@
 				<CheckCircleSolid class="w-5 h-5" />
 				<span class="sr-only">Check icon</span>
 			</svelte:fragment>
-			Criado com Sucesso!
+			{$_('toast.success')}
 		</Toast>
 	{/if}
 </div>

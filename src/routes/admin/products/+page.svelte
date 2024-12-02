@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -83,18 +84,18 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Produtos</h1>
-		<Button variant="primary" on:click={goToNew}>Novo Produto</Button>
+		<h1 class="text-3xl font-semibold">{$_('products.title')}</h1>
+		<Button variant="primary" on:click={goToNew}>{$_('products.newProduct')}</Button>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
 		<Table hoverable={true}>
 			<TableHead>
-				<TableHeadCell>Id</TableHeadCell>
-				<TableHeadCell>Produto</TableHeadCell>
-				<TableHeadCell>Estoque</TableHeadCell>
-				<TableHeadCell>Preço</TableHeadCell>
-				<TableHeadCell>Ações</TableHeadCell>
+				<TableHeadCell class="pl-0 ">{$_('products.table.id')}</TableHeadCell>
+				<TableHeadCell class="pl-0 ">{$_('products.table.product')}</TableHeadCell>
+				<TableHeadCell class="pl-0 ">{$_('products.table.inventory')}</TableHeadCell>
+				<TableHeadCell class="pl-0 ">{$_('products.table.price')}</TableHeadCell>
+				<TableHeadCell>{$_('products.table.actions')}</TableHeadCell>
 			</TableHead>
 			<TableBody tableBodyClass="divide-y">
 				{#each items as product}
@@ -105,7 +106,7 @@
 						<TableBodyCell tdClass="py-2">{currencyFormat(product.price)}</TableBodyCell>
 						<TableBodyCell tdClass="py-2">
 							<Button variant="primary" on:click={() => productMore(product.product_id)}
-								>Ver mais</Button
+								>{$_('products.more')}</Button
 							>
 						</TableBodyCell>
 					</TableBodyRow>
@@ -113,13 +114,13 @@
 			</TableBody>
 		</Table>
 		<div class="w-full flex justify-end items-center gap-2 my-3">
-			<Label>Quantidade por página</Label>
+			<Label>{$_('tables.quantityPerPage')}</Label>
 			<Select
 				variant="outlined"
 				bind:value={rowsPerPage}
 				noLabel
 				class="w-24"
-				placeholder="Escolha uma opção"
+				placeholder={$_('tables.placeholderChoice')}
 				items={[
 					{ value: 10, name: '10' },
 					{ value: 20, name: '20' },

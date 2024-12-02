@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -194,25 +195,25 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Orders</h1>
+		<h1 class="text-3xl font-semibold">{$_('logistics.title')}</h1>
 	</div>
 	<div class="my-4">
 		<button
 			class={`px-4 py-2 rounded ${trackingFilter ? 'bg-primary text-white' : 'bg-gray-300 text-gray-700'}`}
 			on:click={toggleTrackingFilter}
 		>
-			Tracking Number
+			{$_('logistics.trackingNumber')}
 		</button>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
 		<Table hoverable={true}>
 			<TableHead>
-				<TableHeadCell class="pl-0">Id</TableHeadCell>
-				<TableHeadCell class="pl-0">User Name</TableHeadCell>
-				<TableHeadCell class="pl-0">Order Date</TableHeadCell>
-				<TableHeadCell class="pl-0">Order Status</TableHeadCell>
-				<TableHeadCell class="">Ações</TableHeadCell>
+				<TableHeadCell class="pl-0">{$_('logistics.table.id')}</TableHeadCell>
+				<TableHeadCell class="pl-0">{$_('logistics.table.userName')}</TableHeadCell>
+				<TableHeadCell class="pl-0">{$_('logistics.table.date')}</TableHeadCell>
+				<TableHeadCell class="pl-0">{$_('logistics.table.status')}</TableHeadCell>
+				<TableHeadCell class="">{$_('logistics.table.actions')}</TableHeadCell>
 			</TableHead>
 			<TableBody tableBodyClass="divide-y">
 				{#each items as order}
@@ -228,7 +229,7 @@
 								variant="primary"
 								on:click={() => openModal(order)}
 								additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
-								>Ver mais</Button
+								>{$_('logistics.table.actions')}</Button
 							>
 						</TableBodyCell>
 					</TableBodyRow>
@@ -236,13 +237,13 @@
 			</TableBody>
 		</Table>
 		<div class="w-full flex justify-end items-center gap-2 my-3">
-			<Label>Quantidade por página</Label>
+			<Label>{$_('tables.quantityPerPage')}</Label>
 			<Select
 				variant="outlined"
 				bind:value={rowsPerPage}
 				noLabel
 				class="w-24"
-				placeholder="Escolha uma opção"
+				placeholder={$_('tables.placeholderChoice')}
 				items={[
 					{ value: 10, name: '10' },
 					{ value: 20, name: '20' },
@@ -291,14 +292,13 @@
 		on:updatedTrackingNumber={updateTrackingNumber}
 		on:updatedLogistic={logisticUpdate}
 	/>
-
 	{#if notification}
 		<Toast color="green" position="top-right">
 			<svelte:fragment slot="icon">
 				<CheckCircleSolid class="w-5 h-5" />
 				<span class="sr-only">Check icon</span>
 			</svelte:fragment>
-			Atualizado com Sucesso!
+			{$_('toast.success')}
 		</Toast>
 	{/if}
 </div>

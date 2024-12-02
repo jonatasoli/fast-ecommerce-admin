@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import { page } from '$app/stores';
-
+	import { _ } from 'svelte-i18n';
 	import '../../app.css';
 
 	let pathname = '';
@@ -32,21 +32,33 @@
 	<header
 		class="flex items-center justify-between gap-4 border-b border-b-gray-200 shadow-sm p-4 print:hidden"
 	>
-		<h1 class="text-primary text-xl font-bold">Gatto Rosa Admin</h1>
+		<h1 class="text-primary text-xl font-bold">{$_('title')}</h1>
 		<nav class="flex gap-4">
-			<a href="/admin" class={active(pathname, '/admin')}>Inicio</a>
-			<a href="/admin/products" class={active(pathname, '/admin/products')}>Produtos</a>
-			<a href="/admin/inventory" class={active(pathname, '/admin/inventory')}>Estoque</a>
-			<a href="/admin/invoices" class={active(pathname, '/admin/invoices')}>Fiscal</a>
-			<a href="/admin/logistics" class={active(pathname, '/admin/logistics')}>Logistica</a>
-			<a href="/admin/coupons" class={active(pathname, '/admin/coupons')}>Cupons</a>
+			<a href="/admin" class={active(pathname, '/admin')}>{$_('navigation.home')}</a>
+			<a href="/admin/products" class={active(pathname, '/admin/products')}
+				>{$_('navigation.products')}</a
+			>
+			<a href="/admin/inventory" class={active(pathname, '/admin/inventory')}
+				>{$_('navigation.inventory')}</a
+			>
+			<a href="/admin/invoices" class={active(pathname, '/admin/invoices')}
+				>{$_('navigation.invoice')}</a
+			>
+			<a href="/admin/logistics" class={active(pathname, '/admin/logistics')}
+				>{$_('navigation.logistic')}</a
+			>
+			<a href="/admin/coupons" class={active(pathname, '/admin/coupons')}
+				>{$_('navigation.coupons')}</a
+			>
 			<a href="/admin/management" class={active(pathname, '/admin/management')}
 				>Gestão de Usuários</a
 			>
-			<a href="/admin/sales" class={active(pathname, '/admin/sales')}>Vendas</a>
-			<a href="/admin/settings" class={active(pathname, '/admin/settings')}>Configurações</a>
+			<a href="/admin/sales" class={active(pathname, '/admin/sales')}>{$_('navigation.sales')}</a>
+			<a href="/admin/settings" class={active(pathname, '/admin/settings')}
+				>{$_('navigation.settings')}</a
+			>
 		</nav>
-		<Button variant="secondary" on:click={logout}>Sair</Button>
+		<Button variant="secondary" on:click={logout}>{$_('userMenu.logout')}</Button>
 	</header>
 	<slot />
 </main>
