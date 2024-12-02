@@ -43,6 +43,7 @@
 			<a href="/admin/management" class={active(pathname, '/admin/management')}
 				>Gestão de Usuários</a
 			>
+			<a href="/admin/commissions" class={active(pathname, '/admin/commissions')}>Comissões</a>
 			<a href="/admin/sales" class={active(pathname, '/admin/sales')}>Vendas</a>
 			<a href="/admin/settings" class={active(pathname, '/admin/settings')}>Configurações</a>
 		</nav>
