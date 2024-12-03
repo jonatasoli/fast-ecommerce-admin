@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { Tabs, TabItem, Select, Checkbox } from 'flowbite-svelte';
 	import PaymentTab from '$lib/components/settings/tabs/payment/+page.svelte';
 	import LogisticsTab from '$lib/components/settings/tabs/logistics/+page.svelte';
@@ -29,21 +30,21 @@
 </script>
 
 <div class="container mt-8 space-y-8 p-4">
-	<h2 class="text-2xl font-bold mb-4">Configuração de Locais</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('settings.title')}</h2>
 	<form on:submit|preventDefault={handleSaveLocales} class="space-y-4">
 		<div class="flex items-center space-x-4">
-			<label class="block text-sm font-medium text-gray-700">Locale Code (Short Code):</label>
+			<label class="block text-sm font-medium text-gray-700">{$_('settings.locale')}</label>
 			<Select
 				bind:value={selectedCode}
 				variant="outlined"
 				noLabel
 				class="w-auto"
-				placeholder="Escolha uma opção"
+				placeholder={$_('settings.placeholder')}
 				items={locales}
 				on:change={handleSaveLocales}
 			/>
 
-			<label class="block text-sm font-medium text-gray-700">Padrão:</label>
+			<label class="block text-sm font-medium text-gray-700">{$_('settings.default')}</label>
 			<Checkbox checked={isDefaultCode(selectedCode)} />
 		</div>
 	</form>

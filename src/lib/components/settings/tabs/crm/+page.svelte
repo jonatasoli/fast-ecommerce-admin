@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
 	import type { CrmSettings, Items } from '$lib/types';
@@ -165,7 +166,7 @@
 </script>
 
 <div class="container mt-8 space-y-8">
-	<h2 class="text-2xl font-bold mb-4">Configuração de Logística</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('settings.crmTab.title')}</h2>
 	{#if isLoading}
 		<div class="flex justify-center items-center">
 			<Spinner size="10" />
@@ -174,7 +175,7 @@
 		<form on:submit|preventDefault={handleSaveCrmConfig}>
 			<div class="my-2">
 				<label for="provider" class="block text-sm font-medium text-gray-700 mb-1"
-					>Nome do Fornecedor:</label
+					>{$_('settings.crmTab.providerName')}</label
 				>
 				<Select
 					id="provider"
@@ -185,47 +186,55 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Descrição:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.crmTab.description')}</label
+				>
 				<Input
 					type="text"
 					bind:value={crmSettings.value.description}
-					placeholder="Usuário"
+					placeholder={$_('settings.crmTab.description')}
 					class="input w-full"
 				/>
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Access Key:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.crmTab.accessKey')}</label
+				>
 				<Input
 					type="text"
 					bind:value={crmSettings.value.access_key}
-					placeholder="Senha"
+					placeholder={$_('settings.crmTab.accessKey')}
 					class="input w-full"
 				/>
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Url:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.crmTab.urlCrm')}</label
+				>
 				<Input
 					type="text"
 					bind:value={crmSettings.value.url}
-					placeholder="URL"
+					placeholder={$_('settings.crmTab.urlCrm')}
 					class="input w-full"
 				/>
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Stage Name:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.crmTab.stageName')}</label
+				>
 				<Input
 					type="text"
 					bind:value={crmSettings.value.deal_stage_name}
-					placeholder="Stage Name"
+					placeholder={$_('settings.crmTab.stageName')}
 					class="input w-full"
 				/>
 			</div>
 			<div class="flex justify-end">
 				<Button type="submit" class="btn-primary text-white rounded-md px-4 py-2 mt-4"
-					>Salvar Configurações</Button
+					>{$_('settings.crmTab.save')}</Button
 				>
 			</div>
 		</form>

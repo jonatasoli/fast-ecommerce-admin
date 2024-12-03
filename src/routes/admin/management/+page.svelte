@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -111,7 +112,7 @@
 	}
 
 	function detectSearchType(query: string) {
-		const isDocument = /^\d+$/.test(query); // Checa se contém apenas números
+		const isDocument = /^\d+$/.test(query);
 		return isDocument ? 'search_document' : 'search_name';
 	}
 
@@ -264,7 +265,7 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Gestão de Usuários</h1>
+		<h1 class="text-3xl font-semibold">{$_('management.title')}</h1>
 	</div>
 	<div class="my-4"></div>
 
@@ -272,29 +273,29 @@
 		<Table hoverable={true}>
 			<TableSearch
 				innerDivClass="p-0 my-2"
-				placeholder="Buscar por nome ou documento"
+				placeholder={$_('management.placeholderSearch')}
 				hoverable={true}
 				bind:inputValue={searchTerm}
 			>
 				<TableHead>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('user_id')}
-						>ID</TableHeadCell
+						>{$_('management.table.id')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('string_name')}
-						>Nome</TableHeadCell
+						>{$_('management.table.name')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('document')}
-						>Documento</TableHeadCell
+						>{$_('management.table.document')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('email')}
-						>Username</TableHeadCell
+						>{$_('management.table.username')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>Role</TableHeadCell
+						>{$_('management.table.role')}</TableHeadCell
 					>
 
-					<TableHeadCell class="">Ações</TableHeadCell>
+					<TableHeadCell class="">{$_('management.table.actions')}</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
 					{#each items as users}
@@ -308,15 +309,15 @@
 								<Button
 									variant="primary"
 									additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
-									>Gerenciar</Button
+									>{$_('management.manage')}</Button
 								>
 								<Dropdown class="w-48 p-3 space-y-1">
 									<DropdownItem on:click={(event) => openModal(users, event.currentTarget)}
-										>Edit User</DropdownItem
+										>{$_('management.editUser')}</DropdownItem
 									>
 									<DropdownDivider />
 									<DropdownItem on:click={(event) => resetPassword(users, event.currentTarget)}
-										>Reset Password</DropdownItem
+										>{$_('management.resetPassword')}</DropdownItem
 									>
 								</Dropdown>
 							</TableBodyCell>
@@ -326,13 +327,13 @@
 			</TableSearch>
 		</Table>
 		<div class="w-full flex justify-end items-center gap-2 my-3">
-			<Label>Quantidade por página</Label>
+			<Label>{$_('tables.quantityPerPage')}</Label>
 			<Select
 				variant="outlined"
 				bind:value={rowsPerPage}
 				noLabel
 				class="w-24"
-				placeholder="Escolha uma opção"
+				placeholder={$_('tables.placeholderrChoice')}
 				items={[
 					{ value: 10, name: '10' },
 					{ value: 20, name: '20' },
@@ -386,9 +387,8 @@
 		<Toast color="green" position="top-right">
 			<svelte:fragment slot="icon">
 				<CheckCircleSolid class="w-5 h-5" />
-				<span class="sr-only">Check icon</span>
 			</svelte:fragment>
-			Atualizado com Sucesso!
+			{$_('toast.success')}
 		</Toast>
 	{/if}
 </div>

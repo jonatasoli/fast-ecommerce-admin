@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import Button from '$lib/components/Button.svelte';
 	import { onMount } from 'svelte';
 
@@ -164,7 +165,7 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Pedidos</h1>
+		<h1 class="text-3xl font-semibold">{$_('sales.title')}</h1>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
@@ -175,16 +176,21 @@
 		{:else}
 			<Table hoverable={true}>
 				<TableHead>
-					<TableHeadCell class="pl-0 cursor-pointer">Id</TableHeadCell>
-					<TableHeadCell class=" cursor-pointer">Data</TableHeadCell>
-					<TableHeadCell class="cursor-pointer">Rastreio</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Status do pedido</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Nome do comprador</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Tipo de frete</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">ID do Cupom</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Motivo do cancelamento</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Método de pagamento</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Editar</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('sales.table.id')}</TableHeadCell>
+					<TableHeadCell class=" cursor-pointer">{$_('sales.table.date')}</TableHeadCell>
+					<TableHeadCell class="cursor-pointer">{$_('sales.table.statusTracking')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer"
+						>{$_('sales.table.statusPayment')}</TableHeadCell
+					>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('sales.table.username')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('sales.table.freightType')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('sales.table.idCoupon')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('sales.table.cancelReason')}</TableHeadCell
+					>
+					<TableHeadCell class="pl-0 cursor-pointer"
+						>{$_('sales.table.paymentMethod')}</TableHeadCell
+					>
+					<TableHeadCell class="cursor-pointer">{$_('sales.table.edit')}</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
 					{#each items as order}
@@ -235,20 +241,20 @@
 								<Button
 									variant="primary"
 									additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
-									>Gerenciar</Button
+									>{$_('sales.table.actions')}</Button
 								>
 								<Dropdown class="w-48 p-3 space-y-1">
 									<DropdownItem
 										on:click={() => {
 											goto(`/admin/sales/new?order_id=${order.order_id}`);
-										}}>Detalhes</DropdownItem
+										}}>{$_('sales.table.details')}</DropdownItem
 									>
 									{#if order.order_status !== 'CANCELLED'}
 										<DropdownDivider />
 										<DropdownItem
 											on:click={() => {
 												handleCancelOrder(order.order_id);
-											}}>Cancelar pedido</DropdownItem
+											}}>{$_('sales.table.cancelOrder')}</DropdownItem
 										>
 									{/if}
 								</Dropdown>
@@ -259,13 +265,13 @@
 			</Table>
 
 			<div class="w-full flex justify-end items-center gap-2 my-3">
-				<Label>Quantidade por página</Label>
+				<Label>{$_('tables.quantityPerPage')}</Label>
 				<Select
 					variant="outlined"
 					bind:value={rowsPerPage}
 					noLabel
 					class="w-24"
-					placeholder="Escolha uma opção"
+					placeholder={$_('tables.placeholderChoice')}
 					items={[
 						{ value: 10, name: '10' },
 						{ value: 20, name: '20' },
@@ -319,9 +325,8 @@
 		<Toast color="green" position="top-right">
 			<svelte:fragment slot="icon">
 				<CheckCircleSolid class="w-5 h-5" />
-				<span class="sr-only">Check icon</span>
 			</svelte:fragment>
-			Atualizado com Sucesso!
+			{$_('toast.success')}
 		</Toast>
 	{/if}
 </div>
