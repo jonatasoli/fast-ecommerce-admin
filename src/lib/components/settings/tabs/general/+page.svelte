@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
 	import type { CompanySettings, Items } from '$lib/types';
@@ -151,7 +152,7 @@
 </script>
 
 <div class="container mt-8 space-y-8">
-	<h2 class="text-2xl font-bold mb-4">Configurações Gerais</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('settings.general.title')}</h2>
 	{#if isLoading}
 		<div class="flex justify-center items-center">
 			<Spinner size="10" />
@@ -159,38 +160,44 @@
 	{:else}
 		<form on:submit|preventDefault={handleSaveCompany}>
 			<div class="my-4">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Provider:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.general.providerName')}</label
+				>
 				<Input
 					type="text"
 					bind:value={generalConfig.provider}
-					placeholder="Digite o nome da empresa"
+					placeholder={$_('settings.general.providerName')}
 					class="input w-full"
 				/>
 			</div>
 
 			<div class="my-4">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Descrição:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.general.providerName')}</label
+				>
 				<Input
 					type="text"
 					bind:value={generalConfig.value.description}
-					placeholder="Digite o nome da empresa"
+					placeholder={$_('settings.general.providerName')}
 					class="input w-full"
 				/>
 			</div>
 
 			<div class="my-4">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Nome da Empresa:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.general.companyName')}</label
+				>
 				<Input
 					type="text"
 					bind:value={generalConfig.value.name}
-					placeholder="Digite o nome da empresa"
+					placeholder={$_('settings.general.companyName')}
 					class="input w-full"
 				/>
 			</div>
 
 			<div class="mt-4 text-right">
 				<Button type="submit" class="btn-primary text-white rounded-md px-4 py-2">
-					Salvar Configurações
+					{$_('settings.general.save')}
 				</Button>
 			</div>
 		</form>

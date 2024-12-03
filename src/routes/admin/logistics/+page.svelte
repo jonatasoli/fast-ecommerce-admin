@@ -296,7 +296,6 @@
 		<Toast color="green" position="top-right">
 			<svelte:fragment slot="icon">
 				<CheckCircleSolid class="w-5 h-5" />
-				<span class="sr-only">Check icon</span>
 			</svelte:fragment>
 			{$_('toast.success')}
 		</Toast>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import Notification from '$lib/components/notification/notification.svelte';
 	import { settingsStore } from '$lib/stores/settings';
 	import type { Items, NotificationSettings } from '$lib/types';
@@ -168,7 +169,7 @@
 </script>
 
 <div class="container mt-8 space-y-8">
-	<h2 class="text-2xl font-bold mb-4">Configuração de Notificação</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('settings.notificationTab.title')}</h2>
 
 	{#if isLoading}
 		<div class="flex justify-center items-center">
@@ -177,7 +178,9 @@
 	{:else}
 		<form on:submit|preventDefault={handleSaveNotification}>
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Notificação:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.notificationTab.notificationType')}</label
+				>
 				<Select bind:value={notification.value.type} items={notificationTypes} />
 			</div>
 
@@ -194,38 +197,44 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Provider:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.notificationTab.provider')}</label
+				>
 				<Input
 					type="text"
 					bind:value={notification.provider}
-					placeholder="Digite a API Key"
+					placeholder={$_('settings.notificationTab.provider')}
 					class="input w-full"
 				/>
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">API Key:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.notificationTab.apiKey')}</label
+				>
 				<Input
 					type="text"
 					bind:value={notification.value.api_key}
-					placeholder="Digite a API Key"
+					placeholder={$_('settings.notificationTab.apiKey')}
 					class="input w-full"
 				/>
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Secret Key:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.notificationTab.secretKey')}</label
+				>
 				<Input
 					type="password"
 					bind:value={notification.value.secret_key}
-					placeholder="Digite a Secret Key"
+					placeholder={$_('settings.notificationTab.secretKey')}
 					class="input w-full"
 				/>
 			</div>
 
 			<div class="mt-4 text-right">
 				<Button type="submit" class="btn-primary  text-white rounded-md px-4 py-2">
-					Salvar Configurações
+					{$_('settings.notificationTab.save')}
 				</Button>
 			</div>
 		</form>

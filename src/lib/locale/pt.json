@@ -61,6 +61,101 @@
         "details": "Detalhes",
         "desactiveCoupon": "Desativar Cupom"
     },
+    "management": {
+        "title": "Gestão de cupons",
+        "placeholderSearch": "Buscar por nome ou documento",
+        "table": {
+            "id": "Id",
+            "name": "Nome",
+            "document": "Documento",
+            "username": "Nome de Usuário",
+            "role": "Função",
+            "actions": "Gerenciar"
+        },
+        "manage": "Gerenciar",
+        "editUser": "Edit User",
+        "resetPassword": "Reset Password"
+    },
+    "sales": {
+        "title": "Pedidos",
+        "table": {
+            "id": "Id",
+            "date": "Data",
+            "statusTracking": "Rastreio",
+            "statusPayment": "Status do Pedido",
+            "username": "Nome do Comprador",
+            "freightType": "Tipo do Frete",
+            "idCoupon": "Id do Cupom",
+            "cancelReason": "Motivo do Cancelamento",
+            "paymentMethod": "Método do Pagamento",
+            "edit": "Editar",
+            "actions": "Gerenciar",
+            "details": "Detalhes",
+            "cancelOrder": "Cancelar Pedido"
+        }
+    },
+    "settings": {
+        "title": "Configuração de Locais",
+        "locale": "Locale Code (short Code): ",
+        "placeholder": "Escolha uma opção",
+        "default": "Padrão:",
+        "paymentTab": {
+            "title": "Configuração do Gateway de Pagamento",
+            "gatewayName": "Nome do Gateway",
+            "gatewayUrl": "URL do Gateway",
+            "key": "Chave:",
+            "secretKey": "Chave Secreta",
+            "save": "Salvar Configurações",
+            "placeholder": {
+                "urlApi": "URL da API",
+                "apiKey": "Chave API",
+                "secretKey": "Chave Secreta"
+            }
+        },
+        "logisticTab": {
+            "title": "Configuração de Logística",
+            "providerName": "Nome do Fornecedor",
+            "user": "Usuário",
+            "password": "Senha",
+            "secretApi": "API Secret",
+            "postalCard": "Postal Card",
+            "save": "Salvar Configurações"
+        },
+        "notificationTab": {
+            "title": "Configuração de Notificação",
+            "notificationType": "Tipo de Notificação",
+            "provider": "Provedor",
+            "apiKey": "Chave API",
+            "secretKey": "Chave Secreta",
+            "save": "Salvar Configuração"
+        },
+        "cdnTab": {
+            "title": "Configuração de CDN",
+            "provider": "Fornecedor",
+            "urlCdn": "Endereço do CDN (URL)",
+            "region": "Região",
+            "bucketName": "Nome do Bucket",
+            "apiKey": "Chave API",
+            "secretKey": "Chave Secreta",
+            "save": "Salvar Configuração"
+        },
+        "crmTab": {
+            "title": "Configuração de Logística",
+            "providerName": "Nome do Fornecedor",
+            "description": "Descrição",
+            "accessKey": "Chave de Acesso",
+            "urlCrm": "Endereço do CRM",
+            "stageName": "Stage Name",
+            "save": "Salvar Configuração"
+        },
+        "general": {
+            "title": "Configurações Gerais",
+            "providerName": "Provedor",
+            "description": "Descrição",
+            "companyName": "Nome da Empresa",
+            "save": "Salvar Configuração"
+        }
+    },
     "title": "Gatto Rosa Admin",
     "header": {
         "type": "Digite o que você procura"

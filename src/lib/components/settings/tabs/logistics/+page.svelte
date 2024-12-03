@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { _ } from 'svelte-i18n';
 	import { settingsStore } from '$lib/stores/settings';
 	import { Input, Select, Button, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
@@ -145,7 +146,7 @@
 				isLoading = false;
 				logistics = {
 					provider: res.provider,
-					value: JSON.parse(res.value), // Faz o parsing da string JSON
+					value: JSON.parse(res.value),
 					locale: res.locale,
 					description: res.description,
 					is_default: res.is_default,
@@ -168,7 +169,7 @@
 
 <!-- Interface de usuário para exibir os valores -->
 <div class="container mt-8 space-y-8">
-	<h2 class="text-2xl font-bold mb-4">Configuração de Logística</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('settings.logisticTab.title')}</h2>
 	{#if isLoading}
 		<div class="flex justify-center items-center">
 			<Spinner size="10" />
@@ -178,7 +179,7 @@
 			<!-- Nome do Fornecedor -->
 			<div class="my-2">
 				<label for="provider" class="block text-sm font-medium text-gray-700 mb-1"
-					>Nome do Fornecedor:</label
+					>{$_('settings.logisticTab.providerName')}</label
 				>
 				<Select
 					id="provider"
@@ -190,50 +191,58 @@
 
 			<!-- Usuário -->
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Usuário:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.logisticTab.user')}</label
+				>
 				<Input
 					type="text"
 					bind:value={logistics.value.logistics_user}
-					placeholder="Usuário"
+					placeholder={$_('settings.logisticTab.user')}
 					class="input w-full"
 				/>
 			</div>
 
 			<!-- Senha -->
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Senha:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.logisticTab.password')}</label
+				>
 				<Input
 					type="password"
 					bind:value={logistics.value.logistics_pass}
-					placeholder="Senha"
+					placeholder={$_('settings.logisticTab.password')}
 					class="input w-full"
 				/>
 			</div>
 
 			<!-- API Secret -->
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">API Secret:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.logisticTab.secretApi')}</label
+				>
 				<Input
 					type="text"
 					bind:value={logistics.value.logistics_api_secret}
-					placeholder="API Secret"
+					placeholder={$_('settings.logisticTab.secretApi')}
 					class="input w-full"
 				/>
 			</div>
 
 			<!-- Cartão Postal -->
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Postal Card:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('settings.logisticTab.postalCard')}</label
+				>
 				<Input
 					type="text"
 					bind:value={logistics.value.logistics_postal_card}
-					placeholder="API Secret"
+					placeholder={$_('settings.logisticTab.postalCard')}
 					class="input w-full"
 				/>
 			</div>
 			<div class="flex justify-end">
 				<Button type="submit" class="btn-primary text-white rounded-md px-4 py-2 mt-4"
-					>Salvar Configurações</Button
+					>{$_('settings.logisticTab.save')}</Button
 				>
 			</div>
 		</form>
