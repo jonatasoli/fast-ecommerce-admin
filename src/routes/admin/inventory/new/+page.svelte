@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { productsStore } from '$lib/stores/product';
 	import { goto, invalidate } from '$app/navigation';
-	import { page } from '$app/stores';
 	import { NumberInput, Toast, Select, Button, Input } from 'flowbite-svelte';
 	import { CheckCircleSolid } from 'flowbite-svelte-icons';
 	import type { ActionData } from '../$types';
@@ -33,13 +33,19 @@
 		try {
 			const formData = new FormData();
 			formData.append('product_id', String(transaction.product_id));
-			formData.append('quantity', String(transaction.quantity));
 			formData.append('operation', transaction.operation);
+
+			const quantity =
+				transaction.operation === 'INCREASE'
+					? Math.abs(transaction.quantity)
+					: -Math.abs(transaction.quantity);
+
+			formData.append('quantity', String(quantity));
+
 			const response = await fetch('new', {
 				method: 'POST',
 				body: formData
 			});
-			console.log(response);
 			const result = await response.json();
 			console.log(result);
 
@@ -48,14 +54,14 @@
 				notification = true;
 				await new Promise((resolve) => setTimeout(resolve, 2000));
 			} else {
-				// Erro na criação da operação
-				console.log(`Erro na sua solicitação ${response}`);
+				console.error(`Erro na sua solicitação: ${response.statusText}`);
 			}
 		} catch (error) {
 			console.error('Erro ao criar operação:', error);
 			alert('Erro ao criar operação.');
+		} finally {
+			notification = false;
 		}
-		notification = false;
 	}
 </script>
 
@@ -96,7 +102,7 @@
 			/>
 
 			<label for="quantity">Quantidade</label>
-			<NumberInput id="quantity" bind:value={transaction.quantity} />
+			<NumberInput id="quantity" bind:value={transaction.quantity} min="1" />
 			<Select class="mt-2" id="operation" bind:value={transaction.operation}>
 				<option value="INCREASE">ADICIONAR</option>
 				<option value="DECREASE">REMOVER</option>
