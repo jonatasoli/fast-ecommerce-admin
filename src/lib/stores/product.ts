@@ -84,7 +84,7 @@ productsStore.request = async (method, url, params = {}, token) => {
 	}
 };
 
-productsStore.get = (url, token) => productsStore.request('GET', url, token);
+productsStore.get = (url, token) => productsStore.request('GET', url, {}, token);
 productsStore.post = (url, params, token) => productsStore.request('POST', url, params, token);
 productsStore.patch = (url, params, token) => productsStore.request('PATCH', url, params, token);
 productsStore.delete = (url, params, token) => productsStore.request('DELETE', url, params, token);
