@@ -59,7 +59,7 @@
 	async function refreshInventory() {
 		await inventoryStore.get(
 			`${data.base_url}/product/inventory?page=${currentPage}&offset=${rowsPerPage}`,
-			data.inventory.access_token
+			data.access_token
 		);
 	}
 
