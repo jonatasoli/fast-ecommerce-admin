@@ -14,7 +14,6 @@ export const load = async ({ url, cookies }) => {
 
 	let currentInventory;
 	inventory_store.subscribe((value) => (currentInventory = value))();
-	console.log(currentInventory);
 
 	return {
 		inventory: currentInventory,

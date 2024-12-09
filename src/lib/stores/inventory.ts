@@ -48,7 +48,7 @@ export function createInventory() {
 		}
 	};
 	// convenience wrappers for get, post, patch, and delete
-	store.get = (url, token) => store.request('GET', url, token);
+	store.get = (url, token) => store.request('GET', url, {}, token);
 	store.post = (url, params, token) => store.request('POST', url, params, token);
 	store.patch = (url, params, token) => store.request('PATCH', url, params, token);
 	store.delete = (url, params, token) => store.request('DELETE', url, params, token);
