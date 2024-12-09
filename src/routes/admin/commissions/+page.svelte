@@ -34,6 +34,8 @@
 
 	export let data: any;
 
+	console.log(data);
+
 	let isModalOpen = false;
 	let isLoading = false;
 	let order_id: number = 0;
@@ -79,7 +81,7 @@
 		isLoading = true;
 		if (data?.orders) {
 			await ordersStore.get(
-				`${data.base_url}/order/orders?page=${currentPage}&offset=${rowsPerPage}`,
+				`${data.base_url}/report/commissions?page=${currentPage}&offset=${rowsPerPage}`,
 				data.orders.access_token
 			);
 
