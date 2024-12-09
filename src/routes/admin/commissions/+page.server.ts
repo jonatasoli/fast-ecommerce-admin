@@ -1,21 +1,21 @@
 import { SERVER_BASE_URL } from '$env/static/private';
-import { ordersStore } from '$lib/stores/sales';
+import { commissionsStore } from '$lib/stores/commissions';
 
 /** @type {import('./$types').PageLoad} */
 export const load = async ({ url, cookies }) => {
-	const page = new URL(url).searchParams.get('page') || 1;
-	const offset = new URL(url).searchParams.get('offset') || 10;
 	const token = cookies.get('access_token');
-	await ordersStore.get(
+	const commission = commissionsStore();
+	await commission.get(
 		`${SERVER_BASE_URL}/report/commissions
-?page=${page}&offset=${offset}`,
+`,
 		token
 	);
-	let currentOrders;
-	ordersStore.subscribe((value) => (currentOrders = value))();
+	let currentCommissions;
+
+	commission.subscribe((value) => (currentCommissions = value))();
 
 	return {
-		orders: currentOrders,
+		commissions: currentCommissions,
 		access_token: token,
 		base_url: `${SERVER_BASE_URL}`
 	};

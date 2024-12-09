@@ -280,3 +280,24 @@ export interface CouponsResponse {
 	total_records: number;
 	coupons: Coupon[];
 }
+
+export interface Commission {
+	order_id: number;
+	user_id: number;
+	commission: string;
+	date_created: string;
+	release_date: string;
+	released: boolean;
+	paid: boolean;
+	payment_id: number;
+	active: boolean;
+	commissions_wallet_id: number;
+}
+
+export interface CommissionsResponse {
+	page: number;
+	offset: number;
+	total_pages: number;
+	total_records: number;
+	commissions: Commission[];
+}
