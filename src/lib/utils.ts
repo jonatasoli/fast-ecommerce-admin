@@ -1,20 +1,16 @@
 import { CURRENCIES, LOCALES } from './enums';
 
 export function formatDocument(document: string) {
-	// Verifica se já está formatado (document no formato ###.###.###-##)
 	if (/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(document)) {
 		return document;
 	}
 
-	// Remove qualquer caractere que não seja número
 	document = document.replace(/\D/g, '');
 
-	// Se o document tiver 11 dígitos, aplica a máscara de document (###.###.###-##)
 	if (document.length === 11) {
 		return document.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
 	}
 
-	// Retorna o document não formatado se não tiver o número correto de dígitos
 	return document;
 }
 
@@ -111,6 +107,10 @@ export const statusMap: Record<string, string> = {
 	GENERATE_INVOICE: 'Nota gerada',
 	SHIPPING_COMPLETE: 'Entregue',
 	CANCELLED: 'Cancelado'
+};
+
+export const getPaymentStatus = (paid: boolean): string => {
+	return paid ? 'Pago' : 'Não pago';
 };
 
 export const paymentMethodMap: Record<string, string> = {

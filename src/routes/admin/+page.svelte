@@ -8,7 +8,8 @@
 		AdjustmentsHorizontalSolid,
 		SalePercentSolid,
 		UserSettingsSolid,
-		TicketSolid
+		TicketSolid,
+		ChartMixedDollarSolid
 	} from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 
@@ -59,17 +60,6 @@
 </div>
 
 <div class="w-[90vw] mt-8 mx-auto">
-	<a href="/admin/coupons">
-		<div
-			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
-		>
-			<TicketSolid size="lg" class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Cupons</p>
-		</div>
-	</a>
-</div>
-
-<div class="w-[90vw] mt-8 mx-auto">
 	<a href="/admin/logistics">
 		<div
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
@@ -81,12 +71,34 @@
 </div>
 
 <div class="w-[90vw] mt-8 mx-auto">
+	<a href="/admin/coupons">
+		<div
+			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
+		>
+			<TicketSolid size="lg" class="text-primary h-8 w-8" />
+			<p class="font-bold text-lg">Cupons</p>
+		</div>
+	</a>
+</div>
+
+<div class="w-[90vw] mt-8 mx-auto">
 	<a href="/admin/management">
 		<div
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<UserSettingsSolid size="lg" class="text-primary h-8 w-8" />
 			<p class="font-bold text-lg">Gestão de Usuários</p>
+		</div>
+	</a>
+</div>
+
+<div class="w-[90vw] mt-8 mx-auto">
+	<a href="/admin/commissions">
+		<div
+			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
+		>
+			<ChartMixedDollarSolid size="lg" class="text-primary h-8 w-8" />
+			<p class="font-bold text-lg">Comissões</p>
 		</div>
 	</a>
 </div>
