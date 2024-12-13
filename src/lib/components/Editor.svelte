@@ -2,7 +2,7 @@
 	import { createEventDispatcher, onMount } from 'svelte';
 
 	interface Quill {
-		getSemanticHTML(): string;
+		root: HTMLElement;
 		on(event: string, callback: () => void): void;
 	}
 
@@ -32,16 +32,20 @@
 			theme: 'snow',
 			placeholder: placeholder
 		});
+
 		if (value) {
-			quill.setText(value);
+			quill.root.innerHTML = value;
 		}
 	});
 
-	$: quill &&
-		quill.on('text-change', () => {
-			value = quill.getSemanticHTML();
-			dispatch('change', { value: quill.getSemanticHTML() });
-		});
+	$: {
+		if (quill) {
+			quill.on('text-change', () => {
+				const content = quill.root.innerHTML;
+				dispatch('change', { value: content });
+			});
+		}
+	}
 </script>
 
 <div>
