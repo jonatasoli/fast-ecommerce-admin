@@ -129,6 +129,10 @@
 		<h2 class="text-xl font-bold mt-4">Descrição do produto:</h2>
 		<div class="my-10">
 			<Editor label="Conteúdo" placeholder="Descrição..." on:change={handleChangeContent} />
+
+			<div class="mt-5">
+				{@html content}
+			</div>
 		</div>
 		<div class="my-10">
 			<Editor label="Modo de uso" placeholder="Modo de uso..." on:change={handleChangeHowToUse} />
