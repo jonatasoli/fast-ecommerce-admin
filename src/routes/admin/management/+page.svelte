@@ -116,7 +116,7 @@
 	}
 
 	async function getUserByFilter(search_type: string, query: string) {
-		await await users.get(
+		 await users.get(
 			`${data.base_url}/users/?${search_type}=${query}&offset=${rowsPerPage}&page=1`,
 			data.access_token
 		);

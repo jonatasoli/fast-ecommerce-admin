@@ -57,7 +57,7 @@ export interface Payment {
 }
 
 export interface DataProducts {
-	products: Product[];
+	inventory: Product[];
 	page: number;
 	offset: number;
 	total_records: number;
@@ -72,6 +72,39 @@ export interface Category {
 	showcase: boolean;
 	image_path: string;
 }
+
+export type DataProduct = {
+	product_id: number;
+	name: string;
+	uri: string;
+	price: number;
+	active: boolean;
+	description: string;
+	image_path: string;
+	installments_config: number;
+	discount: number;
+	category_id: number;
+	showcase: boolean;
+	feature: boolean;
+	show_discount: boolean;
+	height: number;
+	width: number;
+	weight: number;
+	lenght: number;
+	diamenter: number;
+	sku: string;
+	currency: string;
+};
+
+export type Products = {
+	products: Product[];
+	page: number;
+	offset: number;
+	totalPages: number;
+	totalRecords: number;
+	loading: boolean;
+	errors: string | null;
+};
 
 export interface DataProductItems {
 	order_items_id: number;
