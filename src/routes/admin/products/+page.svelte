@@ -11,7 +11,8 @@
 		TableBodyCell,
 		TableBodyRow,
 		TableHead,
-		TableHeadCell
+		TableHeadCell,
+		TableSearch
 	} from 'flowbite-svelte';
 	import {
 		AngleLeftOutline,
@@ -19,57 +20,96 @@
 		ChevronDoubleLeftOutline,
 		ChevronDoubleRightOutline
 	} from 'flowbite-svelte-icons';
-
-	export let data;
-
+	import { productsStore } from '$lib/stores/product';
+	
+	export let data: any;
+	let debounceTimeout: ReturnType<typeof setTimeout>;
+	let searchTerm = '';
 	let rowsPerPage = data.offset ?? 10;
 	let currentPage = data.page ?? 1;
 	const searchParams = new URLSearchParams($page.url.searchParams);
+	const products = productsStore();
+	products.set({
+		inventory: data.products.inventory,
+		page: data.products.page,
+		offset: data.products.offset,
+		total_pages: data.products.total_pages,
+		total_records: data.products.total_records
+	});
 
-	$: items = data.products ?? [];
-	console.log(data.products);
+	$: items = data.products.inventory ?? [];
 	$: start = currentPage * rowsPerPage - rowsPerPage;
-	$: end = Math.min(start + rowsPerPage, data.totalRecords);
-	$: endPage = data.totalPages;
+	$: end = Math.min(start + rowsPerPage, data.products.total_records);
+	$: endPage = data.products.total_pages;
+	$: searchTerm, debounceSearch(searchTerm);
 
 	$: if (currentPage > endPage) {
 		currentPage = endPage;
 	}
 
-	async function handleRowsPerPageChange(event) {
+	products.subscribe(($store) => {
+		items = $store.inventory;
+		rowsPerPage = $store.offset;
+		currentPage = $store.page;
+		start = currentPage * rowsPerPage - rowsPerPage;
+		end = Math.min(start + rowsPerPage, $store.total_records);
+		endPage = $store.total_pages;
+	});
+
+	async function getProductsByFilter(query: string) {
+		await products.get(`${data.base_url}/product/products/${query}`, data.access_token);
+	}
+
+	async function refreshProducts() {
+		await products.get(
+			`${data.base_url}/product/inventory?offset=${rowsPerPage}&page=${currentPage}`,
+			data.access_token
+		);
+	}
+
+	function debounceSearch(query: string) {
+		clearTimeout(debounceTimeout);
+		debounceTimeout = setTimeout(() => {
+			if (searchTerm.length > 3) {
+				getProductsByFilter(query);
+			} else {
+				currentPage = 1;
+				rowsPerPage = 10;
+				refreshProducts();
+			}
+		}, 300);
+	}
+
+	async function handleRowsPerPageChange(event: any) {
 		rowsPerPage = parseInt(event.target.value);
 		currentPage = 1; // Reset to first page
 		searchParams.set('offset', `${rowsPerPage}`);
 		searchParams.set('page', `${currentPage}`);
-		goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
+		await refreshProducts();
 	}
 
-	function firstPage() {
+	async function firstPage() {
 		currentPage = 1;
-		goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
+		await refreshProducts();
 	}
 
-	function nextPage() {
-		console.log(currentPage);
+	async function nextPage() {
 		if (currentPage < endPage) {
 			currentPage++;
-			console.log(currentPage);
-			goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
+			await refreshProducts();
 		}
 	}
 
-	function prevPage() {
-		console.log(currentPage);
+	async function prevPage() {
 		if (currentPage > 1) {
 			currentPage--;
-			console.log(currentPage);
-			goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
+			await refreshProducts();
 		}
 	}
 
-	function lastPage() {
-		currentPage = data.totalPages;
-		goto(`/admin/products?page=${currentPage}&offset=${rowsPerPage}`);
+	async function lastPage() {
+		currentPage = endPage;
+		await refreshProducts();
 	}
 
 	function goToNew() {
@@ -89,28 +129,35 @@
 
 	<div class="w-full mx-auto mt-12">
 		<Table hoverable={true}>
-			<TableHead>
-				<TableHeadCell>Id</TableHeadCell>
-				<TableHeadCell>Produto</TableHeadCell>
-				<TableHeadCell>Estoque</TableHeadCell>
-				<TableHeadCell>Preço</TableHeadCell>
-				<TableHeadCell>Ações</TableHeadCell>
-			</TableHead>
-			<TableBody tableBodyClass="divide-y">
-				{#each items as product}
-					<TableBodyRow>
-						<TableBodyCell tdClass="py-2">{product.product_id}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{product.name}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{product.quantity}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">{currencyFormat(product.price)}</TableBodyCell>
-						<TableBodyCell tdClass="py-2">
-							<Button variant="primary" on:click={() => productMore(product.product_id)}
-								>Ver mais</Button
-							>
-						</TableBodyCell>
-					</TableBodyRow>
-				{/each}
-			</TableBody>
+			<TableSearch
+				innerDivClass="p-0 my-2"
+				placeholder="Buscar por nome ou documento"
+				hoverable={true}
+				bind:inputValue={searchTerm}
+			>
+				<TableHead>
+					<TableHeadCell>Id</TableHeadCell>
+					<TableHeadCell>Produto</TableHeadCell>
+					<TableHeadCell>Estoque</TableHeadCell>
+					<TableHeadCell>Preço</TableHeadCell>
+					<TableHeadCell>Ações</TableHeadCell>
+				</TableHead>
+				<TableBody tableBodyClass="divide-y">
+					{#each items as product}
+						<TableBodyRow>
+							<TableBodyCell tdClass="py-2">{product.product_id}</TableBodyCell>
+							<TableBodyCell tdClass="py-2">{product.name}</TableBodyCell>
+							<TableBodyCell tdClass="py-2">{product.quantity}</TableBodyCell>
+							<TableBodyCell tdClass="py-2">{currencyFormat(product.price)}</TableBodyCell>
+							<TableBodyCell tdClass="py-2">
+								<Button variant="primary" on:click={() => productMore(product.product_id)}
+									>Ver mais</Button
+								>
+							</TableBodyCell>
+						</TableBodyRow>
+					{/each}
+				</TableBody>
+			</TableSearch>
 		</Table>
 		<div class="w-full flex justify-end items-center gap-2 my-3">
 			<Label>Quantidade por página</Label>
@@ -129,7 +176,7 @@
 				on:change={handleRowsPerPageChange}
 			/>
 
-			{start + 1}-{end} de {data.totalRecords}
+			{start + 1}-{end} de {data.products.total_records}
 
 			<button
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
