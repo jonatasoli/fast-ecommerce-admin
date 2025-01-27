@@ -12,15 +12,15 @@
 		operation: 'INCREASE' | 'DECREASE';
 	};
 
-	export let data;
+	export let data: any;
 	let transaction: Transaction = {
 		product_id: undefined,
 		quantity: 1,
 		operation: 'INCREASE'
 	};
 	let notification = false;
-	$: products = data.products.products;
-	// Carregar os dados do pedido
+	$: products = data.products.inventory ?? [];
+	
 	onMount(() => {});
 	export let form: ActionData;
 

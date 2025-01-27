@@ -6,12 +6,11 @@ export const load = async ({ url, cookies }) => {
 	const page = new URL(url).searchParams.get('page') || 1;
 	const offset = new URL(url).searchParams.get('offset') || 100;
 	const token = cookies.get('access_token');
-	await productsStore.get(
-		`${SERVER_BASE_URL}/product/inventory?page=${page}&offset=${offset}`,
-		token
-	);
+	const products = productsStore();
+
+	await products.get(`${SERVER_BASE_URL}/product/inventory?page=${page}&offset=${offset}`, token);
 	let currentProducts;
-	productsStore.subscribe((value) => (currentProducts = value))();
+	products.subscribe((value) => (currentProducts = value))();
 
 	return {
 		products: currentProducts,
@@ -26,14 +25,15 @@ export const actions = {
 		const token = cookies.get('access_token');
 		const formData = await request.formData();
 		const transaction = Object.fromEntries(formData.entries());
+		const products = productsStore();
 
-		await productsStore.post(
+		await products.post(
 			`${SERVER_BASE_URL}/product/inventory/${transaction.product_id}/transaction`,
 			transaction,
 			token
 		);
 		let currentInventory;
-		productsStore.subscribe((value) => (currentInventory = value))();
+		products.subscribe((value) => (currentInventory = value))();
 
 		return {
 			status: 200,
