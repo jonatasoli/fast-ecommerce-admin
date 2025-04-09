@@ -45,6 +45,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@babel/runtime-corejs3": "^7.26.10",
 		"@canutin/svelte-currency-input": "0.11.5",
 		"@felte/reporter-svelte": "^1.1.11",
 		"@felte/validator-zod": "^1.0.17",
