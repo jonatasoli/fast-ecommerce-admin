@@ -23,7 +23,7 @@
 		product_id: { value: 0, name: '' },
 		affiliate_id: { value: 0, name: '' },
 		code: '',
-		user_id: userDetails.user_id,
+		user_id: null,
 		discount_price: '150',
 		limit_price: '300',
 		active: true,
@@ -47,6 +47,7 @@
 		const payload = {
 			...coupon,
 			product_id: coupon.product_id.value === 0 ? null : coupon.product_id.value,
+			// user_id: coupon.user_id ? coupon.product_id.value : null,
 			affiliate_id: coupon.affiliate_id.value === 0 ? null : coupon.affiliate_id.value,
 			commission_percentage:
 				coupon.commission_percentage.value === 0 ? null : coupon.commission_percentage.value
@@ -123,8 +124,8 @@
 			</div>
 
 			<div class="mb-4 flex-1">
-				<label for="userId" class="block text-sm font-medium text-gray-700">ID do Usuário</label>
-				<Input id="userId" type="text" bind:value={coupon.user_id} readonly class="mt-1 w-full" />
+				<label for="userId" class="block text-sm font-medium text-gray-700">Vincular Cupom ao Usuário</label>
+				<Input id="userId" type="text" bind:value={coupon.user_id} readonly disabled class="mt-1 w-full" />
 			</div>
 		</div>
 
