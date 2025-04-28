@@ -3,14 +3,6 @@ import { json, type Cookies } from '@sveltejs/kit';
 
 export async function POST({ request, cookies }: { request: Request; cookies: Cookies }) {
 	const existingToken = cookies.get('access_token');
-	if (existingToken && data.role) {
-		// Redirecione para a página principal se o token já estiver presente
-		if (data.role === '/admin') {
-			throw redirect(303, '/admin');
-		} else if (data.role === 'AFFILIATE') {
-			throw redirect(303, '/partner');
-		}
-	}
 
 	const body = await request.json();
 	const bodyEncoded = Object.keys(body)
@@ -63,8 +55,9 @@ export async function POST({ request, cookies }: { request: Request; cookies: Co
 		});
 
 		return json({
-			role: data.role,
-			success: true
+			success: true,
+			access_token: data.access_token,
+			role: data.role
 		});
 	} catch {
 		return json({
