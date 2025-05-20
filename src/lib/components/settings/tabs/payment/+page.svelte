@@ -6,7 +6,7 @@
 	import type { Items, PaymentGatewayConfig } from '$lib/types';
 
 	export let items: Items;
-	export let field: string = 'PAYMENT';
+	export let field: string = 'Payment';
 	let isLoading = true;
 	let statusToast = false;
 	let statusMessage = 'Default Message';
@@ -69,7 +69,7 @@
 			crm: null,
 			payment: {
 				provider: paymentGateway.provider,
-				field: 'PAYMENT',
+				field: 'Payment',
 				description: paymentGateway.description,
 				gateway_name: paymentGateway.value.gateway_name,
 				gateway_url: paymentGateway.value.gateway_url,

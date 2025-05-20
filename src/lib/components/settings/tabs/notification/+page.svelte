@@ -26,7 +26,7 @@
 	}
 
 	export let items: Items;
-	export let field: string = 'NOTIFICATION';
+	export let field: string = 'Notification';
 	let isLoading = true;
 	let statusToast = false;
 	let statusMessage = 'Default Message';
@@ -112,7 +112,7 @@
 			crm: null,
 			notification: {
 				provider: notification.provider,
-				field: 'NOTIFICATION',
+				field: 'Notification',
 				description: notification.description,
 				type: notification.value.type,
 				contact: notification.value.contact,
