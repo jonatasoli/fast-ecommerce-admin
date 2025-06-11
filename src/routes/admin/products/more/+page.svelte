@@ -9,6 +9,7 @@
 	import { Checkbox, Label, Select } from 'flowbite-svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import Toast from '$lib/components/Toast.svelte';
+	import InputFileMultiple from '$lib/components/InputFileMultiple.svelte';
 
 	export let data;
 	let loading = false;
@@ -16,6 +17,7 @@
 	let composition = '';
 	let howToUse = '';
 	let files: FileList;
+	let multipleFiles: FileList;
 
 	const categoryItems = data.categories.map((category) => ({
 		value: category.category_id,
@@ -134,7 +136,16 @@
 					</div>
 				{/if}
 				<div class="divide-y-2 divide-gray-400">
-					<InputFile label="Imagem" bind:files id="avatar" name="avatar" />
+					<InputFile label="Imagem Principal" bind:files id="avatar" name="avatar" />
+				</div>
+
+				<div class="divide-y-2 divide-gray-400">
+					<InputFileMultiple
+						label="Arquivos Secundários"
+						bind:multipleFiles
+						id="avatar"
+						name="avatar"
+					/>
 				</div>
 				<div class="grid grid-cols-4 gap-1">
 					<div class="grid grid-cols-1 gap-1">
