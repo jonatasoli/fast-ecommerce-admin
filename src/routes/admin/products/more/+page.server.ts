@@ -46,15 +46,19 @@ export const actions: Actions = {
 		const token = cookies.get('access_token');
 		const form = await superValidate(request, zod(productEdit));
 
+		const data = await request.formData();
+		const files = data.getAll('images[]');
+
 		if (!form.valid) {
 			delete form.data.image;
 			console.log(form);
 			return fail(400, { form });
 		}
-		console.log('productid');
-		console.log(form.data.product_id);
-		console.log('ativo');
-		console.log(form.data.active);
+		// console.log('productid');
+		// console.log(form.data.product_id);
+		// console.log('ativo');
+		// console.log(form.data.active);
+
 		const payload = {
 			name: form.data.name,
 			active: form.data.active,
@@ -74,11 +78,11 @@ export const actions: Actions = {
 				how_to_use: form.data.howToUse
 			};
 		}
-		console.log(payload);
+		// console.log(payload);
 
 		const body = JSON.stringify(payload);
-		console.log('corpo');
-		console.log(body);
+		// console.log('corpo');
+		// console.log(body);
 		const res = await fetch(`${SERVER_BASE_URL}/product/${form.data.product_id}`, {
 			method: 'PATCH',
 			headers: {
@@ -87,10 +91,10 @@ export const actions: Actions = {
 			},
 			body: body
 		});
-		console.log('Response Details:');
-		console.log('Status:', res.status);
-		console.log('Status Text:', res.statusText);
-		console.log('Headers:', Array.from(res.headers.entries()));
+		// console.log('Response Details:');
+		// console.log('Status:', res.status);
+		// console.log('Status Text:', res.statusText);
+		// console.log('Headers:', Array.from(res.headers.entries()));
 
 		if (form.data.image) {
 			const formData = new FormData();
@@ -109,6 +113,8 @@ export const actions: Actions = {
 					form
 				};
 			}
+		} else if (files) {
+			console.log(files);
 		} else {
 			if (res.status == 204) {
 				delete form.data.image;

@@ -9,6 +9,7 @@
 	import { Checkbox, Label, Select } from 'flowbite-svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import Toast from '$lib/components/Toast.svelte';
+	import InputFileMultiple from '$lib/components/InputFileMultiple.svelte';
 
 	export let data;
 	let loading = false;
@@ -16,6 +17,7 @@
 	let composition = '';
 	let howToUse = '';
 	let files: FileList;
+	let multipleFiles: FileList;
 
 	const categoryItems = data.categories.map((category) => ({
 		value: category.category_id,
@@ -31,20 +33,107 @@
 		applyAction: false,
 		onSubmit: ({ formData }) => {
 			loading = true;
-			console.log(category);
-			console.log(formData);
+
 			formData.set('product_id', data.product.product_id ?? 0);
 			formData.set('content', content ?? data.product.content.content);
 			formData.set('composition', composition ?? data.product.composition);
 			formData.set('howToUse', howToUse ?? data.product.how_to_use);
 			formData.set('category', category);
 			formData.set('active', checkboxValue.toString());
+
+			// Validando os arquivos do multipleFiles
+			if (multipleFiles && multipleFiles.length > 0) {
+				let totalFileSize = 0;
+				let validFiles = true;
+
+				// Percorrendo todos os arquivos do multipleFiles
+				Array.from(multipleFiles).forEach((file) => {
+					const fileType = file.type;
+					const fileSizeInMB = file.size / (1024 * 1024);
+
+					// Validando se o arquivo é imagem ou vídeo
+					if (fileType.startsWith('image/')) {
+						// Imagens não podem ser maiores que 250 MB
+						if (fileSizeInMB > 250) {
+							notifications.danger(
+								`Imagem "${file.name}" é maior que o tamanho permitido (250 MB)!`,
+								3000
+							);
+							validFiles = false;
+						} else {
+							console.log(file);
+							formData.append('images[]', file); // Adiciona cada imagem ao formData
+						}
+					} else if (fileType.startsWith('video/')) {
+						// Vídeos devem ter pelo menos 300 MB
+						if (fileSizeInMB < 300) {
+							notifications.danger(
+								`Vídeo "${file.name}" é menor que o tamanho permitido (300 MB)!`,
+								3000
+							);
+							validFiles = false;
+						} else {
+							formData.append('images[]', file); // Adiciona cada vídeo ao formData
+						}
+					} else {
+						// Arquivo não é imagem nem vídeo
+						notifications.danger(
+							`O arquivo "${file.name}" não é uma imagem nem um vídeo válido.`,
+							3000
+						);
+						validFiles = false;
+					}
+
+					totalFileSize += file.size;
+				});
+
+				// Se algum arquivo for inválido, não envia o formulário
+				if (!validFiles) {
+					notifications.danger(
+						'Alguns arquivos não são válidos. Apenas imagens e vídeos são permitidos.',
+						3000
+					);
+					loading = false;
+					return;
+				}
+
+				// Verificando o tamanho total dos arquivos (se for necessário)
+				const totalFileSizeInMB = totalFileSize / (1024 * 1024);
+				if (totalFileSizeInMB > 10) {
+					// Limite total de 10 MB, ajuste conforme necessário
+					notifications.danger(
+						'O tamanho total das imagens/vídeos excede o limite permitido!',
+						3000
+					);
+					loading = false;
+					return;
+				}
+			}
+
+			// Verificando o arquivo único 'files' caso também precise
 			if (files && files.length > 0) {
-				formData.set('image', files[0]);
 				const fileSizeInBytes = files[0].size;
 				const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-				if (fileSizeInMB > 2) {
-					notifications.danger('Imagem é maior que o permitido!', 3000);
+				const fileType = files[0].type;
+
+				// Validação para o arquivo 'files[0]' (único arquivo)
+				if (fileType.startsWith('image/')) {
+					if (fileSizeInMB > 250) {
+						notifications.danger('Imagem é maior que o tamanho permitido (250 MB)!', 3000);
+					} else {
+						formData.set('image', files[0]);
+					}
+				} else if (fileType.startsWith('video/')) {
+					if (fileSizeInMB < 300) {
+						notifications.danger('Vídeo é menor que o tamanho permitido (300 MB)!', 3000);
+					} else {
+						formData.set('image', files[0]);
+					}
+				} else {
+					notifications.danger(
+						'Arquivo não é válido. Somente imagens ou vídeos são permitidos.',
+						3000
+					);
 				}
 			}
 		},
@@ -134,7 +223,16 @@
 					</div>
 				{/if}
 				<div class="divide-y-2 divide-gray-400">
-					<InputFile label="Imagem" bind:files id="avatar" name="avatar" />
+					<InputFile label="Imagem Principal" bind:files id="avatar" name="avatar" />
+				</div>
+
+				<div class="divide-y-2 divide-gray-400">
+					<InputFileMultiple
+						label="Arquivos Secundários"
+						bind:multipleFiles
+						id="avatar"
+						name="avatar"
+					/>
 				</div>
 				<div class="grid grid-cols-4 gap-1">
 					<div class="grid grid-cols-1 gap-1">
