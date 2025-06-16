@@ -20,18 +20,6 @@ export const productEdit = z.object({
 	width: z.number().optional(),
 	diameter: z.number().optional(),
 	length: z.number().optional(),
-	images: z
-		.array(
-			z.instanceof(File).refine(
-				(file) => {
-					// Verificando se é imagem ou vídeo
-					const fileType = file.type;
-					return fileType.startsWith('image/') || fileType.startsWith('video/');
-				},
-				{ message: 'Arquivo deve ser uma imagem ou vídeo' }
-			)
-		)
-		.optional()
 });
 
 export const productSchema = z.object({
