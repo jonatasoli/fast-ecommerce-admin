@@ -18,16 +18,23 @@
 	let howToUse = '';
 	let files: FileList;
 	let multipleFiles: FileList;
+	let selectedFiles: File[] = [];
 
 	const categoryItems = data.categories.map((category) => ({
 		value: category.category_id,
 		name: category.name
 	}));
 	$: category = data.product.category_id;
+	$: multipleFiles = data.medias;
 	let checkboxValue = data.product?.active ?? false;
 	let showcaseValue = data.product?.showcase ?? false;
 	let featureValue = data.product?.feature ?? false;
 	let showDiscountValue = data.product?.show_discount ?? false;
+	const dataInput = {
+		base_url: data.base_url,
+		product_id: data.product.product_id,
+		token: data.token
+	};
 
 	const { form, constraints, errors, enhance } = superForm(data.form, {
 		applyAction: false,
@@ -41,19 +48,15 @@
 			formData.set('category', category);
 			formData.set('active', checkboxValue.toString());
 
-			// Validando os arquivos do multipleFiles
-			if (multipleFiles && multipleFiles.length > 0) {
+			if (selectedFiles && selectedFiles.length > 0) {
 				let totalFileSize = 0;
 				let validFiles = true;
 
-				// Percorrendo todos os arquivos do multipleFiles
-				Array.from(multipleFiles).forEach((file) => {
+				Array.from(selectedFiles).forEach((file) => {
 					const fileType = file.type;
 					const fileSizeInMB = file.size / (1024 * 1024);
 
-					// Validando se o arquivo é imagem ou vídeo
 					if (fileType.startsWith('image/')) {
-						// Imagens não podem ser maiores que 250 MB
 						if (fileSizeInMB > 250) {
 							notifications.danger(
 								`Imagem "${file.name}" é maior que o tamanho permitido (250 MB)!`,
@@ -62,10 +65,9 @@
 							validFiles = false;
 						} else {
 							console.log(file);
-							formData.append('images[]', file); // Adiciona cada imagem ao formData
+							formData.append('images[]', file);
 						}
 					} else if (fileType.startsWith('video/')) {
-						// Vídeos devem ter pelo menos 300 MB
 						if (fileSizeInMB < 300) {
 							notifications.danger(
 								`Vídeo "${file.name}" é menor que o tamanho permitido (300 MB)!`,
@@ -138,6 +140,7 @@
 			}
 		},
 		onResult({ result }) {
+			console.log(result);
 			loading = false;
 			console.log(result.type === 'success');
 			if (result.type === 'success') {
@@ -230,8 +233,10 @@
 					<InputFileMultiple
 						label="Arquivos Secundários"
 						bind:multipleFiles
+						bind:selectedFiles
 						id="avatar"
 						name="avatar"
+						{dataInput}
 					/>
 				</div>
 				<div class="grid grid-cols-4 gap-1">

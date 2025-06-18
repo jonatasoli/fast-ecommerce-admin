@@ -30,14 +30,32 @@ export const load = async ({ url, cookies }) => {
 		return data;
 	};
 
+	async function fetchMedias(uri: string) {
+		const res = await fetch(`${SERVER_BASE_URL}/product/media/${uri}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`
+			}
+		});
+		const data = await res.json();
+		return data;
+	}
+
 	const receivedProduct = await fetchProduct();
+
+	const medias = await fetchMedias(receivedProduct.uri);
+
 	const form = await superValidate(zod(productEdit), {
 		data: receivedProduct
 	});
 	return {
 		categories: receivedCategories.categories,
 		product: receivedProduct,
-		form
+		form,
+		medias,
+		base_url: `${SERVER_BASE_URL}`,
+		token
 	};
 };
 
@@ -147,11 +165,16 @@ export const actions: Actions = {
 					});
 
 					// Verifica a resposta da API
-					if (res.ok) {
+					if (res) {
 						const resposta = await res.json();
 						console.log('Resposta da API:', resposta);
 
 						console.log(`Imagem ${file.name} enviada com sucesso!`);
+
+						return {
+							success: true,
+							form
+						};
 					} else {
 						const errorData = await res.json();
 						console.error(

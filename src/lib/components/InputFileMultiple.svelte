@@ -2,6 +2,7 @@
 	import { TrashBinSolid } from 'flowbite-svelte-icons';
 	import { tv } from 'tailwind-variants';
 	import { fade } from 'svelte/transition'; // Importa a transição fade
+	import { notifications } from '$lib/notifications';
 
 	const input = tv({
 		base: 'text-gray-900 text-sm focus:ring-blue-500 focus:border-primary block p-2.5 outline-none'
@@ -13,33 +14,39 @@
 		name: string;
 		error?: string[] | null;
 		multipleFiles: FileList | null;
+		selectedFiles: File[];
+		dataInput: {
+			base_url: string;
+			product_id: number;
+			token: string;
+		};
 	}
 
 	export let label = 'Label';
 	export let error: string[] | null | undefined = [];
 	export let multipleFiles: FileList | null = null;
+	export let dataInput: { base_url: string; product_id: number; token: string };
+	export let selectedFiles: File[] = [];
 
-	// Função para lidar com o input de múltiplos arquivos
-	function handleInput(event: Event) {
+	function handleInputAdd(event: Event) {
 		const target = event.target as HTMLInputElement;
-		multipleFiles = target.files; // Aqui você atribui os arquivos selecionados ao multipleFiles
+		if (target.files) {
+			const newFiles = Array.from(target.files);
+			selectedFiles = [...selectedFiles, ...newFiles];
+		}
 	}
 
-	// Função para remover o arquivo selecionado
-	function removeFile(index: number) {
-		// Cria um novo array de arquivos removendo o índice especificado
-		const newFilesArray = Array.from(multipleFiles || []).filter((_, i) => i !== index);
-
-		// Cria um novo DataTransfer para recriar o FileList
-		const dt = new DataTransfer();
-
-		// Adiciona todos os arquivos ao DataTransfer
-		newFilesArray.forEach((file) => {
-			dt.items.add(file);
-		});
-
-		// Atualiza o multipleFiles com o novo FileList
-		multipleFiles = dt.files;
+	async function removeFile(media_id: number) {
+		const res = await fetch(
+			`${dataInput.base_url}/product/media/${dataInput.product_id}?media_id=${media_id}`,
+			{
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${dataInput.token}` // Authorization header
+				}
+			}
+		);
 	}
 </script>
 
@@ -49,46 +56,81 @@
 	</label>
 
 	<div class="border rounded-lg flex gap-4 p-2 items-center">
-		<input class={input()} type="file" multiple on:input={handleInput} />
+		<input class={input()} type="file" multiple on:input={handleInputAdd} />
 	</div>
 
-	{#if multipleFiles && multipleFiles.length > 0}
+	{#if selectedFiles.length > 0}
+		<div class="py-4">
+			<span class="text-primary-700 font-semibold text-lg">Arquivos adicionados para envio</span>
+		</div>
 		<div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
-			{#each Array.from(multipleFiles) as file, index (file.name)}
+			{#each selectedFiles as file, index}
 				<div
 					class="mt-2 p-2 border rounded-lg relative flex justify-center group"
 					transition:fade={{ duration: 300 }}
 				>
-					{#if file.type.startsWith('image/')}
+					{#if file.type.startsWith('image')}
 						<div class="relative">
 							<img
 								src={URL.createObjectURL(file)}
-								alt={`Imagem ${index + 1}`}
+								alt="Imagem Selecionada"
 								class="w-full h-64 object-contain rounded-lg"
 							/>
-							<!-- Número da ordem sobre a imagem -->
 							<span
 								class="absolute top-2 left-2 text-white font-bold text-xl bg-black bg-opacity-50 px-2 py-1 rounded-lg"
 							>
 								{index + 1}
 							</span>
-
-							<!-- Botão de lixeira visível no hover -->
 							<button
 								class="absolute top-2 right-2 p-2 bg-primary-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-								on:click={() => removeFile(index)}
+								on:click={() => removeFile(file.media_id)}
 							>
 								<TrashBinSolid class="w-6 h-6" />
 							</button>
 						</div>
-					{:else if file.type.startsWith('video/')}
-						<video
-							controls
-							src={URL.createObjectURL(file)}
-							class="w-full h-64 object-contain rounded-lg"
-						/>
 					{:else}
-						<p class="text-center text-sm text-gray-600">{file.name}</p>
+						<div class="text-center text-gray-500">
+							<p>Tipo de arquivo não suportado</p>
+						</div>
+					{/if}
+				</div>
+			{/each}
+		</div>
+	{/if}
+
+	{#if multipleFiles && multipleFiles.length > 0}
+		<div class="py-4">
+			<span class="text-primary-700 font-semibold text-lg">Arquivos Armazenados</span>
+		</div>
+		<div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
+			{#each multipleFiles.sort((a, b) => a.order - b.order) as file, index}
+				<div
+					class="mt-2 p-2 border rounded-lg relative flex justify-center group"
+					transition:fade={{ duration: 300 }}
+				>
+					{#if file.type === 'PHOTO'}
+						<div class="relative">
+							<img src={file.uri} alt="Imagem" class="w-full h-64 object-contain rounded-lg" />
+
+							<span
+								class="absolute top-2 left-2 text-white font-bold text-xl bg-black bg-opacity-50 px-2 py-1 rounded-lg"
+							>
+								{file.order}
+							</span>
+
+							<button
+								class="absolute top-2 right-2 p-2 bg-primary-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+								type="button"
+								on:click={(event) => {
+									event.preventDefault(); // Evita comportamento de formulário
+									removeFile(file.media_id);
+								}}
+							>
+								<TrashBinSolid class="w-6 h-6" />
+							</button>
+						</div>
+					{:else}
+						<video controls src={file.uri} class="w-full h-64 object-contain rounded-lg" />
 					{/if}
 				</div>
 			{/each}
