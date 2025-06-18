@@ -19,7 +19,7 @@ export const productEdit = z.object({
 	height: z.number().optional(),
 	width: z.number().optional(),
 	diameter: z.number().optional(),
-	length: z.number().optional()
+	length: z.number().optional(),
 });
 
 export const productSchema = z.object({

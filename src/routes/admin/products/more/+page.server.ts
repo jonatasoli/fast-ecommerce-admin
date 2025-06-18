@@ -1,6 +1,6 @@
 import { SERVER_BASE_URL } from '$env/static/private';
 import { productEdit } from '$lib/schemas/product';
-import type { Category } from '$lib/types';
+import type { Category, DataProduct } from '$lib/types';
 import { generateURI } from '$lib/utils';
 import { fail } from '@sveltejs/kit';
 import type { Actions } from '@sveltejs/kit';
@@ -30,31 +30,49 @@ export const load = async ({ url, cookies }) => {
 		return data;
 	};
 
+	async function fetchMedias(uri: string) {
+		const res = await fetch(`${SERVER_BASE_URL}/product/media/${uri}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`
+			}
+		});
+		const data = await res.json();
+		return data;
+	}
+
 	const receivedProduct = await fetchProduct();
+
+	const medias = await fetchMedias(receivedProduct.uri);
+
 	const form = await superValidate(zod(productEdit), {
 		data: receivedProduct
 	});
 	return {
 		categories: receivedCategories.categories,
 		product: receivedProduct,
-		form
+		form,
+		medias,
+		base_url: `${SERVER_BASE_URL}`,
+		token
 	};
 };
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
 		const token = cookies.get('access_token');
-		const form = await superValidate(request, zod(productEdit));
+		const formData = await request.formData();
+		const files = formData.getAll('images[]');
+
+		const form = await superValidate(formData, zod(productEdit));
 
 		if (!form.valid) {
 			delete form.data.image;
 			console.log(form);
 			return fail(400, { form });
 		}
-		console.log('productid');
-		console.log(form.data.product_id);
-		console.log('ativo');
-		console.log(form.data.active);
+
 		const payload = {
 			name: form.data.name,
 			active: form.data.active,
@@ -74,11 +92,11 @@ export const actions: Actions = {
 				how_to_use: form.data.howToUse
 			};
 		}
-		console.log(payload);
+		// console.log(payload);
 
 		const body = JSON.stringify(payload);
-		console.log('corpo');
-		console.log(body);
+		// console.log('corpo');
+		// console.log(body);
 		const res = await fetch(`${SERVER_BASE_URL}/product/${form.data.product_id}`, {
 			method: 'PATCH',
 			headers: {
@@ -109,6 +127,66 @@ export const actions: Actions = {
 					form
 				};
 			}
+		} else if (files && files.length > 0) {
+			files.forEach(async (file, index) => {
+				try {
+					// Verifica o tipo MIME do arquivo
+					const mediaType = file.type.startsWith('image/')
+						? 'PHOTO'
+						: file.type.startsWith('video/')
+							? 'VIDEO'
+							: 'UNKNOWN'; // Pode adicionar um valor para outros tipos, se necessário
+
+					if (mediaType === 'UNKNOWN') {
+						console.error(`Arquivo ${file.name} não é nem imagem nem vídeo.`);
+						return; // Se o tipo for desconhecido, não envia o arquivo
+					}
+
+					// Cria um FormData para o arquivo
+					const formData = new FormData();
+					formData.append('new_media', file); // 'new_media' é a chave esperada no backend
+
+					// Envia o arquivo para a API com os parâmetros media_type e order
+					const url = `${SERVER_BASE_URL}/product/media/${form.data.product_id}?media_type=${mediaType}&order=${index}`;
+
+					// Log da requisição (antes de enviar)
+					console.log('Requisição para URL:', url);
+					console.log('Headers:', {
+						Authorization: `Bearer ${token}`
+					});
+
+					// Envia a requisição
+					const res = await fetch(url, {
+						method: 'POST',
+						headers: {
+							Authorization: `Bearer ${token}` // Authorization header
+						},
+						body: formData
+					});
+
+					// Verifica a resposta da API
+					if (res) {
+						const resposta = await res.json();
+						console.log('Resposta da API:', resposta);
+
+						console.log(`Imagem ${file.name} enviada com sucesso!`);
+
+						return {
+							success: true,
+							form
+						};
+					} else {
+						const errorData = await res.json();
+						console.error(
+							`Erro ao fazer upload da imagem ${file.name}:`,
+							errorData.message || 'Erro desconhecido'
+						);
+					}
+				} catch (error) {
+					console.error(`Erro no upload da imagem ${file.name}:`, error);
+					// Continua para o próximo arquivo mesmo em caso de erro
+				}
+			});
 		} else {
 			if (res.status == 204) {
 				delete form.data.image;

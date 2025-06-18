@@ -56,6 +56,17 @@ export interface Payment {
 	freight_amount: string;
 }
 
+export interface MediaFile {
+	type: 'PHOTO';
+	order: number;
+	media_id: number;
+	uri: string;
+}
+
+export interface MediaFiles {
+	MediaFile: MediaFile[];
+}
+
 export interface DataProducts {
 	inventory: Product[];
 	page: number;
