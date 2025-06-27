@@ -1,3 +1,4 @@
+import { goto } from '$app/navigation';
 import { SERVER_BASE_URL } from '$env/static/private';
 import { productEdit } from '$lib/schemas/product';
 import type { Category, DataProduct } from '$lib/types';
@@ -69,7 +70,6 @@ export const actions: Actions = {
 
 		if (!form.valid) {
 			delete form.data.image;
-			console.log(form);
 			return fail(400, { form });
 		}
 
@@ -85,6 +85,7 @@ export const actions: Actions = {
 			uri: generateURI(form.data.name),
 			category_id: form.data.category
 		};
+
 		if (form.data.content || form.data.composition || form.data.howToUse) {
 			payload.description = {
 				content: form.data.content,
@@ -92,103 +93,33 @@ export const actions: Actions = {
 				how_to_use: form.data.howToUse
 			};
 		}
-		// console.log(payload);
 
 		const body = JSON.stringify(payload);
-		// console.log('corpo');
-		// console.log(body);
+
 		const res = await fetch(`${SERVER_BASE_URL}/product/${form.data.product_id}`, {
 			method: 'PATCH',
 			headers: {
 				'Content-Type': 'application/json',
 				Authorization: `Bearer ${token}`
 			},
-			body: body
+			body
 		});
-		console.log('Response Details:');
-		console.log('Status:', res.status);
-		console.log('Status Text:', res.statusText);
-		console.log('Headers:', Array.from(res.headers.entries()));
 
 		if (form.data.image) {
-			const formData = new FormData();
-			formData.append('image', form.data.image);
-			const res = await fetch(`${SERVER_BASE_URL}/product/upload-image/${form.data.product_id}`, {
-				method: 'POST',
-				body: formData
-			});
+			const formDataImage = new FormData();
+			formDataImage.append('image', form.data.image);
 
-			const imageData = await res.json();
-
-			if (imageData && res.status == 204) {
-				delete form.data.image;
-				return {
-					success: true,
-					form
-				};
-			}
-		} else if (files && files.length > 0) {
-			files.forEach(async (file, index) => {
-				try {
-					// Verifica o tipo MIME do arquivo
-					const mediaType = file.type.startsWith('image/')
-						? 'PHOTO'
-						: file.type.startsWith('video/')
-							? 'VIDEO'
-							: 'UNKNOWN'; // Pode adicionar um valor para outros tipos, se necessário
-
-					if (mediaType === 'UNKNOWN') {
-						console.error(`Arquivo ${file.name} não é nem imagem nem vídeo.`);
-						return; // Se o tipo for desconhecido, não envia o arquivo
-					}
-
-					// Cria um FormData para o arquivo
-					const formData = new FormData();
-					formData.append('new_media', file); // 'new_media' é a chave esperada no backend
-
-					// Envia o arquivo para a API com os parâmetros media_type e order
-					const url = `${SERVER_BASE_URL}/product/media/${form.data.product_id}?media_type=${mediaType}&order=${index}`;
-
-					// Log da requisição (antes de enviar)
-					console.log('Requisição para URL:', url);
-					console.log('Headers:', {
-						Authorization: `Bearer ${token}`
-					});
-
-					// Envia a requisição
-					const res = await fetch(url, {
-						method: 'POST',
-						headers: {
-							Authorization: `Bearer ${token}` // Authorization header
-						},
-						body: formData
-					});
-
-					// Verifica a resposta da API
-					if (res) {
-						const resposta = await res.json();
-						console.log('Resposta da API:', resposta);
-
-						console.log(`Imagem ${file.name} enviada com sucesso!`);
-
-						return {
-							success: true,
-							form
-						};
-					} else {
-						const errorData = await res.json();
-						console.error(
-							`Erro ao fazer upload da imagem ${file.name}:`,
-							errorData.message || 'Erro desconhecido'
-						);
-					}
-				} catch (error) {
-					console.error(`Erro no upload da imagem ${file.name}:`, error);
-					// Continua para o próximo arquivo mesmo em caso de erro
+			const uploadRes = await fetch(
+				`${SERVER_BASE_URL}/product/upload-image/${form.data.product_id}`,
+				{
+					method: 'POST',
+					body: formDataImage
 				}
-			});
-		} else {
-			if (res.status == 204) {
+			);
+
+			const imageData = await uploadRes.json();
+
+			if (imageData && uploadRes.status === 204) {
 				delete form.data.image;
 				return {
 					success: true,
@@ -197,6 +128,64 @@ export const actions: Actions = {
 			}
 		}
 
+		if (files && files.length > 0) {
+			const uploads = files.map(async (file, index) => {
+				try {
+					const mediaType = file.type.startsWith('image/')
+						? 'PHOTO'
+						: file.type.startsWith('video/')
+							? 'VIDEO'
+							: 'UNKNOWN';
+
+					if (mediaType === 'UNKNOWN') {
+						console.error(`Arquivo ${file.name} não é nem imagem nem vídeo.`);
+						return;
+					}
+
+					const formData = new FormData();
+					formData.append('new_media', file);
+
+					const url = `${SERVER_BASE_URL}/product/media/${form.data.product_id}?media_type=${mediaType}&order=${index}`;
+
+					const mediaRes = await fetch(url, {
+						method: 'POST',
+						headers: {
+							Authorization: `Bearer ${token}`
+						},
+						body: formData
+					});
+
+					if (mediaRes.ok) {
+						const resposta = await mediaRes.json();
+						console.log(`✅ Upload OK: ${file.name}`, resposta);
+					} else {
+						const error = await mediaRes.json();
+						console.error(`❌ Upload falhou: ${file.name}`, error.message || 'Erro desconhecido');
+					}
+				} catch (err) {
+					console.error(`❌ Erro inesperado ao enviar ${file.name}:`, err);
+				}
+			});
+
+			await Promise.allSettled(uploads);
+
+			delete form.data.image;
+
+			return {
+				success: true,
+				form
+			};
+		}
+
+		if (res.status === 204 || res.status === 200) {
+			delete form.data.image;
+			return {
+				success: true,
+				form
+			};
+		}
+
+		// Algo deu errado
 		delete form.data.image;
 		return fail(422, {
 			success: false,

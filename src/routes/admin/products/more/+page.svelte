@@ -75,10 +75,10 @@
 							);
 							validFiles = false;
 						} else {
-							formData.append('images[]', file); // Adiciona cada vídeo ao formData
+							formData.append('images[]', file);
 						}
 					} else {
-						// Arquivo não é imagem nem vídeo
+			
 						notifications.danger(
 							`O arquivo "${file.name}" não é uma imagem nem um vídeo válido.`,
 							3000
@@ -89,7 +89,7 @@
 					totalFileSize += file.size;
 				});
 
-				// Se algum arquivo for inválido, não envia o formulário
+			
 				if (!validFiles) {
 					notifications.danger(
 						'Alguns arquivos não são válidos. Apenas imagens e vídeos são permitidos.',
@@ -99,10 +99,10 @@
 					return;
 				}
 
-				// Verificando o tamanho total dos arquivos (se for necessário)
+			
 				const totalFileSizeInMB = totalFileSize / (1024 * 1024);
 				if (totalFileSizeInMB > 10) {
-					// Limite total de 10 MB, ajuste conforme necessário
+			
 					notifications.danger(
 						'O tamanho total das imagens/vídeos excede o limite permitido!',
 						3000
@@ -112,40 +112,43 @@
 				}
 			}
 
-			// Verificando o arquivo único 'files' caso também precise
+			
 			if (files && files.length > 0) {
 				const fileSizeInBytes = files[0].size;
 				const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
 				const fileType = files[0].type;
 
-				// Validação para o arquivo 'files[0]' (único arquivo)
+				
 				if (fileType.startsWith('image/')) {
 					if (fileSizeInMB > 250) {
 						notifications.danger('Imagem é maior que o tamanho permitido (250 MB)!', 3000);
+						loading = false;
 					} else {
 						formData.set('image', files[0]);
 					}
 				} else if (fileType.startsWith('video/')) {
 					if (fileSizeInMB < 300) {
 						notifications.danger('Vídeo é menor que o tamanho permitido (300 MB)!', 3000);
+						loading = false;
 					} else {
 						formData.set('image', files[0]);
+						loading = false;
 					}
 				} else {
 					notifications.danger(
 						'Arquivo não é válido. Somente imagens ou vídeos são permitidos.',
 						3000
 					);
+					loading = false;
 				}
 			}
 		},
-		onResult({ result }) {
+		async onResult({ result }) {
 			console.log(result);
-			loading = false;
-			console.log(result.type === 'success');
 			if (result.type === 'success') {
+				selectedFiles = [];
 				notifications.success('Produto atualizado com sucesso!', 3000);
-				goto('/admin/products');
+				await goto(window.location.href, { invalidateAll: true });
 			}
 		}
 	});

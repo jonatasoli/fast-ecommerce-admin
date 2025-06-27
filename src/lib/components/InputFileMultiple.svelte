@@ -3,6 +3,7 @@
 	import { tv } from 'tailwind-variants';
 	import { fade } from 'svelte/transition'; // Importa a transição fade
 	import { notifications } from '$lib/notifications';
+	import { goto, invalidate } from '$app/navigation';
 
 	const input = tv({
 		base: 'text-gray-900 text-sm focus:ring-blue-500 focus:border-primary block p-2.5 outline-none'
@@ -43,10 +44,29 @@
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json',
-					Authorization: `Bearer ${dataInput.token}` // Authorization header
+					Authorization: `Bearer ${dataInput.token}`
 				}
 			}
 		);
+
+		if (res.status === 204) {
+			notifications.success('Produto removido com sucesso!', 3000);
+
+			const scrollY = window.scrollY;
+
+			await goto(window.location.href, { invalidateAll: true, noScroll: true });
+
+			window.scrollTo({ top: scrollY });
+		} else {
+			notifications.danger('Erro ao remover produto', 3000);
+		}
+	}
+
+	function removeFileFromSelectedFiles(event: Event, file: File) {
+		event.preventDefault();
+
+		selectedFiles = selectedFiles.filter((f) => f !== file);
+		notifications.success('Produto removido com sucesso!', 3000);
 	}
 </script>
 
@@ -83,7 +103,7 @@
 							</span>
 							<button
 								class="absolute top-2 right-2 p-2 bg-primary-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-								on:click={() => removeFile(file.media_id)}
+								on:click={(event) => removeFileFromSelectedFiles(event, file)}
 							>
 								<TrashBinSolid class="w-6 h-6" />
 							</button>
@@ -115,14 +135,14 @@
 							<span
 								class="absolute top-2 left-2 text-white font-bold text-xl bg-black bg-opacity-50 px-2 py-1 rounded-lg"
 							>
-								{file.order}
+								{file.order + 1}
 							</span>
 
 							<button
 								class="absolute top-2 right-2 p-2 bg-primary-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
 								type="button"
 								on:click={(event) => {
-									event.preventDefault(); // Evita comportamento de formulário
+									event.preventDefault(); 
 									removeFile(file.media_id);
 								}}
 							>
