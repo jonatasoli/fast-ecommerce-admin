@@ -9,6 +9,7 @@
 	import { Checkbox, Label, Select } from 'flowbite-svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import Toast from '$lib/components/Toast.svelte';
+	import InputFileMultiple from '$lib/components/InputFileMultiple.svelte';
 
 	export let data;
 	let loading = false;
@@ -16,44 +17,138 @@
 	let composition = '';
 	let howToUse = '';
 	let files: FileList;
+	let multipleFiles: FileList;
+	let selectedFiles: File[] = [];
 
 	const categoryItems = data.categories.map((category) => ({
 		value: category.category_id,
 		name: category.name
 	}));
 	$: category = data.product.category_id;
+	$: multipleFiles = data.medias;
 	let checkboxValue = data.product?.active ?? false;
 	let showcaseValue = data.product?.showcase ?? false;
 	let featureValue = data.product?.feature ?? false;
 	let showDiscountValue = data.product?.show_discount ?? false;
+	const dataInput = {
+		base_url: data.base_url,
+		product_id: data.product.product_id,
+		token: data.token
+	};
 
 	const { form, constraints, errors, enhance } = superForm(data.form, {
 		applyAction: false,
 		onSubmit: ({ formData }) => {
 			loading = true;
-			console.log(category);
-			console.log(formData);
+
 			formData.set('product_id', data.product.product_id ?? 0);
 			formData.set('content', content ?? data.product.content.content);
 			formData.set('composition', composition ?? data.product.composition);
 			formData.set('howToUse', howToUse ?? data.product.how_to_use);
 			formData.set('category', category);
 			formData.set('active', checkboxValue.toString());
+
+			if (selectedFiles && selectedFiles.length > 0) {
+				let totalFileSize = 0;
+				let validFiles = true;
+
+				Array.from(selectedFiles).forEach((file) => {
+					const fileType = file.type;
+					const fileSizeInMB = file.size / (1024 * 1024);
+
+					if (fileType.startsWith('image/')) {
+						if (fileSizeInMB > 250) {
+							notifications.danger(
+								`Imagem "${file.name}" é maior que o tamanho permitido (250 MB)!`,
+								3000
+							);
+							validFiles = false;
+						} else {
+							console.log(file);
+							formData.append('images[]', file);
+						}
+					} else if (fileType.startsWith('video/')) {
+						if (fileSizeInMB < 300) {
+							notifications.danger(
+								`Vídeo "${file.name}" é menor que o tamanho permitido (300 MB)!`,
+								3000
+							);
+							validFiles = false;
+						} else {
+							formData.append('images[]', file);
+						}
+					} else {
+			
+						notifications.danger(
+							`O arquivo "${file.name}" não é uma imagem nem um vídeo válido.`,
+							3000
+						);
+						validFiles = false;
+					}
+
+					totalFileSize += file.size;
+				});
+
+			
+				if (!validFiles) {
+					notifications.danger(
+						'Alguns arquivos não são válidos. Apenas imagens e vídeos são permitidos.',
+						3000
+					);
+					loading = false;
+					return;
+				}
+
+			
+				const totalFileSizeInMB = totalFileSize / (1024 * 1024);
+				if (totalFileSizeInMB > 10) {
+			
+					notifications.danger(
+						'O tamanho total das imagens/vídeos excede o limite permitido!',
+						3000
+					);
+					loading = false;
+					return;
+				}
+			}
+
+			
 			if (files && files.length > 0) {
-				formData.set('image', files[0]);
 				const fileSizeInBytes = files[0].size;
 				const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-				if (fileSizeInMB > 2) {
-					notifications.danger('Imagem é maior que o permitido!', 3000);
+				const fileType = files[0].type;
+
+				
+				if (fileType.startsWith('image/')) {
+					if (fileSizeInMB > 250) {
+						notifications.danger('Imagem é maior que o tamanho permitido (250 MB)!', 3000);
+						loading = false;
+					} else {
+						formData.set('image', files[0]);
+					}
+				} else if (fileType.startsWith('video/')) {
+					if (fileSizeInMB < 300) {
+						notifications.danger('Vídeo é menor que o tamanho permitido (300 MB)!', 3000);
+						loading = false;
+					} else {
+						formData.set('image', files[0]);
+						loading = false;
+					}
+				} else {
+					notifications.danger(
+						'Arquivo não é válido. Somente imagens ou vídeos são permitidos.',
+						3000
+					);
+					loading = false;
 				}
 			}
 		},
-		onResult({ result }) {
-			loading = false;
-			console.log(result.type === 'success');
+		async onResult({ result }) {
+			console.log(result);
 			if (result.type === 'success') {
+				selectedFiles = [];
 				notifications.success('Produto atualizado com sucesso!', 3000);
-				goto('/admin/products');
+				await goto(window.location.href, { invalidateAll: true });
 			}
 		}
 	});
@@ -134,7 +229,18 @@
 					</div>
 				{/if}
 				<div class="divide-y-2 divide-gray-400">
-					<InputFile label="Imagem" bind:files id="avatar" name="avatar" />
+					<InputFile label="Imagem Principal" bind:files id="avatar" name="avatar" />
+				</div>
+
+				<div class="divide-y-2 divide-gray-400">
+					<InputFileMultiple
+						label="Arquivos Secundários"
+						bind:multipleFiles
+						bind:selectedFiles
+						id="avatar"
+						name="avatar"
+						{dataInput}
+					/>
 				</div>
 				<div class="grid grid-cols-4 gap-1">
 					<div class="grid grid-cols-1 gap-1">
