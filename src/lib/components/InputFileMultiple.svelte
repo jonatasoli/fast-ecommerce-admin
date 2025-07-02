@@ -68,7 +68,7 @@
 		selectedFiles = selectedFiles.filter((f) => f !== file);
 		notifications.success('Produto removido com sucesso!', 3000);
 	}
-	</script>
+</script>
 
 <div>
 	<label for="files" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -182,7 +182,10 @@
 							</span>
 							<button
 								class="absolute top-2 right-2 p-2 bg-primary-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-								on:click={(event) => removeFileFromSelectedFiles(event, file)}
+								on:click={(event) => {
+									event.preventDefault();
+									removeFile(file.media_id);
+								}}
 							>
 								<TrashBinSolid class="w-6 h-6" />
 							</button>
