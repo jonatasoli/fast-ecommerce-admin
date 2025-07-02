@@ -68,7 +68,7 @@
 							formData.append('images[]', file);
 						}
 					} else if (fileType.startsWith('video/')) {
-						if (fileSizeInMB < 300) {
+						if (fileSizeInMB > 300) {
 							notifications.danger(
 								`Vídeo "${file.name}" é menor que o tamanho permitido (300 MB)!`,
 								3000
@@ -78,7 +78,6 @@
 							formData.append('images[]', file);
 						}
 					} else {
-			
 						notifications.danger(
 							`O arquivo "${file.name}" não é uma imagem nem um vídeo válido.`,
 							3000
@@ -88,8 +87,6 @@
 
 					totalFileSize += file.size;
 				});
-
-			
 				if (!validFiles) {
 					notifications.danger(
 						'Alguns arquivos não são válidos. Apenas imagens e vídeos são permitidos.',
@@ -98,11 +95,8 @@
 					loading = false;
 					return;
 				}
-
-			
 				const totalFileSizeInMB = totalFileSize / (1024 * 1024);
-				if (totalFileSizeInMB > 10) {
-			
+				if (totalFileSizeInMB > 30) {
 					notifications.danger(
 						'O tamanho total das imagens/vídeos excede o limite permitido!',
 						3000
@@ -111,14 +105,10 @@
 					return;
 				}
 			}
-
-			
 			if (files && files.length > 0) {
 				const fileSizeInBytes = files[0].size;
 				const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
 				const fileType = files[0].type;
-
-				
 				if (fileType.startsWith('image/')) {
 					if (fileSizeInMB > 250) {
 						notifications.danger('Imagem é maior que o tamanho permitido (250 MB)!', 3000);

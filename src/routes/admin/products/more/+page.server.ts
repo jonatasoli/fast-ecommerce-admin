@@ -129,7 +129,7 @@ export const actions: Actions = {
 		}
 
 		if (files && files.length > 0) {
-			const uploads = files.map(async (file, index) => {
+						const uploads = files.map(async (file, index) => {
 				try {
 					const mediaType = file.type.startsWith('image/')
 						? 'PHOTO'

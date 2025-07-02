@@ -68,7 +68,7 @@
 		selectedFiles = selectedFiles.filter((f) => f !== file);
 		notifications.success('Produto removido com sucesso!', 3000);
 	}
-</script>
+	</script>
 
 <div>
 	<label for="files" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
@@ -96,6 +96,27 @@
 								alt="Imagem Selecionada"
 								class="w-full h-64 object-contain rounded-lg"
 							/>
+							<span
+								class="absolute top-2 left-2 text-white font-bold text-xl bg-black bg-opacity-50 px-2 py-1 rounded-lg"
+							>
+								{index + 1}
+							</span>
+							<button
+								class="absolute top-2 right-2 p-2 bg-primary-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+								on:click={(event) => removeFileFromSelectedFiles(event, file)}
+							>
+								<TrashBinSolid class="w-6 h-6" />
+							</button>
+						</div>
+					{:else if file.type.startsWith('video')}
+						<div class="relative">
+							<video
+								controls
+								class="w-full h-64 object-contain rounded-lg"
+								src={URL.createObjectURL(file)}
+							>
+								Seu navegador não suporta a tag de vídeo.
+							</video>
 							<span
 								class="absolute top-2 left-2 text-white font-bold text-xl bg-black bg-opacity-50 px-2 py-1 rounded-lg"
 							>
@@ -142,7 +163,7 @@
 								class="absolute top-2 right-2 p-2 bg-primary-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
 								type="button"
 								on:click={(event) => {
-									event.preventDefault(); 
+									event.preventDefault();
 									removeFile(file.media_id);
 								}}
 							>
@@ -150,7 +171,22 @@
 							</button>
 						</div>
 					{:else}
-						<video controls src={file.uri} class="w-full h-64 object-contain rounded-lg" />
+						<div class="relative">
+							<video controls class="w-full h-64 object-contain rounded-lg" src={file.uri}>
+								Seu navegador não suporta a tag de vídeo.
+							</video>
+							<span
+								class="absolute top-2 left-2 text-white font-bold text-xl bg-black bg-opacity-50 px-2 py-1 rounded-lg"
+							>
+								{index + 1}
+							</span>
+							<button
+								class="absolute top-2 right-2 p-2 bg-primary-700 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+								on:click={(event) => removeFileFromSelectedFiles(event, file)}
+							>
+								<TrashBinSolid class="w-6 h-6" />
+							</button>
+						</div>
 					{/if}
 				</div>
 			{/each}
