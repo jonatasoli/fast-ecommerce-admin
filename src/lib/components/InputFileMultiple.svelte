@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { TrashBinSolid } from 'flowbite-svelte-icons';
 	import { tv } from 'tailwind-variants';
-	import { fade } from 'svelte/transition'; // Importa a transição fade
+	import { fade } from 'svelte/transition';
 	import { notifications } from '$lib/notifications';
 	import { goto, invalidate } from '$app/navigation';
 
