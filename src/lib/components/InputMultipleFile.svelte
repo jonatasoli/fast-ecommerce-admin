@@ -29,6 +29,8 @@
 	export let dataInput: { base_url: string; product_id: number; token: string };
 	export let selectedFiles: File[] = [];
 
+	const NOTIFICATION_DURATION = 3000;
+
 	function handleInputAdd(event: Event) {
 		const target = event.target as HTMLInputElement;
 		if (target.files) {
@@ -50,7 +52,7 @@
 		);
 
 		if (res.status === 204) {
-			notifications.success('Produto removido com sucesso!', 3000);
+			notifications.success('Produto removido com sucesso!', NOTIFICATION_DURATION);
 
 			const scrollY = window.scrollY;
 
@@ -58,7 +60,7 @@
 
 			window.scrollTo({ top: scrollY });
 		} else {
-			notifications.danger('Erro ao remover produto', 3000);
+			notifications.danger('Erro ao remover produto', NOTIFICATION_DURATION);
 		}
 	}
 
@@ -66,7 +68,7 @@
 		event.preventDefault();
 
 		selectedFiles = selectedFiles.filter((f) => f !== file);
-		notifications.success('Produto removido com sucesso!', 3000);
+		notifications.success('Produto removido com sucesso!', NOTIFICATION_DURATION);
 	}
 </script>
 

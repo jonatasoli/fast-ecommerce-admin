@@ -9,7 +9,7 @@
 	import { Checkbox, Label, Select } from 'flowbite-svelte';
 	import { superForm } from 'sveltekit-superforms';
 	import Toast from '$lib/components/Toast.svelte';
-	import InputFileMultiple from '$lib/components/InputFileMultiple.svelte';
+	import InputMultipleFile from '$lib/components/InputMultipleFile.svelte';
 
 	export let data;
 	let loading = false;
@@ -19,6 +19,12 @@
 	let files: FileList;
 	let multipleFiles: FileList;
 	let selectedFiles: File[] = [];
+
+	const MAX_IMAGE_SIZE_MB = 250;
+	const MAX_VIDEO_SIZE_MB = 300;
+	const MB = 1024 * 1024;
+	const NOTIFICATION_DURATION = 3000;
+	const TOTAL_IMG_VIDEO_SIZE_MB = 30;
 
 	const categoryItems = data.categories.map((category) => ({
 		value: category.category_id,
@@ -54,24 +60,23 @@
 
 				Array.from(selectedFiles).forEach((file) => {
 					const fileType = file.type;
-					const fileSizeInMB = file.size / (1024 * 1024);
+					const fileSizeInMB = file.size / MB;
 
 					if (fileType.startsWith('image/')) {
-						if (fileSizeInMB > 250) {
+						if (fileSizeInMB > MAX_IMAGE_SIZE_MB) {
 							notifications.danger(
-								`Imagem "${file.name}" é maior que o tamanho permitido (250 MB)!`,
-								3000
+								`Imagem "${file.name}" é maior que o tamanho permitido (${MAX_IMAGE_SIZE_MB} MB)!`,
+								NOTIFICATION_DURATION
 							);
 							validFiles = false;
 						} else {
-							console.log(file);
 							formData.append('images[]', file);
 						}
 					} else if (fileType.startsWith('video/')) {
-						if (fileSizeInMB > 300) {
+						if (fileSizeInMB > MAX_VIDEO_SIZE_MB) {
 							notifications.danger(
-								`Vídeo "${file.name}" é menor que o tamanho permitido (300 MB)!`,
-								3000
+								`Vídeo "${file.name}" é maior que o tamanho permitido (${MAX_VIDEO_SIZE_MB} MB)!`,
+								NOTIFICATION_DURATION
 							);
 							validFiles = false;
 						} else {
@@ -80,7 +85,7 @@
 					} else {
 						notifications.danger(
 							`O arquivo "${file.name}" não é uma imagem nem um vídeo válido.`,
-							3000
+							NOTIFICATION_DURATION
 						);
 						validFiles = false;
 					}
@@ -95,11 +100,11 @@
 					loading = false;
 					return;
 				}
-				const totalFileSizeInMB = totalFileSize / (1024 * 1024);
-				if (totalFileSizeInMB > 30) {
+				const totalFileSizeInMB = totalFileSize / MB;
+				if (totalFileSizeInMB > TOTAL_IMG_VIDEO_SIZE_MB) {
 					notifications.danger(
 						'O tamanho total das imagens/vídeos excede o limite permitido!',
-						3000
+						NOTIFICATION_DURATION
 					);
 					loading = false;
 					return;
@@ -107,18 +112,24 @@
 			}
 			if (files && files.length > 0) {
 				const fileSizeInBytes = files[0].size;
-				const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+				const fileSizeInMB = fileSizeInBytes / MB;
 				const fileType = files[0].type;
 				if (fileType.startsWith('image/')) {
-					if (fileSizeInMB > 250) {
-						notifications.danger('Imagem é maior que o tamanho permitido (250 MB)!', 3000);
+					if (fileSizeInMB > MAX_IMAGE_SIZE_MB) {
+						notifications.danger(
+							'Imagem é maior que o tamanho permitido (250 MB)!',
+							NOTIFICATION_DURATION
+						);
 						loading = false;
 					} else {
 						formData.set('image', files[0]);
 					}
 				} else if (fileType.startsWith('video/')) {
-					if (fileSizeInMB < 300) {
-						notifications.danger('Vídeo é menor que o tamanho permitido (300 MB)!', 3000);
+					if (fileSizeInMB < MAX_VIDEO_SIZE_MB) {
+						notifications.danger(
+							'Vídeo é menor que o tamanho permitido (300 MB)!',
+							NOTIFICATION_DURATION
+						);
 						loading = false;
 					} else {
 						formData.set('image', files[0]);
@@ -127,7 +138,7 @@
 				} else {
 					notifications.danger(
 						'Arquivo não é válido. Somente imagens ou vídeos são permitidos.',
-						3000
+						NOTIFICATION_DURATION
 					);
 					loading = false;
 				}
@@ -137,7 +148,7 @@
 			console.log(result);
 			if (result.type === 'success') {
 				selectedFiles = [];
-				notifications.success('Produto atualizado com sucesso!', 3000);
+				notifications.success('Produto atualizado com sucesso!', NOTIFICATION_DURATION);
 				await goto(window.location.href, { invalidateAll: true });
 			}
 		}
@@ -223,7 +234,7 @@
 				</div>
 
 				<div class="divide-y-2 divide-gray-400">
-					<InputFileMultiple
+					<InputMultipleFile
 						label="Arquivos Secundários"
 						bind:multipleFiles
 						bind:selectedFiles
