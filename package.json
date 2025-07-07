@@ -51,6 +51,7 @@
 		"@felte/validator-zod": "^1.0.17",
 		"@imask/svelte": "^7.6.0",
 		"quill": "2.0.3",
+		"svelte-i18n": "^4.0.1",
 		"tailwind-variants": "0.2.1",
 		"zod": "^3.22.4"
 	},

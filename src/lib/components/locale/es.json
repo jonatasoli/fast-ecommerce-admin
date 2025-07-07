@@ -1,0 +1,20 @@
+{
+    "layoutPage": {
+        "Home": "Inicio",
+        "ProductPage": "Productos",
+        "Stock": "Inventario",
+        "Fiscal": "Fiscal",
+        "Logistics": "Logística",
+        "Coupons": "Cupones",
+        "UserManagement": "Gestión de Usuarios",
+        "Commissions": "Comisiones",
+        "Sales": "Ventas",
+        "Settings": "Configuraciones",
+        "Logout": "Salir"
+    },
+    "pageNotFound": {
+        "notFound": "O produto que você digitou não existe ou a url fornecida está incorreta",
+        "tryAgain": "visite nossa página de início",
+        "home": "Voltar para página inicial"
+    }
+}

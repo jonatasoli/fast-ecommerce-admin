@@ -26,7 +26,7 @@
 	}
 
 	export let items: Items;
-	export let field: string = 'NOTIFICATION';
+	export let field: string = 'Notification';
 	let isLoading = true;
 	let statusToast = false;
 	let statusMessage = 'Default Message';
