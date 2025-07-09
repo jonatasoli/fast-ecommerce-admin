@@ -166,7 +166,6 @@
 	});
 </script>
 
-<!-- Interface de usuário para exibir os valores -->
 <div class="container mt-8 space-y-8">
 	<h2 class="text-2xl font-bold mb-4">Configuração de Logística</h2>
 	{#if isLoading}
@@ -175,7 +174,6 @@
 		</div>
 	{:else}
 		<form on:submit|preventDefault={handleSaveLogistics}>
-			<!-- Nome do Fornecedor -->
 			<div class="my-2">
 				<label for="provider" class="block text-sm font-medium text-gray-700 mb-1"
 					>Nome do Fornecedor:</label
@@ -188,7 +186,6 @@
 				/>
 			</div>
 
-			<!-- Usuário -->
 			<div class="my-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Usuário:</label>
 				<Input
@@ -199,7 +196,6 @@
 				/>
 			</div>
 
-			<!-- Senha -->
 			<div class="my-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Senha:</label>
 				<Input
@@ -210,7 +206,6 @@
 				/>
 			</div>
 
-			<!-- API Secret -->
 			<div class="my-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">API Secret:</label>
 				<Input
@@ -221,7 +216,6 @@
 				/>
 			</div>
 
-			<!-- Cartão Postal -->
 			<div class="my-2">
 				<label class="block text-sm font-medium text-gray-700 mb-1">Postal Card:</label>
 				<Input

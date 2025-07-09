@@ -149,7 +149,6 @@
 					</label><Input id="username" value={order.user.name} readonly />
 				</div>
 
-				<!-- ajustar -->
 				<div>
 					<label for="address" class="block text-sm font-medium text-gray-700"
 						>Endereço
