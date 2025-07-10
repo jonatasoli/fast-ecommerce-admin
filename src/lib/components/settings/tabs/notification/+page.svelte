@@ -112,7 +112,7 @@
 			crm: null,
 			notification: {
 				provider: notification.provider,
-				field: 'NOTIFICATION',
+				field: 'Notification',
 				description: notification.description,
 				type: notification.value.type,
 				contact: notification.value.contact,

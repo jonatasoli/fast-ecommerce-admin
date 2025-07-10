@@ -69,7 +69,7 @@
 			crm: null,
 			payment: {
 				provider: paymentGateway.provider,
-				field: 'PAYMENT',
+				field: 'Payment',
 				description: paymentGateway.description,
 				gateway_name: paymentGateway.value.gateway_name,
 				gateway_url: paymentGateway.value.gateway_url,

@@ -1,3 +1,4 @@
+// src/hooks.server.ts
 import { redirect, type Handle } from '@sveltejs/kit';
 import { locale } from 'svelte-i18n';
 
@@ -9,8 +10,10 @@ export const handle: Handle = async ({ event, resolve }) => {
 	const secondsInDay = 60 * 60 * 24;
 	const maxAge = days * secondsInDay;
 
-	const protectedPaths = url.pathname.includes('/admin');
-	if (!accessToken && protectedPaths) {
+	const isProtectedRoute = url.pathname.startsWith('/admin');
+
+	if (!accessToken && isProtectedRoute) {
+		console.log('No token, redirecting from', url.pathname); // Debug
 		throw redirect(302, '/');
 	}
 
@@ -24,6 +27,5 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	locale.set(lang);
 	const response = await resolve(event);
-
 	return response;
 };

@@ -10,7 +10,9 @@
 	import { superForm } from 'sveltekit-superforms';
 	import Toast from '$lib/components/Toast.svelte';
 	import InputMultipleFile from '$lib/components/InputMultipleFile.svelte';
+
 	import { _ } from 'svelte-i18n';
+
 	export let data;
 	let loading = false;
 	let content = '';

@@ -23,6 +23,8 @@
 	} from 'flowbite-svelte-icons';
 	import { productsStore } from '$lib/stores/product';
 
+	
+
 	export let data: any;
 	let debounceTimeout: ReturnType<typeof setTimeout>;
 	let searchTerm = '';
@@ -58,12 +60,12 @@
 	});
 
 	async function getProductsByFilter(query: string) {
-		await products.get(`${data.base_url}/product/products/${query}`, data.access_token);
+		await products.get(`${PUBLIC_SERVER_BASE_URL}/product/products/${query}`, data.access_token);
 	}
 
 	async function refreshProducts() {
 		await products.get(
-			`${data.base_url}/product/inventory?offset=${rowsPerPage}&page=${currentPage}`,
+			`${PUBLIC_SERVER_BASE_URL}/product/inventory?offset=${rowsPerPage}&page=${currentPage}`,
 			data.access_token
 		);
 	}

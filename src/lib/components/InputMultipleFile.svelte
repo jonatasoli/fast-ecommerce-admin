@@ -4,7 +4,9 @@
 	import { fade } from 'svelte/transition';
 	import { notifications } from '$lib/notifications';
 	import { goto, invalidate } from '$app/navigation';
+
 	import { _ } from 'svelte-i18n';
+
 
 	const input = tv({
 		base: 'text-gray-900 text-sm focus:ring-blue-500 focus:border-primary block p-2.5 outline-none'
@@ -84,9 +86,11 @@
 
 	{#if selectedFiles.length > 0}
 		<div class="py-4">
+
 			<span class="text-primary-700 font-semibold text-lg"
 				>{$_('InputMultipleFile.FilesAddedForSubmission')}</span
 			>
+
 		</div>
 		<div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
 			{#each selectedFiles as file, index}
@@ -120,7 +124,9 @@
 								class="w-full h-64 object-contain rounded-lg"
 								src={URL.createObjectURL(file)}
 							>
+
 								{$_('InputMultipleFile.NavegatorNotSuportTag')}
+
 							</video>
 							<span
 								class="absolute top-2 left-2 text-white font-bold text-xl bg-black bg-opacity-50 px-2 py-1 rounded-lg"
@@ -136,7 +142,9 @@
 						</div>
 					{:else}
 						<div class="text-center text-gray-500">
+
 							<p>{$_('InputMultipleFile.UnsupportedFileType')}</p>
+
 						</div>
 					{/if}
 				</div>
@@ -146,6 +154,7 @@
 
 	{#if multipleFiles && multipleFiles.length > 0}
 		<div class="py-4">
+
 			<span class="text-primary-700 font-semibold text-lg"
 				>{$_('InputMultipleFile.StoredFiles')}</span
 			>
@@ -180,7 +189,9 @@
 					{:else}
 						<div class="relative">
 							<video controls class="w-full h-64 object-contain rounded-lg" src={file.uri}>
+
 								{$_('InputMultipleFile.NavegatorNotSuportTag')}
+
 							</video>
 							<span
 								class="absolute top-2 left-2 text-white font-bold text-xl bg-black bg-opacity-50 px-2 py-1 rounded-lg"
