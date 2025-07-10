@@ -1,6 +1,7 @@
 {
     "MainPage": {
         "GATTOROSAADMIN": "GATTO ROSA ADMIN",
+        "GattoRosaAdmin": "Gatto Rosa Admin",
         "Login": "Login"
     },
     "layoutPage": {
@@ -19,6 +20,7 @@
     "InputMultipleFile": {
         "FilesAddedForSubmission": "Arquivos adicionados para envio",
         "UnsupportedFileType": "Tipo de arquivo não suportado",
+        "NavegatorNotSuportTag": "Seu navegador não suporta a tag de vídeo",
         "StoredFiles": "Arquivos Armazenados"
     },
     "CreateCoupon": {
@@ -71,7 +73,8 @@
         "Region": "Região",
         "BucketName": "Nome do Bucket",
         "ApiKey": "API Key",
-        "SecretKey": "Secret Key"
+        "SecretKey": "Secret Key",
+        "SaveConfig": "Salvar Configurações"
     },
     "CrmSettings": {
         "LogisticsSettings": "Configuração de Logística",
@@ -86,7 +89,8 @@
         "GeneralSettings": "Configurações Gerais",
         "Provider": "Provider",
         "Description": "Descrição",
-        "CompanyName": "Nome da Empresa"
+        "CompanyName": "Nome da Empresa",
+        "SaveSettings": "Salvar Configurações"
     },
     "LogisticsSettings": {
         "LogisticsSettings": "Configuração de Logística",
@@ -138,7 +142,7 @@
         "Actions": "Ações",
         "Manage": "Gerenciar",
         "Details": "Detalhes",
-        "DeactivateCoupon": "Desativar Cupom",
+        "DesactivateCoupon": "Desativar Cupom",
         "ItemsPerPage": "Quantidade por página",
         "CheckIcon": "Check icon",
         "CreatedSuccessfully": "Criado com Sucesso!"

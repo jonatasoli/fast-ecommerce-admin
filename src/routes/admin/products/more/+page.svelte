@@ -10,7 +10,7 @@
 	import { superForm } from 'sveltekit-superforms';
 	import Toast from '$lib/components/Toast.svelte';
 	import InputMultipleFile from '$lib/components/InputMultipleFile.svelte';
-
+	import { _ } from 'svelte-i18n';
 	export let data;
 	let loading = false;
 	let content = '';
@@ -173,12 +173,14 @@
 
 <Toast />
 <div class="w-[90vw] mt-8 mx-auto mb-8">
-	<h1>Mais ações</h1>
+	<h1>{$_('ProductsMorePage.MoreActions')}</h1>
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Criar Novo Produto</h1>
-		<Button variant="secondary" on:click={() => goto('/admin/products')}>Voltar</Button>
+		<h1 class="text-3xl font-semibold">{$_('ProductsMorePage.CreateNewProduct')}</h1>
+		<Button variant="secondary" on:click={() => goto('/admin/products')}
+			>{$_('ProductsMorePage.Back')}</Button
+		>
 	</div>
-	<h1 class="text-3xl font-semibold">Atualizar Produto</h1>
+	<h1 class="text-3xl font-semibold">{$_('ProductsMorePage.UpdateProduct')}</h1>
 	<form class="mt-12 divide-y-2 divide-gray-400" method="POST" use:enhance>
 		<div class="grid grid-cols-1 gap-1">
 			<Input
@@ -199,7 +201,7 @@
 						{...$constraints.name}
 					/>
 					<div>
-						<Label class="mb-2">Categoria</Label>
+						<Label class="mb-2">{$_('ProductsMorePage.Category')}</Label>
 						<Select class="mt-2" id="category" bind:value={category}>
 							{#each categoryItems as { value, name }}
 								<option {value}>{name}</option>
@@ -225,7 +227,7 @@
 					<div class="grid grid-cols-1 justify-center justify-items-center">
 						<img src={data.product.image_path} width="500" height="600" />
 						<div class="mt-8 w-80">
-							<Button on:click={remove_image_path}>Remover</Button>
+							<Button on:click={remove_image_path}>{$_('ProductsMorePage.Remove')}</Button>
 						</div>
 					</div>
 				{/if}
@@ -245,23 +247,23 @@
 				</div>
 				<div class="grid grid-cols-4 gap-1">
 					<div class="grid grid-cols-1 gap-1">
-						<h2 class="text-xl font-bold mt-4 mb-4">Status do produto:</h2>
-						<Checkbox bind:checked={checkboxValue}>Ativo</Checkbox>
+						<h2 class="text-xl font-bold mt-4 mb-4">{$_('ProductsMorePage.ProductStatus')}:</h2>
+						<Checkbox bind:checked={checkboxValue}>{$_('ProductsMorePage.Active')}</Checkbox>
 					</div>
 					<div class="grid grid-cols-1 gap-1">
-						<h2 class="text-xl font-bold mt-4 mb-4">Exibir no carrossel:</h2>
-						<Checkbox bind:checked={showcaseValue}>Ativo</Checkbox>
+						<h2 class="text-xl font-bold mt-4 mb-4">{$_('ProductsMorePage.ShowInCarousel')}:</h2>
+						<Checkbox bind:checked={showcaseValue}>{$_('ProductsMorePage.Active')}</Checkbox>
 					</div>
 					<div class="grid grid-cols-1 gap-1">
-						<h2 class="text-xl font-bold mt-4 mb-4">Exibir no destaque:</h2>
-						<Checkbox bind:checked={featureValue}>Ativo</Checkbox>
+						<h2 class="text-xl font-bold mt-4 mb-4">{$_('ProductsMorePage.ShowInHighlight')}:</h2>
+						<Checkbox bind:checked={featureValue}>{$_('ProductsMorePage.Active')}</Checkbox>
 					</div>
 					<div class="grid grid-cols-1 gap-1">
-						<h2 class="text-xl font-bold mt-4 mb-4">Exibir no desconto:</h2>
-						<Checkbox bind:checked={showDiscountValue}>Ativo</Checkbox>
+						<h2 class="text-xl font-bold mt-4 mb-4">{$_('ProductsMorePage.ShowInDiscount')}:</h2>
+						<Checkbox bind:checked={showDiscountValue}>{$_('ProductsMorePage.Active')}</Checkbox>
 					</div>
 				</div>
-				<h2 class="text-xl font-bold mt-4">Descrição do produto:</h2>
+				<h2 class="text-xl font-bold mt-4">{$_('ProductsMorePage.ProductDescription')}:</h2>
 				<div class="my-10">
 					<Editor
 						label="Conteúdo"
@@ -286,7 +288,7 @@
 						on:change={handleChangeComposition}
 					/>
 				</div>
-				<h2 class="text-xl font-bold">Dimensões do produto:</h2>
+				<h2 class="text-xl font-bold">{$_('ProductsMorePage.ProductDimensions')}:</h2>
 				<div class="grid grid-cols-2 gap-4 mt-8">
 					<Input
 						label="Altura (cm)"
@@ -331,7 +333,7 @@
 				</div>
 				<div class="inline-flex w-full justify-center">
 					<div class="mt-8 w-80">
-						<Button block {loading} type="submit">Salvar</Button>
+						<Button block {loading} type="submit">{$_('ProductsMorePage.Save')}</Button>
 					</div>
 				</div>
 			</div>

@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import Notification from '$lib/components/notification/notification.svelte';
 	import type { Items, LogisticsConfig } from '$lib/types';
-
+	import { _ } from 'svelte-i18n';
 	let logistics: LogisticsConfig = {
 		provider: '',
 		description: '',
@@ -167,7 +167,7 @@
 </script>
 
 <div class="container mt-8 space-y-8">
-	<h2 class="text-2xl font-bold mb-4">Configuração de Logística</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('LogisticsSettings.LogisticsSettings')}</h2>
 	{#if isLoading}
 		<div class="flex justify-center items-center">
 			<Spinner size="10" />
@@ -176,7 +176,7 @@
 		<form on:submit|preventDefault={handleSaveLogistics}>
 			<div class="my-2">
 				<label for="provider" class="block text-sm font-medium text-gray-700 mb-1"
-					>Nome do Fornecedor:</label
+					>{$_('LogisticsSettings.SupplierName')}:</label
 				>
 				<Select
 					id="provider"
@@ -187,7 +187,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Usuário:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('LogisticsSettings.User')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={logistics.value.logistics_user}
@@ -197,7 +199,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Senha:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('LogisticsSettings.Password')}:</label
+				>
 				<Input
 					type="password"
 					bind:value={logistics.value.logistics_pass}
@@ -207,7 +211,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">API Secret:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('LogisticsSettings.ApiSecret')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={logistics.value.logistics_api_secret}
@@ -217,7 +223,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Postal Card:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('LogisticsSettings.PostalCard')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={logistics.value.logistics_postal_card}
@@ -227,7 +235,7 @@
 			</div>
 			<div class="flex justify-end">
 				<Button type="submit" class="btn-primary text-white rounded-md px-4 py-2 mt-4"
-					>Salvar Configurações</Button
+					>{$_('LogisticsSettings.SaveSettings')}</Button
 				>
 			</div>
 		</form>

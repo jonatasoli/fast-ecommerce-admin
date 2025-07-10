@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { OrderTracking } from '$lib/types';
 	import { getStatusTranslation } from '$lib/utils';
-
 	import { Modal, Button, Input } from 'flowbite-svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { _ } from 'svelte-i18n';
 
 	export let isOpen: boolean = false;
 
@@ -33,15 +33,19 @@
 
 <Modal bind:open={isOpen} on:close={closeModal} size="md">
 	<div class="p-4 space-y-4">
-		<h3 class="text-lg font-semibold mb-4">Detalhes do Pedido</h3>
+		<h3 class="text-lg font-semibold mb-4">{$_('LogisticsModal.OrderDetails')}</h3>
 
 		<div class="mb-4">
-			<label for="orderId" class="block text-sm font-medium text-gray-700">ID do Pedido</label>
+			<label for="orderId" class="block text-sm font-medium text-gray-700"
+				>{$_('LogisticsModal.OrderID')}</label
+			>
 			<Input id="orderId" type="text" value={selectedOrder.order_id} readonly class="mt-1 w-full" />
 		</div>
 
 		<div class="mb-4">
-			<label for="orderDate" class="block text-sm font-medium text-gray-700">Data do Pedido</label>
+			<label for="orderDate" class="block text-sm font-medium text-gray-700"
+				>{$_('LogisticsModal.OrderDate')}</label
+			>
 			<Input
 				id="orderDate"
 				type="text"
@@ -53,7 +57,7 @@
 
 		<div class="mb-4">
 			<label for="orderStatus" class="block text-sm font-medium text-gray-700"
-				>Status do Pedido</label
+				>{$_('LogisticsModal.OrderStatus')}</label
 			>
 			<Input
 				id="orderStatus"
@@ -66,7 +70,7 @@
 
 		<div class="mb-4">
 			<label for="trackingCode" class="block text-sm font-medium text-gray-700"
-				>Código de Rastreio</label
+				>{$_('LogisticsModal.TrackingCode')}</label
 			>
 			<Input
 				id="trackingCode"
@@ -79,11 +83,13 @@
 		<div class="flex flex-wrap justify-end space-x-2 mt-4">
 			<Button variant="secondary" on:click={closeModal} class="w-full sm:w-auto">Cancelar</Button>
 			<Button variant="primary" on:click={updatedModal} class="w-full sm:w-auto"
-				>Atualizar Logística</Button
+				>{$_('LogisticsModal.UpdateLogistics')}</Button
 			>
 
 			{#if selectedOrder.order_status === 'SHIPPING_ORDER' || selectedOrder.order_status === 'GENERATE_INVOICE'}
-				<Button on:click={markAsDelivered} variant="primary">Marcar como entregue</Button>
+				<Button on:click={markAsDelivered} variant="primary"
+					>{$_('LogisticsModal.MarkAsDelivered')}</Button
+				>
 			{/if}
 		</div>
 	</div>

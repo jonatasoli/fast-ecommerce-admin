@@ -25,7 +25,7 @@
 	} from 'flowbite-svelte-icons';
 	import CreateCoupon from '$lib/components/coupon/modal/CreateCoupon.svelte';
 	import { onMount } from 'svelte';
-
+	import { _ } from 'svelte-i18n';
 	export let data: any;
 
 	const coupons = couponsStore();
@@ -160,8 +160,8 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Gestão de Cupons</h1>
-		<Button class="bg-primary " on:click={addCoupon}>Novo Cupom</Button>
+		<h1 class="text-3xl font-semibold">{$_('CouponsPage.CouponsManagement')}</h1>
+		<Button class="bg-primary " on:click={addCoupon}>{$_('CouponsPage.NewCoupon')}</Button>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
@@ -174,39 +174,39 @@
 			>
 				<TableHead>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('user_id')}
-						>ID</TableHeadCell
+						>{$_('CouponsPage.ID')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('string_name')}
-						>código</TableHeadCell
+						>{$_('CouponsPage.Code')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('document')}
-						>usuário</TableHeadCell
+						>{$_('CouponsPage.User')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('email')}
-						>produto</TableHeadCell
+						>{$_('CouponsPage.Product')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>desconto</TableHeadCell
+						>{$_('CouponsPage.Discount')}</TableHeadCell
 					>
 
 					<TableHeadCell class="cursor-pointer" on:click={() => orderBy('role_id')}
-						>situação</TableHeadCell
+						>{$_('CouponsPage.Status')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>Quantidade</TableHeadCell
+						>{$_('CouponsPage.Quantity')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>limite</TableHeadCell
+						>{$_('CouponsPage.Limit')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>comissão</TableHeadCell
+						>{$_('CouponsPage.Commission')}</TableHeadCell
 					>
 
-					<TableHeadCell class="">Ações</TableHeadCell>
+					<TableHeadCell class="">{$_('CouponsPage.Actions')}</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
 					{#each items as coupon}
@@ -233,7 +233,7 @@
 									: '0'}</TableBodyCell
 							>
 							<TableBodyCell tdClass="py-2">
-								<Button id={`btn-${coupon.coupon_id}`}>Gerenciar</Button>
+								<Button id={`btn-${coupon.coupon_id}`}>{$_('CouponsPage.Manage')}</Button>
 								<Popover
 									class="w-64 text-sm font-light"
 									title={`Opções do Cupom ${coupon.code}`}
@@ -241,14 +241,16 @@
 								>
 									<div class="flex flex-col space-y-2">
 										<a href={`/admin/coupons/${coupon.coupon_id}`}>
-											<Button variant="secondary" class="w-full text-left">Detalhes</Button>
+											<Button variant="secondary" class="w-full text-left"
+												>{$_('CouponsPage.Details')}</Button
+											>
 										</a>
 										<Button
 											variant="danger"
 											class="w-full text-left"
 											on:click={() => inactiveCoupon(coupon.coupon_id)}
 										>
-											Desativar Cupom
+											{$_('CouponsPage.DesactivateCoupon')}
 										</Button>
 									</div>
 								</Popover>
@@ -259,7 +261,7 @@
 			</TableSearch>
 		</Table>
 		<div class="w-full flex justify-end items-center gap-2 my-3">
-			<Label>Quantidade por página</Label>
+			<Label>{$_('CouponsPage.ItemsPerPage')}</Label>
 			<Select
 				variant="outlined"
 				bind:value={rowsPerPage}
@@ -322,9 +324,9 @@
 		<Toast color="green" position="top-right">
 			<svelte:fragment slot="icon">
 				<CheckCircleSolid class="w-5 h-5" />
-				<span class="sr-only">Check icon</span>
+				<span class="sr-only">{$_('CouponsPage.CheckIcon')}</span>
 			</svelte:fragment>
-			Criado com Sucesso!
+			{$_('CouponsPage.CreatedSuccessfully')}
 		</Toast>
 	{/if}
 </div>

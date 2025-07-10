@@ -3,6 +3,7 @@
 	import { Input, Alert } from 'flowbite-svelte';
 	import { FileCopyAltSolid } from 'flowbite-svelte-icons';
 	import { createEventDispatcher } from 'svelte';
+	import { _ } from 'svelte-i18n';
 
 	const dispatch = createEventDispatcher(); // For emitting events to the parent component
 
@@ -25,7 +26,7 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Cupons</h1>
+		<h1 class="text-3xl font-semibold">{$_('PartnerCouponsPage.Coupons')}</h1>
 	</div>
 	<div class="flex justify-center items-center w-full">
 		{#each data.links as linkValue}
@@ -33,11 +34,13 @@
 
 			<Button on:click={() => copyLink(linkValue)}>
 				<FileCopyAltSolid class="mr-2 h-4 w-4" />
-				Copiar Link
+				{$_('PartnerCouponsPage.CopyLink')}
 			</Button>
 
 			{#if showAlerts[linkValue]}
-				<Alert color="green" on:close={() => (showAlerts[linkValue] = false)}>Link copiado!</Alert>
+				<Alert color="green" on:close={() => (showAlerts[linkValue] = false)}
+					>{$_('PartnerCouponsPage.LinkCopied')}</Alert
+				>
 			{/if}
 		{/each}
 	</div>

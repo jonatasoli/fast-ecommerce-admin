@@ -9,7 +9,7 @@
 	import { notifications } from '$lib/notifications.js';
 	import { superForm } from 'sveltekit-superforms';
 	import { Checkbox, Label, Select } from 'flowbite-svelte';
-
+	import { _ } from 'svelte-i18n';
 	export let data;
 	let loading = false;
 	let content = '';
@@ -75,15 +75,17 @@
 <div class="w-[90vw] mt-8 mx-auto mb-8">
 	<Toast />
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Criar Novo Produto</h1>
-		<Button variant="secondary" on:click={() => goto('/admin/products')}>Voltar</Button>
+		<h1 class="text-3xl font-semibold">{$_('NewProductsPage.CreateNewProduct')}</h1>
+		<Button variant="secondary" on:click={() => goto('/admin/products')}
+			>{$_('NewProductsPage.Back')}</Button
+		>
 	</div>
-	<h1 class="text-3xl font-semibold">Novo Produto</h1>
+	<h1 class="text-3xl font-semibold">{$_('NewProductsPage.NewProduct')}</h1>
 	<form class="mt-12" method="POST" use:enhance>
 		<div class="grid grid-cols-2 gap-4">
 			<Input label="Nome" name="name" type="text" bind:value={$form.name} {...$constraints.name} />
 			<div>
-				<Label class="mb-2">Categoria</Label>
+				<Label class="mb-2">{$_('NewProductsPage.Category')}</Label>
 				<Select class="mt-2" id="category" bind:value={category}>
 					{#each categoryItems as { value, name }}
 						<option {value}>{name}</option>
@@ -110,23 +112,23 @@
 		</div>
 		<div class="grid grid-cols-4 gap-1">
 			<div class="grid grid-cols-1 gap-1">
-				<h2 class="text-xl font-bold mt-4 mb-4">Status do produto:</h2>
-				<Checkbox bind:checked={checkboxValue}>Ativo</Checkbox>
+				<h2 class="text-xl font-bold mt-4 mb-4">{$_('NewProductsPage.ProductStatus')}:</h2>
+				<Checkbox bind:checked={checkboxValue}>{$_('NewProductsPage.Active')}</Checkbox>
 			</div>
 			<div class="grid grid-cols-1 gap-1">
-				<h2 class="text-xl font-bold mt-4 mb-4">Exibir no carrossel:</h2>
-				<Checkbox bind:checked={showcaseValue}>Ativo</Checkbox>
+				<h2 class="text-xl font-bold mt-4 mb-4">{$_('NewProductsPage.ShowInCarousel')}:</h2>
+				<Checkbox bind:checked={showcaseValue}>{$_('NewProductsPage.Active')}</Checkbox>
 			</div>
 			<div class="grid grid-cols-1 gap-1">
-				<h2 class="text-xl font-bold mt-4 mb-4">Exibir no destaque:</h2>
-				<Checkbox bind:checked={featureValue}>Ativo</Checkbox>
+				<h2 class="text-xl font-bold mt-4 mb-4">{$_('NewProductsPage.ShowInHighlight')}:</h2>
+				<Checkbox bind:checked={featureValue}>{$_('NewProductsPage.Active')}</Checkbox>
 			</div>
 			<div class="grid grid-cols-1 gap-1">
-				<h2 class="text-xl font-bold mt-4 mb-4">Exibir no desconto:</h2>
-				<Checkbox bind:checked={showDiscountValue}>Ativo</Checkbox>
+				<h2 class="text-xl font-bold mt-4 mb-4">{$_('NewProductsPage.ShowInDiscount')}:</h2>
+				<Checkbox bind:checked={showDiscountValue}>{$_('NewProductsPage.Active')}</Checkbox>
 			</div>
 		</div>
-		<h2 class="text-xl font-bold mt-4">Descrição do produto:</h2>
+		<h2 class="text-xl font-bold mt-4">{$_('NewProductsPage.ProductDescription')}:</h2>
 		<div class="my-10">
 			<Editor label="Conteúdo" placeholder="Descrição..." on:change={handleChangeContent} />
 
@@ -140,7 +142,7 @@
 		<div class="my-10">
 			<Editor label="Composição" placeholder="Composição..." on:change={handleChangeComposition} />
 		</div>
-		<h2 class="text-xl font-bold">Dimensões do produto:</h2>
+		<h2 class="text-xl font-bold">{$_('NewProductsPage.ProductDimensions')}:</h2>
 		<div class="grid grid-cols-2 gap-4 mt-8">
 			<Input
 				label="Altura (cm)"
@@ -185,7 +187,7 @@
 		</div>
 		<div class="inline-flex w-full justify-center">
 			<div class="mt-8 w-80">
-				<Button block {loading} type="submit">Salvar</Button>
+				<Button block {loading} type="submit">{$_('NewProductsPage.Save')}</Button>
 			</div>
 		</div>
 	</form>

@@ -8,7 +8,7 @@
 	import GeraisTab from '$lib/components/settings/tabs/general/+page.svelte';
 	import type { Items } from '$lib/types.js';
 	import { locales } from '$lib/utils.js';
-
+	import { _ } from 'svelte-i18n';
 	export let data;
 
 	let selectedCode: string = 'pt-br';
@@ -29,10 +29,12 @@
 </script>
 
 <div class="container mt-8 space-y-8 p-4">
-	<h2 class="text-2xl font-bold mb-4">Configuração de Locais</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('GeneralSettingsPage.LocationSettings')}</h2>
 	<form on:submit|preventDefault={handleSaveLocales} class="space-y-4">
 		<div class="flex items-center space-x-4">
-			<label class="block text-sm font-medium text-gray-700">Locale Code (Short Code):</label>
+			<label class="block text-sm font-medium text-gray-700"
+				>{$_('GeneralSettingsPage.LocaleCode')}:</label
+			>
 			<Select
 				bind:value={selectedCode}
 				variant="outlined"
@@ -43,7 +45,9 @@
 				on:change={handleSaveLocales}
 			/>
 
-			<label class="block text-sm font-medium text-gray-700">Padrão:</label>
+			<label class="block text-sm font-medium text-gray-700"
+				>{$_('GeneralSettingsPage.Default')}:</label
+			>
 			<Checkbox checked={isDefaultCode(selectedCode)} />
 		</div>
 	</form>

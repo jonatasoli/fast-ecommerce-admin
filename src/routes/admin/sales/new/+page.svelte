@@ -7,7 +7,7 @@
 	import { getStatusTranslation, paymentMethodMap } from '$lib/utils';
 	import type { DataSalesOrders } from '$lib/types';
 	import { currencyFormat } from '$lib/utils';
-
+	import { _ } from 'svelte-i18n';
 	export let orderId;
 	export let data;
 	let isLoading = true;
@@ -112,8 +112,10 @@
 
 <div class="w-[60vw] mt-8 mx-auto print:hidden">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Editar Pedido {order.order_id}</h1>
-		<Button variant="secondary" on:click={() => goto('/admin/sales')}>Voltar</Button>
+		<h1 class="text-3xl font-semibold">{$_('NewSalesPage.EditOrder')} {order.order_id}</h1>
+		<Button variant="secondary" on:click={() => goto('/admin/sales')}
+			>{$_('NewSalesPage.Back')}</Button
+		>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
@@ -124,7 +126,9 @@
 		{:else}
 			<form class="flex flex-col gap-4">
 				<div class="mb-4">
-					<label for="produtos" class="block text-sm font-medium text-gray-700">Produtos </label>
+					<label for="produtos" class="block text-sm font-medium text-gray-700"
+						>{$_('NewSalesPage.Products')}
+					</label>
 					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
 						{#each order.items as items}
 							<Card
@@ -132,10 +136,12 @@
 							>
 								<div class="sm:p-6 flex flex-col items-center">
 									<h3 class="text-lg font-semibold text-center mb-2">{items.product.name}</h3>
-									<p class="text-gray-600">Preço: {currencyFormat(items.product.price)}</p>
-									<p class="text-gray-600">Quantidade: {items.quantity}</p>
+									<p class="text-gray-600">
+										{$_('NewSalesPage.Price')}: {currencyFormat(items.product.price)}
+									</p>
+									<p class="text-gray-600">{$_('NewSalesPage.Quantity')}: {items.quantity}</p>
 									<p class="text-gray-600 mt-2">
-										Desconto: {currencyFormat(Number(items.discount_price))}
+										{$_('NewSalesPage.Discount')}: {currencyFormat(Number(items.discount_price))}
 									</p>
 								</div>
 							</Card>
@@ -145,33 +151,31 @@
 
 				<div>
 					<label for="username" class="block text-sm font-medium text-gray-700"
-						>Usuário
+						>{$_('NewSalesPage.User')}
 					</label><Input id="username" value={order.user.name} readonly />
 				</div>
 
 				<div>
 					<label for="address" class="block text-sm font-medium text-gray-700"
-						>Endereço
+						>{$_('NewSalesPage.Address')}
 					</label><Input id="address" value={getAdress(order.user)} readonly />
 				</div>
 
 				<div>
-					<label for="cep" class="block text-sm font-medium text-gray-700">CEP </label><Input
-						id="cep"
-						value={order.user.addresses[0].zipcode}
-						readonly
-					/>
+					<label for="cep" class="block text-sm font-medium text-gray-700"
+						>{$_('NewSalesPage.ZipCode')}</label
+					><Input id="cep" value={order.user.addresses[0].zipcode} readonly />
 				</div>
 
 				<div>
 					<label for="state" class="block text-sm font-medium text-gray-700"
-						>Residencia
+						>{$_('NewSalesPage.Residence')}
 					</label><Input id="state" value={getState(order.user)} readonly />
 				</div>
 
 				<div>
 					<label for="payment_type" class="block text-sm font-medium text-gray-700"
-						>Método de pagamento
+						>{$_('NewSalesPage.PaymentMethod')}
 					</label><Input
 						id="payment_type"
 						value={order.payment?.payment_method
@@ -183,21 +187,19 @@
 
 				<div>
 					<label for="document" class="block text-sm font-medium text-gray-700"
-						>Documento
+						>{$_('NewSalesPage.Document')}
 					</label><Input id="document" value={order.user.document} readonly />
 				</div>
 
 				<div>
-					<label for="phone" class="block text-sm font-medium text-gray-700">Telefone </label><Input
-						id="phone"
-						value={order.user.phone}
-						readonly
-					/>
+					<label for="phone" class="block text-sm font-medium text-gray-700"
+						>{$_('NewSalesPage.Phone')}</label
+					><Input id="phone" value={order.user.phone} readonly />
 				</div>
 
 				<div>
 					<label for="orderDate" class="block text-sm font-medium text-gray-700"
-						>Data do Pedido
+						>{$_('NewSalesPage.OrderDate')}
 					</label>
 					<Input
 						id="Data do Pedido"
@@ -208,7 +210,7 @@
 
 				<div>
 					<label for="ID do Pedido" class="block text-sm font-medium text-gray-700"
-						>Status do Pedido
+						>{$_('NewSalesPage.OrderStatus')}
 					</label><Input
 						id="Status do Pedido"
 						value={getStatusTranslation(order.order_status)}
@@ -216,21 +218,19 @@
 					/>
 				</div>
 				<div>
-					<label for="email" class="block text-sm font-medium text-gray-700">E-mail </label><Input
-						id="email"
-						value={order.user.email}
-						readonly
-					/>
+					<label for="email" class="block text-sm font-medium text-gray-700"
+						>{$_('NewSalesPage.Email')}</label
+					><Input id="email" value={order.user.email} readonly />
 				</div>
 				<div>
 					<label for="frete" class="block text-sm font-medium text-gray-700"
-						>Tipo do Frete
+						>{$_('NewSalesPage.ShippingType')}
 					</label><Input id="frete" bind:value={order.freight} readonly />
 				</div>
 
 				<div>
 					<label for="freight_amount" class="block text-sm font-medium text-gray-700"
-						>Valor do Frete
+						>{$_('NewSalesPage.ShippingCost')}
 					</label><Input
 						id="freight_amount"
 						value={currencyFormatFreight(
@@ -244,7 +244,7 @@
 
 				<div>
 					<label for="total" class="block text-sm font-medium text-gray-700"
-						>Valor Total
+						>{$_('NewSalesPage.ShippingCost')}
 					</label><Input
 						id="total"
 						value={currencyFormat(Number(order.payment?.amount))}
@@ -254,12 +254,14 @@
 			</form>
 		{/if}
 		<div class="my-8 space-y-4" role="group">
-			<Button variant="primary" on:click={cancelOrder}>Cancelar Venda</Button>
-			<Button variant="primary" on:click={submitInvoice}>Anexar nota fiscal</Button>
-			<Button variant="primary" on:click={printPage}>Imprimir Pedido</Button>
+			<Button variant="primary" on:click={cancelOrder}>{$_('NewSalesPage.CancelSale')}</Button>
+			<Button variant="primary" on:click={submitInvoice}>{$_('NewSalesPage.AttachInvoice')}</Button>
+			<Button variant="primary" on:click={printPage}>{$_('NewSalesPage.PrintOrder')}</Button>
 			{#if showInvoiceLink}
 				<Input label="Link da Nota Fiscal" bind:value={invoiceLink} />
-				<Button variant="secondary" on:click={submitInvoice}>Enviar Nota Fiscal</Button>
+				<Button variant="secondary" on:click={submitInvoice}
+					>{$_('NewSalesPage.SendInvoice')}</Button
+				>
 			{/if}
 		</div>
 	</div>
@@ -268,40 +270,42 @@
 	<div class="print:block p-6 max-w-5xl mx-auto mt-8 bg-white shadow-lg">
 		<div class="flex justify-between items-center mb-6 border-b pb-4">
 			<div>
-				<h1 class="text-2xl font-bold">Detalhes do Pedido</h1>
-				<p class="text-sm text-gray-500">Pedido ID: {order.order_id}</p>
+				<h1 class="text-2xl font-bold">{$_('NewSalesPage.OrderDetails')}</h1>
+				<p class="text-sm text-gray-500">{$_('NewSalesPage.OrderID')}: {order.order_id}</p>
 			</div>
 			<div>
-				<p class="text-lg font-semibold">Data: {new Date(order.order_date).toLocaleDateString()}</p>
+				<p class="text-lg font-semibold">
+					{$_('NewSalesPage.Date')}: {new Date(order.order_date).toLocaleDateString()}
+				</p>
 			</div>
 		</div>
 
 		<div class="grid grid-cols-2 gap-4 mb-8">
 			<div>
-				<h2 class="text-xl font-semibold mb-2">Informações do Cliente</h2>
-				<p><strong>Nome:</strong> {order.user.name}</p>
-				<p><strong>Documento:</strong> {order.user.document}</p>
-				<p><strong>Telefone:</strong> {order.user.phone}</p>
-				<p><strong>E-mail:</strong> {order.user.email}</p>
+				<h2 class="text-xl font-semibold mb-2">{$_('NewSalesPage.CustomerInfo')}</h2>
+				<p><strong>{$_('NewSalesPage.Name')}:</strong> {order.user.name}</p>
+				<p><strong>{$_('NewSalesPage.DeliveryAddress')}:</strong> {order.user.document}</p>
+				<p><strong>{$_('NewSalesPage.Phone')}:</strong> {order.user.phone}</p>
+				<p><strong>{$_('NewSalesPage.Email')}:</strong> {order.user.email}</p>
 			</div>
 			<div>
-				<h2 class="text-xl font-semibold mb-2">Endereço de Entrega</h2>
-				<p><strong>Endereço:</strong> {getAdress(order.user)}</p>
-				<p><strong>CEP:</strong> {order.user.addresses[0].zipcode}</p>
-				<p><strong>Residência:</strong> {getState(order.user)}</p>
+				<h2 class="text-xl font-semibold mb-2">{$_('NewSalesPage.DeliveryAddress')}</h2>
+				<p><strong>{$_('NewSalesPage.Address')}:</strong> {getAdress(order.user)}</p>
+				<p><strong>{$_('NewSalesPage.ZipCode')}:</strong> {order.user.addresses[0].zipcode}</p>
+				<p><strong>{$_('NewSalesPage.Residence')}:</strong> {getState(order.user)}</p>
 			</div>
 		</div>
 
 		<div class="mb-8">
-			<h2 class="text-xl font-semibold mb-4">Produtos</h2>
+			<h2 class="text-xl font-semibold mb-4">{$_('NewSalesPage.Products')}</h2>
 			<table class="w-full table-auto">
 				<thead class="bg-gray-100 border-b">
 					<tr>
-						<th class="text-left py-2 px-4">Produto</th>
-						<th class="text-right py-2 px-4">Preço</th>
-						<th class="text-right py-2 px-4">Quantidade</th>
-						<th class="text-right py-2 px-4">Desconto</th>
-						<th class="text-right py-2 px-4">Total</th>
+						<th class="text-left py-2 px-4">{$_('NewSalesPage.Product')}</th>
+						<th class="text-right py-2 px-4">{$_('NewSalesPage.Price')}</th>
+						<th class="text-right py-2 px-4">{$_('NewSalesPage.Quantity')}</th>
+						<th class="text-right py-2 px-4">{$_('NewSalesPage.Discount')}</th>
+						<th class="text-right py-2 px-4">{$_('NewSalesPage.Total')}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -323,10 +327,13 @@
 		<div class="mt-8 flex justify-end space-x-8">
 			<div class="text-right">
 				<p>
-					<strong>Frete:</strong>
+					<strong>{$_('NewSalesPage.Shipping')}:</strong>
 					{currencyFormatFreight(Number(order.payment?.freight_amount))}
 				</p>
-				<p><strong>Total do Pedido:</strong> {currencyFormat(Number(order.payment?.amount))}</p>
+				<p>
+					<strong>{$_('NewSalesPage.OrderTotal')}:</strong>
+					{currencyFormat(Number(order.payment?.amount))}
+				</p>
 			</div>
 		</div>
 	</div>

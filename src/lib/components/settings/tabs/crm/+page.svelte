@@ -4,6 +4,7 @@
 	import type { CrmSettings, Items } from '$lib/types';
 	import { Input, Select, Button, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
+	import { _ } from 'svelte-i18n';
 
 	let crmSettings: CrmSettings = {
 		provider: '',
@@ -165,7 +166,7 @@
 </script>
 
 <div class="container mt-8 space-y-8">
-	<h2 class="text-2xl font-bold mb-4">Configuração de Logística</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('CrmSettings.LogisticsSettings')}</h2>
 	{#if isLoading}
 		<div class="flex justify-center items-center">
 			<Spinner size="10" />
@@ -174,7 +175,7 @@
 		<form on:submit|preventDefault={handleSaveCrmConfig}>
 			<div class="my-2">
 				<label for="provider" class="block text-sm font-medium text-gray-700 mb-1"
-					>Nome do Fornecedor:</label
+					>{$_('CrmSettings.SupplierName')}:</label
 				>
 				<Select
 					id="provider"
@@ -185,7 +186,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Descrição:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('CrmSettings.Description')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={crmSettings.value.description}
@@ -195,7 +198,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Access Key:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('CrmSettings.AccessKey')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={crmSettings.value.access_key}
@@ -205,7 +210,7 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Url:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1">{$_('CrmSettings.Url')}:</label>
 				<Input
 					type="text"
 					bind:value={crmSettings.value.url}
@@ -215,7 +220,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Stage Name:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('CrmSettings.StageName')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={crmSettings.value.deal_stage_name}
@@ -225,7 +232,7 @@
 			</div>
 			<div class="flex justify-end">
 				<Button type="submit" class="btn-primary text-white rounded-md px-4 py-2 mt-4"
-					>Salvar Configurações</Button
+					>{$_('CrmSettings.SaveSettings')}</Button
 				>
 			</div>
 		</form>

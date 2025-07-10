@@ -4,7 +4,7 @@
 	import type { CdnConfig, Items } from '$lib/types';
 	import { Button, Input, Select, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-
+	import { _ } from 'svelte-i18n';
 	let cdnConfig: CdnConfig = {
 		provider: 'S3',
 		value: {
@@ -160,7 +160,7 @@
 </script>
 
 <div class="container mt-8 space-y-8">
-	<h2 class="text-2xl font-bold mb-4">Configuração de CDN</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('CdnSettings.CdnSettings')}</h2>
 	{#if isLoading}
 		<div class="flex justify-center items-center">
 			<Spinner size="10" />
@@ -168,12 +168,16 @@
 	{:else}
 		<form on:submit|preventDefault={handleSaveCdnConfig}>
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Fornecedor:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('CdnSettings.Provider')}:</label
+				>
 				<Select bind:value={cdnConfig.provider} items={cdnProviders} />
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Endereço do CDN (URL):</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('CdnSettings.CdnAddressUrl')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={cdnConfig.value.url}
@@ -183,7 +187,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Região:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('CdnSettings.Region')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={cdnConfig.value.region}
@@ -193,7 +199,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Nome do Bucket:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('CdnSettings.BucketName')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={cdnConfig.value.bucket_name}
@@ -203,7 +211,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">API Key:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('CdnSettings.ApiKey')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={cdnConfig.value.api_key}
@@ -213,7 +223,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Secret Key:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('CdnSettings.SecretKey')}:</label
+				>
 				<Input
 					type="password"
 					bind:value={cdnConfig.value.secret_key}
@@ -224,7 +236,7 @@
 
 			<div class="mt-4 text-right">
 				<Button type="submit" class="btn-primary  text-white rounded-md px-4 py-2">
-					Salvar Configurações
+					{$_('CdnSettings.SaveConfig')}
 				</Button>
 			</div>
 		</form>
