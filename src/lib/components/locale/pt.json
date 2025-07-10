@@ -1,9 +1,4 @@
 {
-    "MainPage": {
-        "GATTOROSAADMIN": "GATTO ROSA ADMIN",
-        "GattoRosaAdmin": "Gatto Rosa Admin",
-        "Login": "Login"
-    },
     "layoutPage": {
         "Home": "Inicio",
         "ProductPage": "Produtos",
@@ -15,7 +10,12 @@
         "Commissions": "Comissões",
         "Sales": "Vendas",
         "Settings": "Configurações",
-        "Logout": "Sair"
+        "Logout": "Sair",
+        "MainPage": {
+            "titleUpperCase": "GATTO ROSA ADMIN",
+            "title": "Gatto Rosa Admin",
+            "Login": "Login"
+        }
     },
     "InputMultipleFile": {
         "FilesAddedForSubmission": "Arquivos adicionados para envio",

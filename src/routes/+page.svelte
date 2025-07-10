@@ -66,7 +66,7 @@
 <div class="flex flex-col justify-center items-center h-screen w-screen bg-slate-100">
 	<div class="bg-white border rounded-lg p-16">
 		<h1 class="text-primary text-2xl font-semibold text-center mb-8">
-			{$_('MainPage.GATTOROSAADMIN')}
+			{$_('layoutPage.MainPage.titleUpperCase')}
 		</h1>
 		<form class="flex flex-col gap-8" method="POST" use:enhance>
 			<Input
@@ -85,7 +85,9 @@
 				{...$constraints.password}
 				error={$errors.password}
 			/>
-			<Button name="Login" block={true} {loading} type="submit">{$_('MainPage.Login')}</Button>
+			<Button name="Login" block={true} {loading} type="submit"
+				>{$_('layoutPage.MainPage.Login')}</Button
+			>
 		</form>
 	</div>
 </div>

@@ -33,7 +33,7 @@
 	<header
 		class="flex items-center justify-between gap-4 border-b border-b-gray-200 shadow-sm p-4 print:hidden"
 	>
-		<h1 class="text-primary text-xl font-bold">{$_('MainPage.GattoRosaAdmin')}</h1>
+		<h1 class="text-primary text-xl font-bold">{$_('layoutPage.MainPage.title')}</h1>
 		<nav class="flex gap-4">
 			<a href="/admin" class={active(pathname, '/admin')}>{$_('layoutPage.Home')}</a>
 			<a href="/admin/products" class={active(pathname, '/admin/products')}

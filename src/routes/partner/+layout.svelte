@@ -30,7 +30,7 @@
 
 <main>
 	<header class="flex items-center justify-between gap-4 border-b border-b-gray-200 shadow-sm p-4">
-		<h1 class="text-primary text-xl font-bold">{$_('MainPage.GattoRosaAdmin')}</h1>
+		<h1 class="text-primary text-xl font-bold">{$_('layoutPage.MainPage.title')}</h1>
 		<nav class="flex gap-4">
 			<a href="/partner" class={active(pathname, '/partner')}>{$_('layoutPage.Home')}</a>
 			<a href="/partner/coupons" class={active(pathname, '/partner/coupons')}
