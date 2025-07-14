@@ -4,7 +4,7 @@
 	import type { Items, NotificationSettings } from '$lib/types';
 	import { Button, Input, Select, Spinner } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
-
+	import { _ } from 'svelte-i18n';
 	let notification: NotificationSettings = {
 		provider: '',
 		value: {
@@ -168,7 +168,7 @@
 </script>
 
 <div class="container mt-8 space-y-8">
-	<h2 class="text-2xl font-bold mb-4">Configuração de Notificação</h2>
+	<h2 class="text-2xl font-bold mb-4">{$_('NotificationSettings.NotificationSettings')}</h2>
 
 	{#if isLoading}
 		<div class="flex justify-center items-center">
@@ -177,7 +177,9 @@
 	{:else}
 		<form on:submit|preventDefault={handleSaveNotification}>
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Notificação:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('NotificationSettings.NotificationType')}:</label
+				>
 				<Select bind:value={notification.value.type} items={notificationTypes} />
 			</div>
 
@@ -194,7 +196,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Provider:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('NotificationSettings.Provider')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={notification.provider}
@@ -204,7 +208,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">API Key:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('NotificationSettings.ApiKey')}:</label
+				>
 				<Input
 					type="text"
 					bind:value={notification.value.api_key}
@@ -214,7 +220,9 @@
 			</div>
 
 			<div class="my-2">
-				<label class="block text-sm font-medium text-gray-700 mb-1">Secret Key:</label>
+				<label class="block text-sm font-medium text-gray-700 mb-1"
+					>{$_('NotificationSettings.SecretKey')}:</label
+				>
 				<Input
 					type="password"
 					bind:value={notification.value.secret_key}
@@ -225,7 +233,7 @@
 
 			<div class="mt-4 text-right">
 				<Button type="submit" class="btn-primary  text-white rounded-md px-4 py-2">
-					Salvar Configurações
+					{$_('NotificationSettings.SaveSettings')}
 				</Button>
 			</div>
 		</form>

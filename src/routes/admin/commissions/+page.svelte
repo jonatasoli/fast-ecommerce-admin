@@ -11,7 +11,7 @@
 		TableSearch,
 		Badge
 	} from 'flowbite-svelte';
-
+	import { _ } from 'svelte-i18n';
 	import { currencyFormat } from '$lib/utils';
 
 	export let data: any;
@@ -48,7 +48,7 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Gestão de Comissões</h1>
+		<h1 class="text-3xl font-semibold">{$_('CommissionsPage.CommissionsManagement')}</h1>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
@@ -60,16 +60,22 @@
 				bind:inputValue={searchTerm}
 			>
 				<TableHead>
-					<TableHeadCell class="pl-0 cursor-pointer">Order ID</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Usuário</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">comissão</TableHeadCell>
-					<TableHeadCell class="cursor-pointer">Pagamento</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('CommissionsPage.OrderID')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('CommissionsPage.User')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer"
+						>{$_('CommissionsPage.Commission')}</TableHeadCell
+					>
+					<TableHeadCell class="cursor-pointer">{$_('CommissionsPage.Payment')}</TableHeadCell>
 
-					<TableHeadCell class=" pl-2 cursor-pointer">Status comissão</TableHeadCell>
+					<TableHeadCell class=" pl-2 cursor-pointer"
+						>{$_('CommissionsPage.CommissionStatus')}</TableHeadCell
+					>
 
-					<TableHeadCell class="pl-0 cursor-pointer">ID Pagamento</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer"
+						>{$_('CommissionsPage.PaymentID')}</TableHeadCell
+					>
 
-					<TableHeadCell class="">Ações</TableHeadCell>
+					<TableHeadCell class="">{$_('CommissionsPage.Actions')}</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
 					{#each items as commission}
@@ -100,7 +106,7 @@
 								<Button
 									variant="primary"
 									additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
-									>Ações</Button
+									>{$_('CommissionsPage.Actions')}</Button
 								>
 							</TableBodyCell>
 						</TableBodyRow>

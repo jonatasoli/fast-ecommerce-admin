@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 	import { Button, Input, Spinner, Card, Select } from 'flowbite-svelte';
-
+	import { _ } from 'svelte-i18n';
 	import type { Coupon, CouponData } from '$lib/types';
 	import { currencyFormat, formatPercentage, parsePercentage } from '$lib/utils';
 	import { couponsStore } from '$lib/stores/coupons';
@@ -78,8 +78,10 @@
 
 <form class="md:w-[80vw] mt-8 mx-auto p-4 print:hidden">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Detalhes do Cupom {coupon.code}</h1>
-		<Button variant="secondary" on:click={() => goto('/admin/coupons')}>Voltar</Button>
+		<h1 class="text-3xl font-semibold">{$_('CouponsDetailsPage.CouponDetails')} {coupon.code}</h1>
+		<Button variant="secondary" on:click={() => goto('/admin/coupons')}
+			>{$_('CouponsDetailsPage.Back')}</Button
+		>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
@@ -91,12 +93,12 @@
 			<div class="flex flex-col gap-4 items-center justify-center w-full">
 				<div class="w-full">
 					<label for="code" class="block my-2 text-sm font-medium text-gray-700"
-						>Código do Cupom
+						>{$_('CouponsDetailsPage.CouponCode')}
 					</label><Input id="code" bind:value={coupon.code} name="code" disabled={!isEditing} />
 
 					{#if coupon.user_id}
 						<label for="user" class="block my-2 text-sm font-medium text-gray-700"
-							>Usuário
+							>{$_('CouponsDetailsPage.User')}
 						</label><Input
 							id="user"
 							name="user_id"
@@ -107,7 +109,7 @@
 
 					{#if coupon.product_id}
 						<label for="product" class="block my-2 text-sm font-medium text-gray-700"
-							>Product
+							>{$_('CouponsDetailsPage.Product')}
 						</label><Input
 							id="product"
 							name="product_id"
@@ -118,7 +120,7 @@
 
 					{#if coupon.discount !== '0'}
 						<label for="discount" class="block my-2 text-sm font-medium text-gray-700"
-							>discount
+							>{$_('CouponsDetailsPage.DiscountAmount')}
 						</label><Input
 							id="discount"
 							name="discount"
@@ -127,7 +129,7 @@
 						/>
 					{/if}
 					<label for="discount_price" class="block my-2 text-sm font-medium text-gray-700"
-						>Desconto
+						>{$_('CouponsDetailsPage.Discount')}
 					</label><Input
 						id="discount_price"
 						name="discount_price"
@@ -135,7 +137,9 @@
 						disabled={!isEditing}
 					/>
 
-					<label for="status" class="block my-2 text-sm font-medium text-gray-700">Status </label>
+					<label for="status" class="block my-2 text-sm font-medium text-gray-700"
+						>{$_('CouponsDetailsPage.Status')}</label
+					>
 
 					<Select
 						id="status"
@@ -146,7 +150,7 @@
 					/>
 
 					<label for="limit" class="block my-2 text-sm font-medium text-gray-700"
-						>Limite de uso
+						>{$_('CouponsDetailsPage.UsageLimit')}
 					</label><Input
 						id="limit"
 						name="limit_price"
@@ -155,11 +159,11 @@
 					/>
 
 					<label for="quantity" class="block my-2 text-sm font-medium text-gray-700"
-						>Quantidade
+						>{$_('CouponsDetailsPage.Quantity')}
 					</label><Input id="quantity" name="qty" bind:value={coupon.qty} disabled={!isEditing} />
 
 					<label for="commission" class="block my-2 text-sm font-medium text-gray-700"
-						>Percentual de Comissão
+						>{$_('CouponsDetailsPage.CommissionPercentage')}
 					</label><Input
 						id="commission"
 						name="commission_percentage"
@@ -173,7 +177,7 @@
 					{isEditing ? 'Cancelar' : 'Editar'}
 				</Button>
 				<Button variant="primary" disabled={!isEditing} on:click={handleSaveCoupon} class=""
-					>Salvar</Button
+					>{$_('CouponsDetailsPage.Save')}</Button
 				>
 			</div>
 		{/if}

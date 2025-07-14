@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { currencyFormat } from '$lib/utils.js';
+	import { _ } from 'svelte-i18n';
 	import {
 		Label,
 		Select,
@@ -21,7 +22,8 @@
 		ChevronDoubleRightOutline
 	} from 'flowbite-svelte-icons';
 	import { productsStore } from '$lib/stores/product';
-	import { PUBLIC_SERVER_BASE_URL } from '$env/static/public';
+
+	
 
 	export let data: any;
 	let debounceTimeout: ReturnType<typeof setTimeout>;
@@ -58,12 +60,12 @@
 	});
 
 	async function getProductsByFilter(query: string) {
-		await products.get(`${PUBLIC_SERVER_BASE_URL}/product/products/${query}`, data.access_token);
+		await products.get(`${data.base_url}/product/products/${query}`, data.access_token);
 	}
 
 	async function refreshProducts() {
 		await products.get(
-			`${PUBLIC_SERVER_BASE_URL}/product/inventory?offset=${rowsPerPage}&page=${currentPage}`,
+			`${data.base_url}/product/inventory?offset=${rowsPerPage}&page=${currentPage}`,
 			data.access_token
 		);
 	}
@@ -124,8 +126,8 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Produtos</h1>
-		<Button variant="primary" on:click={goToNew}>Novo Produto</Button>
+		<h1 class="text-3xl font-semibold">{$_('ProductsPage.Products')}</h1>
+		<Button variant="primary" on:click={goToNew}>{$_('ProductsPage.NewProduct')}</Button>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
@@ -137,11 +139,11 @@
 				bind:inputValue={searchTerm}
 			>
 				<TableHead>
-					<TableHeadCell>Id</TableHeadCell>
-					<TableHeadCell>Produto</TableHeadCell>
-					<TableHeadCell>Estoque</TableHeadCell>
-					<TableHeadCell>Preço</TableHeadCell>
-					<TableHeadCell>Ações</TableHeadCell>
+					<TableHeadCell>{$_('ProductsPage.ID')}</TableHeadCell>
+					<TableHeadCell>{$_('ProductsPage.Product')} Produto</TableHeadCell>
+					<TableHeadCell>{$_('ProductsPage.Stock')}Estoque</TableHeadCell>
+					<TableHeadCell>{$_('ProductsPage.Price')}Preço</TableHeadCell>
+					<TableHeadCell>{$_('ProductsPage.Actions')}Ações</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
 					{#each items as product}
@@ -152,7 +154,7 @@
 							<TableBodyCell tdClass="py-2">{currencyFormat(product.price)}</TableBodyCell>
 							<TableBodyCell tdClass="py-2">
 								<Button variant="primary" on:click={() => productMore(product.product_id)}
-									>Ver mais</Button
+									>{$_('ProductsPage.SeeMore')}</Button
 								>
 							</TableBodyCell>
 						</TableBodyRow>
@@ -161,7 +163,7 @@
 			</TableSearch>
 		</Table>
 		<div class="w-full flex justify-end items-center gap-2 my-3">
-			<Label>Quantidade por página</Label>
+			<Label>{$_('ProductsPage.ItemsPerPage')}</Label>
 			<Select
 				variant="outlined"
 				bind:value={rowsPerPage}

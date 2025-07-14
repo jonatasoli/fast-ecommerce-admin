@@ -2,7 +2,7 @@
 	import { StoreSolid, TableRowSolid } from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-
+	import { _ } from 'svelte-i18n';
 	export let data;
 
 	onMount(() => {
@@ -23,7 +23,7 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<StoreSolid class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Meus Cupons</p>
+			<p class="font-bold text-lg">{$_('PartnerPage.MyCoupons')}</p>
 		</div>
 	</a>
 </div>
@@ -34,7 +34,7 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<TableRowSolid class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Comissões</p>
+			<p class="font-bold text-lg">{$_('PartnerPage.Commissions')}</p>
 		</div>
 	</a>
 </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import { onMount } from 'svelte';
-
+	import { _ } from 'svelte-i18n';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { ordersStore } from '$lib/stores/sales';
@@ -164,7 +164,7 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Pedidos</h1>
+		<h1 class="text-3xl font-semibold">{$_('SalesPage.Orders')}</h1>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
@@ -175,16 +175,18 @@
 		{:else}
 			<Table hoverable={true}>
 				<TableHead>
-					<TableHeadCell class="pl-0 cursor-pointer">Id</TableHeadCell>
-					<TableHeadCell class=" cursor-pointer">Data</TableHeadCell>
-					<TableHeadCell class="cursor-pointer">Rastreio</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Status do pedido</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Nome do comprador</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Tipo de frete</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">ID do Cupom</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Motivo do cancelamento</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Método de pagamento</TableHeadCell>
-					<TableHeadCell class="pl-0 cursor-pointer">Editar</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('SalesPage.ID')}</TableHeadCell>
+					<TableHeadCell class=" cursor-pointer">{$_('SalesPage.Date')}</TableHeadCell>
+					<TableHeadCell class="cursor-pointer">{$_('SalesPage.Tracking')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('SalesPage.OrderStatus')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('SalesPage.BuyerName')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('SalesPage.ShippingType')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('SalesPage.CouponID')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer"
+						>{$_('SalesPage.CancellationReason')}</TableHeadCell
+					>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('SalesPage.PaymentMethod')}</TableHeadCell>
+					<TableHeadCell class="pl-0 cursor-pointer">{$_('SalesPage.Edit')}</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
 					{#each items as order}
@@ -235,20 +237,20 @@
 								<Button
 									variant="primary"
 									additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
-									>Gerenciar</Button
+									>{$_('SalesPage.Manage')}</Button
 								>
 								<Dropdown class="w-48 p-3 space-y-1">
 									<DropdownItem
 										on:click={() => {
 											goto(`/admin/sales/new?order_id=${order.order_id}`);
-										}}>Detalhes</DropdownItem
+										}}>{$_('SalesPage.Details')}</DropdownItem
 									>
 									{#if order.order_status !== 'CANCELLED'}
 										<DropdownDivider />
 										<DropdownItem
 											on:click={() => {
 												handleCancelOrder(order.order_id);
-											}}>Cancelar pedido</DropdownItem
+											}}>{$_('SalesPage.CancelOrder')}</DropdownItem
 										>
 									{/if}
 								</Dropdown>
@@ -259,7 +261,7 @@
 			</Table>
 
 			<div class="w-full flex justify-end items-center gap-2 my-3">
-				<Label>Quantidade por página</Label>
+				<Label>{$_('SalesPage.ItemsPerPage')}</Label>
 				<Select
 					variant="outlined"
 					bind:value={rowsPerPage}

@@ -5,7 +5,7 @@
 	import { NumberInput, Toast, Select, Button, Input } from 'flowbite-svelte';
 	import { CheckCircleSolid } from 'flowbite-svelte-icons';
 	import type { ActionData } from '../$types';
-
+	import { _ } from 'svelte-i18n';
 	type Transaction = {
 		product_id: number | undefined;
 		quantity: number;
@@ -20,7 +20,7 @@
 	};
 	let notification = false;
 	$: products = data.products.inventory ?? [];
-	
+
 	onMount(() => {});
 	export let form: ActionData;
 
@@ -67,8 +67,10 @@
 
 <div class="w-[50vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Criar transação</h1>
-		<Button variant="secondary" on:click={() => goto('/admin/inventory')}>Voltar</Button>
+		<h1 class="text-3xl font-semibold">{$_('NewInventoryPage.CreateTransaction')}</h1>
+		<Button variant="secondary" on:click={() => goto('/admin/inventory')}
+			>{$_('NewInventoryPage.Back')}</Button
+		>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
@@ -76,23 +78,23 @@
 			<Toast color="green">
 				<svelte:fragment slot="icon">
 					<CheckCircleSolid class="w-5 h-5" />
-					<span class="sr-only">Check icon</span>
+					<span class="sr-only">{$_('NewInventoryPage.CheckIcon')}</span>
 				</svelte:fragment>
-				Transação criada com sucesso!
+				{$_('NewInventoryPage.TransactionCreatedSuccessfully')}
 			</Toast>
 		{/if}
 		{#if form}
-			<p>Transação realizada</p>
+			<p>{$_('NewInventoryPage.TransactionPerformed')}</p>
 		{/if}
 		<form class="flex flex-col gap-4" method="POST" on:submit|preventDefault={createOperation}>
-			<label for="product">Produto</label>
+			<label for="product">{$_('NewInventoryPage.Product')}</label>
 			<Select class="mt-2" id="product" bind:value={transaction.product_id}>
 				{#each products as { product_id, name }}
 					<option value={product_id}>{name}</option>
 				{/each}
 			</Select>
 
-			<label for="quantity">Estoque Atual</label>
+			<label for="quantity">{$_('NewInventoryPage.CurrentStock')}</label>
 			<Input
 				id="quantity"
 				type="text"
@@ -101,13 +103,13 @@
 				class="mt-1 w-full"
 			/>
 
-			<label for="quantity">Quantidade</label>
+			<label for="quantity">{$_('NewInventoryPage.Quantity')}</label>
 			<NumberInput id="quantity" bind:value={transaction.quantity} min="1" />
 			<Select class="mt-2" id="operation" bind:value={transaction.operation}>
-				<option value="INCREASE">ADICIONAR</option>
-				<option value="DECREASE">REMOVER</option>
+				<option value="INCREASE">{$_('NewInventoryPage.ADD')}</option>
+				<option value="DECREASE">{$_('NewInventoryPage.REMOVE')}</option>
 			</Select>
-			<Button variant="primary" type="submit">Criar Operação</Button>
+			<Button variant="primary" type="submit">{$_('NewInventoryPage.CreateOperation')}</Button>
 			<div class="my-8"></div>
 		</form>
 	</div>

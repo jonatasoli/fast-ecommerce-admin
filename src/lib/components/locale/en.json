@@ -1,0 +1,15 @@
+{
+    "layoutPage": {
+        "Home": "Home",
+        "ProductPage": "Products",
+        "Stock": "Stock",
+        "Fiscal": "Fiscal",
+        "Logistics": "Logistics",
+        "Coupons": "Coupons",
+        "UserManagement": "User Management",
+        "Commissions": "Commissions",
+        "Sales": "Sales",
+        "Settings": "Settings",
+        "Logout": "Logout"
+    }
+}

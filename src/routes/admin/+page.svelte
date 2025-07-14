@@ -12,7 +12,7 @@
 		ChartMixedDollarSolid
 	} from 'flowbite-svelte-icons';
 	import { onMount } from 'svelte';
-
+	import { _ } from 'svelte-i18n';
 	export let data;
 
 	onMount(() => {
@@ -33,7 +33,7 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<StoreSolid class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Produtos</p>
+			<p class="font-bold text-lg">{$_('layoutPage.ProductPage')}</p>
 		</div>
 	</a>
 </div>
@@ -44,7 +44,7 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<TableRowSolid class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Estoque</p>
+			<p class="font-bold text-lg">{$_('layoutPage.Stock')}</p>
 		</div>
 	</a>
 </div>
@@ -54,7 +54,7 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<FileInvoiceSolid size="lg" class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Fiscal</p>
+			<p class="font-bold text-lg">{$_('layoutPage.Fiscal')}</p>
 		</div>
 	</a>
 </div>
@@ -65,7 +65,7 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<TruckSolid size="lg" class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Logistica</p>
+			<p class="font-bold text-lg">{$_('layoutPage.Logistics')}</p>
 		</div>
 	</a>
 </div>
@@ -76,7 +76,7 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<TicketSolid size="lg" class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Cupons</p>
+			<p class="font-bold text-lg">{$_('layoutPage.Coupons')}</p>
 		</div>
 	</a>
 </div>
@@ -87,7 +87,7 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<UserSettingsSolid size="lg" class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Gestão de Usuários</p>
+			<p class="font-bold text-lg">{$_('layoutPage.UserManagement')}</p>
 		</div>
 	</a>
 </div>
@@ -98,7 +98,7 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<ChartMixedDollarSolid size="lg" class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Comissões</p>
+			<p class="font-bold text-lg">{$_('layoutPage.Commissions')}</p>
 		</div>
 	</a>
 </div>
@@ -108,17 +108,17 @@
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<AdjustmentsHorizontalSolid size="lg" class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Configurações</p>
+			<p class="font-bold text-lg">{$_('layoutPage.Settings')}</p>
 		</div>
 	</a>
 </div>
-<div class="w-[90vw] mt-8 mx-auto">
+<div class="w-[90vw] my-8 mx-auto">
 	<a href="/admin/sales">
 		<div
 			class="flex flex-col gap-2 w-60 p-4 justify-center items-center shadow-lg border border-gray-200"
 		>
 			<SalePercentSolid size="lg" class="text-primary h-8 w-8" />
-			<p class="font-bold text-lg">Vendas</p>
+			<p class="font-bold text-lg">{$_('layoutPage.Sales')}</p>
 		</div>
 	</a>
 </div>

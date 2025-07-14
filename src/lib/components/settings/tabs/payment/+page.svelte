@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 	import Notification from '$lib/components/notification/notification.svelte';
 	import type { Items, PaymentGatewayConfig } from '$lib/types';
-
+	import { _ } from 'svelte-i18n';
 	export let items: Items;
 	export let field: string = 'Payment';
 	let isLoading = true;
@@ -156,7 +156,7 @@
 
 <div class="container mt-8 space-y-8">
 	<div>
-		<h2 class="text-2xl font-bold mb-4">Configuração do Gateway de Pagamento</h2>
+		<h2 class="text-2xl font-bold mb-4">{$_('PaymentSettings.PaymentGatewaySettings')}</h2>
 
 		{#if isLoading}
 			<div class="flex justify-center items-center">
@@ -165,7 +165,9 @@
 		{:else}
 			<form on:submit|preventDefault={handleSavePaymentGateway} class="space-y-4">
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-1">Nome do Gateway:</label>
+					<label class="block text-sm font-medium text-gray-700 mb-1"
+						>{$_('PaymentSettings.GatewayName')}:</label
+					>
 
 					<Select
 						bind:value={paymentGateway.value.gateway_name}
@@ -179,7 +181,9 @@
 				</div>
 
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-1">URL do Gateway:</label>
+					<label class="block text-sm font-medium text-gray-700 mb-1"
+						>{$_('PaymentSettings.GatewayUrl')}:</label
+					>
 					<Input
 						type="text"
 						bind:value={paymentGateway.value.gateway_url}
@@ -189,7 +193,9 @@
 				</div>
 
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-1">Chave:</label>
+					<label class="block text-sm font-medium text-gray-700 mb-1"
+						>{$_('PaymentSettings.Key')}:</label
+					>
 					<Input
 						type="text"
 						bind:value={paymentGateway.value.gateway_key}
@@ -199,7 +205,9 @@
 				</div>
 
 				<div>
-					<label class="block text-sm font-medium text-gray-700 mb-1">Chave Secreta:</label>
+					<label class="block text-sm font-medium text-gray-700 mb-1"
+						>{$_('PaymentSettings.Secretkey')}:</label
+					>
 					<Input
 						type="text"
 						bind:value={paymentGateway.value.gateway_secret_key}
@@ -210,7 +218,7 @@
 
 				<div class="flex justify-end">
 					<Button type="submit" class="btn-primary text-white rounded-md px-4 py-2 mt-4"
-						>Salvar Configurações</Button
+						>{$_('PaymentSettings.SaveSettings')}</Button
 					>
 				</div>
 			</form>

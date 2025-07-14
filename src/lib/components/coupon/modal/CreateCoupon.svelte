@@ -3,6 +3,7 @@
 	import type { Coupon } from '$lib/types';
 	import { Modal, Button, Input, Select } from 'flowbite-svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { _ } from 'svelte-i18n';
 
 	export let isOpen: boolean = false;
 	export let products;
@@ -23,7 +24,7 @@
 		product_id: { value: 0, name: '' },
 		affiliate_id: { value: 0, name: '' },
 		code: '',
-		user_id: null,
+		user_id: userDetails.user_id,
 		discount_price: '150',
 		limit_price: '300',
 		active: true,
@@ -74,11 +75,13 @@
 
 <Modal bind:open={isOpen} on:close={cancelModal} size="md">
 	<div class="p-4 space-y-4">
-		<h3 class="text-lg font-semibold mb-4">Detalhes do Cupom</h3>
+		<h3 class="text-lg font-semibold mb-4">{$_('CreateCoupon.CouponDetails')}</h3>
 
 		<div class="flex justify-between gap-2">
 			<div class="mb-4 flex-1">
-				<label for="productId" class="block text-sm font-medium text-gray-700">ID do Produto</label>
+				<label for="productId" class="block text-sm font-medium text-gray-700"
+					>{$_('CreateCoupon.ProductID')}</label
+				>
 				<Select
 					variant="outlined"
 					bind:value={coupon.product_id.name}
@@ -94,7 +97,9 @@
 			</div>
 
 			<div class="mb-4 flex-1">
-				<label for="affiliateId" class="block text-sm font-medium text-gray-700">Vendedor</label>
+				<label for="affiliateId" class="block text-sm font-medium text-gray-700"
+					>{$_('CreateCoupon.Seller')}</label
+				>
 				<Select
 					variant="outlined"
 					bind:value={coupon.affiliate_id.name}
@@ -112,7 +117,9 @@
 
 		<div class="flex justify-between gap-2">
 			<div class="mb-4 flex-1">
-				<label for="code" class="block text-sm font-medium text-gray-700">Código do Cupom</label>
+				<label for="code" class="block text-sm font-medium text-gray-700"
+					>{$_('CreateCoupon.CouponCode')}</label
+				>
 				<Input
 					id="code"
 					type="text"
@@ -123,15 +130,17 @@
 			</div>
 
 			<div class="mb-4 flex-1">
-				<label for="userId" class="block text-sm font-medium text-gray-700">Vincular Cupom ao Usuário</label>
-				<Input id="userId" type="text" bind:value={coupon.user_id} readonly disabled class="mt-1 w-full" />
+				<label for="userId" class="block text-sm font-medium text-gray-700"
+					>{$_('CreateCoupon.UserID')}</label
+				>
+				<Input id="userId" type="text" bind:value={coupon.user_id} readonly class="mt-1 w-full" />
 			</div>
 		</div>
 
 		<div class="flex justify-between gap-2">
 			<div class="mb-4 flex-1">
 				<label for="discountPrice" class="block text-sm font-medium text-gray-700"
-					>Preço com Desconto</label
+					>{$_('CreateCoupon.DiscountedPrice')}</label
 				>
 				<Input
 					id="discountPrice"
@@ -142,29 +151,37 @@
 			</div>
 
 			<div class="mb-4 flex-1">
-				<label for="limitPrice" class="block text-sm font-medium text-gray-700">Preço Limite</label>
+				<label for="limitPrice" class="block text-sm font-medium text-gray-700"
+					>{$_('CreateCoupon.PriceLimit')}</label
+				>
 				<Input id="limitPrice" type="text" bind:value={coupon.limit_price} class="mt-1 w-full" />
 			</div>
 		</div>
 
 		<div class="flex justify-between gap-2">
 			<div class="mb-4 flex-1">
-				<label for="active" class="block text-sm font-medium text-gray-700">Ativo</label>
+				<label for="active" class="block text-sm font-medium text-gray-700"
+					>{$_('CreateCoupon.Active')}</label
+				>
 				<Select id="active" bind:value={coupon.active} class="mt-1 w-full">
-					<option value={true}>Sim</option>
-					<option value={false}>Não</option>
+					<option value={true}>{$_('CreateCoupon.Yes')}</option>
+					<option value={false}>{$_('CreateCoupon.No')}</option>
 				</Select>
 			</div>
 
 			<div class="mb-4 flex-1">
-				<label for="qty" class="block text-sm font-medium text-gray-700">Quantidade</label>
+				<label for="qty" class="block text-sm font-medium text-gray-700"
+					>{$_('CreateCoupon.Quantity')}</label
+				>
 				<Input id="qty" type="number" bind:value={coupon.qty} class="mt-1 w-full" />
 			</div>
 		</div>
 
 		<div class="flex justify-between gap-2">
 			<div class="mb-4 flex-1">
-				<label for="commission" class="block text-sm font-medium text-gray-700">Comissão</label>
+				<label for="commission" class="block text-sm font-medium text-gray-700"
+					>{$_('CreateCoupon.Commission')}</label
+				>
 				<Select
 					variant="outlined"
 					bind:value={coupon.commission_percentage.value}
@@ -178,8 +195,12 @@
 		</div>
 
 		<div class="flex flex-wrap justify-end space-x-2 mt-4">
-			<Button variant="secondary" on:click={cancelModal} class="w-full sm:w-auto">Cancelar</Button>
-			<Button variant="primary" on:click={createCoupon} class="w-full sm:w-auto">Salvar</Button>
+			<Button variant="secondary" on:click={cancelModal} class="w-full sm:w-auto"
+				>{$_('CreateCoupon.Cancel')}</Button
+			>
+			<Button variant="primary" on:click={createCoupon} class="w-full sm:w-auto"
+				>{$_('CreateCoupon.Save')}</Button
+			>
 		</div>
 	</div>
 </Modal>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
 	import { onMount } from 'svelte';
-
+	import { _ } from 'svelte-i18n';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { createInventory } from '$lib/stores/inventory';
@@ -105,16 +105,18 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Estoque</h1>
-		<Button variant="primary" on:click={() => goto('inventory/new')}>Atualizar estoque</Button>
+		<h1 class="text-3xl font-semibold">{$_('InventoryPage.Inventory')}</h1>
+		<Button variant="primary" on:click={() => goto('inventory/new')}
+			>{$_('InventoryPage.UpdateInventory')}</Button
+		>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
 		<Table hoverable={true}>
 			<TableHead>
-				<TableHeadCell>Id</TableHeadCell>
-				<TableHeadCell>Produto</TableHeadCell>
-				<TableHeadCell>Quantidade</TableHeadCell>
+				<TableHeadCell>{$_('InventoryPage.ID')}</TableHeadCell>
+				<TableHeadCell>{$_('InventoryPage.Product')}</TableHeadCell>
+				<TableHeadCell>{$_('InventoryPage.Quantity')}</TableHeadCell>
 			</TableHead>
 			<TableBody tableBodyClass="divide-y">
 				{#each items as inventory}
@@ -128,7 +130,7 @@
 		</Table>
 
 		<div class="w-full flex justify-end items-center gap-2 my-3">
-			<Label>Quantidade por página</Label>
+			<Label>{$_('InventoryPage.ItemsPerPage')}</Label>
 			<Select
 				variant="outlined"
 				bind:value={rowsPerPage}

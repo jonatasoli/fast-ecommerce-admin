@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Button from '$lib/components/Button.svelte';
+	import { _ } from 'svelte-i18n';
 	import {
 		Dropdown,
 		DropdownItem,
@@ -38,27 +39,27 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Comissões</h1>
+		<h1 class="text-3xl font-semibold">{$_('PartnerCommissionsPage.Commissions')}</h1>
 	</div>
 	<div>
 		<Button
-			>Filtrar por status<ChevronDownOutline
+			>{$_('PartnerCommissionsPage.FilterByStatus')}<ChevronDownOutline
 				class="w-6 h-6 ms-2 text-white dark:text-white"
 			/></Button
 		>
 		<Dropdown>
-			<DropdownItem>Comissões Pagas</DropdownItem>
-			<DropdownItem>Comissões Pendentes</DropdownItem>
-			<DropdownItem>Todas</DropdownItem>
+			<DropdownItem>{$_('PartnerCommissionsPage.PaidCommissions')}</DropdownItem>
+			<DropdownItem>{$_('PartnerCommissionsPage.PendingCommissions')}</DropdownItem>
+			<DropdownItem>{$_('PartnerCommissionsPage.All')}</DropdownItem>
 		</Dropdown>
 		<Table>
 			<TableHead>
-				<TableHeadCell>Código do pedido</TableHeadCell>
-				<TableHeadCell>Comissão</TableHeadCell>
-				<TableHeadCell>Data da compra</TableHeadCell>
-				<TableHeadCell>Data de liberação do crédito</TableHeadCell>
-				<TableHeadCell>Liberado</TableHeadCell>
-				<TableHeadCell>Pago</TableHeadCell>
+				<TableHeadCell>{$_('PartnerCommissionsPage.OrderCode')}</TableHeadCell>
+				<TableHeadCell>{$_('PartnerCommissionsPage.Commission')}</TableHeadCell>
+				<TableHeadCell>{$_('PartnerCommissionsPage.PurchaseDate')}</TableHeadCell>
+				<TableHeadCell>{$_('PartnerCommissionsPage.CreditReleaseDate')}</TableHeadCell>
+				<TableHeadCell>{$_('PartnerCommissionsPage.Released')}</TableHeadCell>
+				<TableHeadCell>{$_('PartnerCommissionsPage.Paid')}</TableHeadCell>
 			</TableHead>
 			<TableBody tableBodyClass="divide-y">
 				{#each data.commissions as commission}
@@ -76,14 +77,16 @@
 	</div>
 	<div class="flex flex-row justify-between">
 		<div>
-			<Label>Total de crédito à liberar</Label>
+			<Label>{$_('PartnerCommissionsPage.TotalCreditToRelease')}</Label>
 			<p>{formatCurrency(totalCommissions)}</p>
 			<Label>Total de crédito disponível</Label>
 			<p>{formatCurrency(totalReleasedCommissions)}</p>
 		</div>
 		<div>
 			<Button
-				>Solicitar créditos<CashSolid class="w-6 h-6 ms-2 text-white dark:text-white" /></Button
+				>{$_('PartnerCommissionsPage.RequestCredits')}<CashSolid
+					class="w-6 h-6 ms-2 text-white dark:text-white"
+				/></Button
 			>
 		</div>
 	</div>

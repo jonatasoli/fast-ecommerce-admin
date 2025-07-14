@@ -4,7 +4,7 @@
 	import { superForm } from 'sveltekit-superforms';
 	import '../app.css';
 	import Input from '$lib/components/Input.svelte';
-
+	import { _ } from 'svelte-i18n';
 	import Toast from '$lib/components/Toast.svelte';
 	import { notifications } from '$lib/notifications';
 	import { onMount } from 'svelte';
@@ -65,7 +65,9 @@
 <Toast />
 <div class="flex flex-col justify-center items-center h-screen w-screen bg-slate-100">
 	<div class="bg-white border rounded-lg p-16">
-		<h1 class="text-primary text-2xl font-semibold text-center mb-8">GATTO ROSA ADMIN</h1>
+		<h1 class="text-primary text-2xl font-semibold text-center mb-8">
+			{$_('layoutPage.MainPage.titleUpperCase')}
+		</h1>
 		<form class="flex flex-col gap-8" method="POST" use:enhance>
 			<Input
 				mask="000.000.000-00"
@@ -83,7 +85,9 @@
 				{...$constraints.password}
 				error={$errors.password}
 			/>
-			<Button name="Login" block={true} {loading} type="submit">Login</Button>
+			<Button name="Login" block={true} {loading} type="submit"
+				>{$_('layoutPage.MainPage.Login')}</Button
+			>
 		</form>
 	</div>
 </div>

@@ -2,7 +2,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-
+	import { _ } from 'svelte-i18n';
 	import { formatDocument, getRoleName } from '$lib/utils.js';
 	import {
 		Label,
@@ -116,7 +116,7 @@
 	}
 
 	async function getUserByFilter(search_type: string, query: string) {
-		 await users.get(
+		await users.get(
 			`${data.base_url}/users/?${search_type}=${query}&offset=${rowsPerPage}&page=1`,
 			data.access_token
 		);
@@ -264,7 +264,7 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Gestão de Usuários</h1>
+		<h1 class="text-3xl font-semibold">{$_('ManagementPage.UserManagement')}</h1>
 	</div>
 	<div class="my-4"></div>
 
@@ -278,23 +278,23 @@
 			>
 				<TableHead>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('user_id')}
-						>ID</TableHeadCell
+						>{$_('ManagementPage.ID')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('string_name')}
-						>Nome</TableHeadCell
+						>{$_('ManagementPage.Name')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('document')}
-						>Documento</TableHeadCell
+						>{$_('ManagementPage.Document')}</TableHeadCell
 					>
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('email')}
-						>Username</TableHeadCell
+						>{$_('ManagementPage.Username')}</TableHeadCell
 					>
 
 					<TableHeadCell class="pl-0 cursor-pointer" on:click={() => orderBy('role_id')}
-						>Role</TableHeadCell
+						>{$_('ManagementPage.Role')}</TableHeadCell
 					>
 
-					<TableHeadCell class="">Ações</TableHeadCell>
+					<TableHeadCell class="">{$_('ManagementPage.Actions')}</TableHeadCell>
 				</TableHead>
 				<TableBody tableBodyClass="divide-y">
 					{#each items as users}
@@ -308,15 +308,15 @@
 								<Button
 									variant="primary"
 									additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
-									>Gerenciar</Button
+									>{$_('ManagementPage.Manage')}</Button
 								>
 								<Dropdown class="w-48 p-3 space-y-1">
 									<DropdownItem on:click={(event) => openModal(users, event.currentTarget)}
-										>Edit User</DropdownItem
+										>{$_('ManagementPage.EditUser')}</DropdownItem
 									>
 									<DropdownDivider />
 									<DropdownItem on:click={(event) => resetPassword(users, event.currentTarget)}
-										>Reset Password</DropdownItem
+										>{$_('ManagementPage.ResetPassword')}</DropdownItem
 									>
 								</Dropdown>
 							</TableBodyCell>
@@ -326,7 +326,7 @@
 			</TableSearch>
 		</Table>
 		<div class="w-full flex justify-end items-center gap-2 my-3">
-			<Label>Quantidade por página</Label>
+			<Label>{$_('ManagementPage.ItemsPerPage')}</Label>
 			<Select
 				variant="outlined"
 				bind:value={rowsPerPage}

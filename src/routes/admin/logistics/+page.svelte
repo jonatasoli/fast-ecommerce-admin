@@ -2,7 +2,7 @@
 	import Button from '$lib/components/Button.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-
+	import { _ } from 'svelte-i18n';
 	import { getStatusTranslation } from '$lib/utils.js';
 	import {
 		Label,
@@ -194,25 +194,25 @@
 
 <div class="w-[90vw] mt-8 mx-auto">
 	<div class="flex justify-between items-center w-full">
-		<h1 class="text-3xl font-semibold">Orders</h1>
+		<h1 class="text-3xl font-semibold">{$_('LogisticsPage.Orders')}</h1>
 	</div>
 	<div class="my-4">
 		<button
 			class={`px-4 py-2 rounded ${trackingFilter ? 'bg-primary text-white' : 'bg-gray-300 text-gray-700'}`}
 			on:click={toggleTrackingFilter}
 		>
-			Tracking Number
+			{$_('LogisticsPage.TrackingNumber')}
 		</button>
 	</div>
 
 	<div class="w-full mx-auto mt-12">
 		<Table hoverable={true}>
 			<TableHead>
-				<TableHeadCell class="pl-0">Id</TableHeadCell>
-				<TableHeadCell class="pl-0">User Name</TableHeadCell>
-				<TableHeadCell class="pl-0">Order Date</TableHeadCell>
-				<TableHeadCell class="pl-0">Order Status</TableHeadCell>
-				<TableHeadCell class="">Ações</TableHeadCell>
+				<TableHeadCell class="pl-0">{$_('LogisticsPage.ID')}</TableHeadCell>
+				<TableHeadCell class="pl-0">{$_('LogisticsPage.UserName')}</TableHeadCell>
+				<TableHeadCell class="pl-0">{$_('LogisticsPage.OrderDate')}</TableHeadCell>
+				<TableHeadCell class="pl-0">{$_('LogisticsPage.OrderStatus')}</TableHeadCell>
+				<TableHeadCell class="">{$_('LogisticsPage.Actions')}</TableHeadCell>
 			</TableHead>
 			<TableBody tableBodyClass="divide-y">
 				{#each items as order}
@@ -228,7 +228,7 @@
 								variant="primary"
 								on:click={() => openModal(order)}
 								additionalClass="w-full sm:w-auto sm:text-base text-sm py-1 px-2 sm:py-2 sm:px-4"
-								>Ver mais</Button
+								>{$_('LogisticsPage.SeeMore')}</Button
 							>
 						</TableBodyCell>
 					</TableBodyRow>
@@ -236,7 +236,7 @@
 			</TableBody>
 		</Table>
 		<div class="w-full flex justify-end items-center gap-2 my-3">
-			<Label>Quantidade por página</Label>
+			<Label>{$_('LogisticsPage.ItemsPerPage')}</Label>
 			<Select
 				variant="outlined"
 				bind:value={rowsPerPage}
@@ -296,9 +296,9 @@
 		<Toast color="green" position="top-right">
 			<svelte:fragment slot="icon">
 				<CheckCircleSolid class="w-5 h-5" />
-				<span class="sr-only">Check icon</span>
+				<span class="sr-only">{$_('LogisticsPage.CheckIcon')}</span>
 			</svelte:fragment>
-			Atualizado com Sucesso!
+			{$_('LogisticsPage.UpdatedSuccessfully')}
 		</Toast>
 	{/if}
 </div>
