@@ -127,7 +127,7 @@
 						formData.set('image', files[0]);
 					}
 				} else if (fileType.startsWith('video/')) {
-					if (fileSizeInMB < MAX_VIDEO_SIZE_MB) {
+					if (fileSizeInMB > MAX_VIDEO_SIZE_MB) {
 						notifications.danger(
 							'Vídeo é menor que o tamanho permitido (300 MB)!',
 							NOTIFICATION_DURATION
@@ -183,7 +183,7 @@
 		>
 	</div>
 	<h1 class="text-3xl font-semibold">{$_('ProductsMorePage.UpdateProduct')}</h1>
-	<form class="mt-12 divide-y-2 divide-gray-400" method="POST" use:enhance>
+	<form class="mt-12 divide-y-2 divide-gray-400" method="POST" use:enhance  enctype="multipart/form-data">
 		<div class="grid grid-cols-1 gap-1">
 			<Input
 				label="ID do Produto"
@@ -234,7 +234,7 @@
 					</div>
 				{/if}
 				<div class="divide-y-2 divide-gray-400">
-					<InputFile label="Imagem Principal" bind:files id="avatar" name="avatar" />
+					<InputFile label="Imagem Principal" bind:files id="image" name="image" />
 				</div>
 
 				<div class="divide-y-2 divide-gray-400">

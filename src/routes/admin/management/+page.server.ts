@@ -6,10 +6,11 @@ import type { Actions } from './$types';
 export const load = async ({ url, cookies }) => {
 	const token = cookies.get('access_token');
 	const page = new URL(url).searchParams.get('page') || 1;
-	const offset = new URL(url).searchParams.get('offset') || 10;
+	const limit = new URL(url).searchParams.get('limit') || 10;
+	
 	const users = usersStore();
 
-	await users.get(`${SERVER_BASE_URL}/users/?offset=${offset}&page=${page}`, token);
+	await users.get(`${SERVER_BASE_URL}/users/?limit=${limit}&page=${page}`, token);
 
 	let currentUsers;
 	users.subscribe((value) => (currentUsers = value))();
@@ -29,14 +30,14 @@ export const actions: Actions = {
 
 		const data = {
 			search_name: form.get('search_name'),
-			offset: form.get('offset'),
+			limit: form.get('limit'),
 			page: form.get('page')
 		};
 
-		const { offset, page, search_name } = data;
+		const { limit, page, search_name } = data;
 
 		await users.get(
-			`${SERVER_BASE_URL}/users/?search_name=${search_name}&page=${page}&offset=${offset}`,
+			`${SERVER_BASE_URL}/users/?search_name=${search_name}&page=${page}&limit=${limit}`,
 			token
 		);
 
