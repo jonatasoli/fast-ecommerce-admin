@@ -36,14 +36,14 @@
 	users.set({
 		users: data.users.users,
 		page: data.users.page,
-		offset: data.users.offset,
+		limit: data.users.limit,
 		total_pages: data.users.total_pages,
 		total_records: data.users.total_records
 	});
 
 	let debounceTimeout: ReturnType<typeof setTimeout>;
 	let notification = false;
-	let rowsPerPage = data.users.offset ?? 10;
+	let rowsPerPage = data.users.limit ?? 10;
 	let currentPage = data.users.page ?? 1;
 	const searchParams = new URLSearchParams($page.url.searchParams);
 	let trackingFilter = searchParams.get('tracking_number') === 'true' ? true : false;
@@ -75,11 +75,14 @@
 	let searchTerm = '';
 	let sortBy = 'user_id';
 	let sortDirection = 'asc';
+
 	$: items = data.users.users ?? [];
 	$: start = currentPage * rowsPerPage - rowsPerPage;
 	$: end = Math.min(start + rowsPerPage, data.users.total_records);
-	$: endPage = data.users.total_pages;
+	$: endPage = data.users.total_records;
 	$: searchTerm, debounceSearch(searchTerm);
+
+	
 
 	$: if (currentPage > endPage) {
 		currentPage = endPage;
@@ -87,15 +90,11 @@
 
 	users.subscribe(($store) => {
 		items = $store.users;
-		rowsPerPage = $store.offset;
+		rowsPerPage = $store.limit;
 		currentPage = $store.page;
 		start = currentPage * rowsPerPage - rowsPerPage;
 		end = Math.min(start + rowsPerPage, $store.total_records);
-		endPage = $store.total_pages;
-	});
-
-	onMount(() => {
-		refreshUsers();
+		endPage = $store.total_records;
 	});
 
 	interface selectedUser {
@@ -111,27 +110,21 @@
 	}
 
 	function detectSearchType(query: string) {
-		const isDocument = /^\d+$/.test(query); // Checa se contém apenas números
+		const isDocument = /^\d+$/.test(query);
 		return isDocument ? 'search_document' : 'search_name';
 	}
 
 	async function getUserByFilter(search_type: string, query: string) {
 		await users.get(
-			`${data.base_url}/users/?${search_type}=${query}&offset=${rowsPerPage}&page=1`,
+			`${data.base_url}/users/?${search_type}=${query}&limit=${rowsPerPage}&page=1`,
 			data.access_token
 		);
 	}
-
-	function debounceSearch(query: string) {
-		clearTimeout(debounceTimeout);
-		debounceTimeout = setTimeout(() => {
-			if (query.length > 3) {
-				const searchType = detectSearchType(query);
-				getUserByFilter(searchType, query);
-			} else {
-				refreshUsers();
-			}
-		}, 300);
+	async function refreshUsers() {
+		const res = await users.get(
+			`${data.base_url}/users/?limit=${rowsPerPage}&page=${currentPage}&order_by=${sortBy}&direction=${sortDirection}`,
+			data.access_token
+		);
 	}
 
 	function trigger() {
@@ -154,13 +147,6 @@
 		}
 		isModalOpen = false;
 		return;
-	}
-
-	async function refreshUsers() {
-		await users.get(
-			`${data.base_url}/users/?offset=${rowsPerPage}&page=${currentPage}&order_by=${sortBy}&direction=${sortDirection}`,
-			data.access_token
-		);
 	}
 
 	function orderBy(sort_By: string) {
@@ -225,9 +211,8 @@
 
 	async function handleRowsPerPageChange(event: any) {
 		rowsPerPage = parseInt(event.target.value);
-		currentPage = 1; // Reset to first page
-		searchParams.set('offset', `${rowsPerPage}`);
-		searchParams.set('page', `${currentPage}`);
+		currentPage = 1;
+
 		await refreshUsers();
 	}
 
@@ -239,9 +224,8 @@
 
 	async function nextPage() {
 		if (currentPage < endPage) {
-			console.log(currentPage);
 			currentPage++;
-			searchParams.set('page', currentPage);
+
 			await refreshUsers();
 		}
 	}
@@ -250,7 +234,7 @@
 		if (currentPage > 1) {
 			currentPage--;
 			searchParams.set('page', currentPage);
-			console.log(currentPage);
+
 			await refreshUsers();
 		}
 	}
@@ -260,6 +244,22 @@
 		searchParams.set('page', currentPage);
 		await refreshUsers();
 	}
+
+	function debounceSearch(query: string) {
+		clearTimeout(debounceTimeout);
+		debounceTimeout = setTimeout(() => {
+			if (query.length > 3) {
+				const searchType = detectSearchType(query);
+				getUserByFilter(searchType, query);
+			} else {
+				refreshUsers();
+			}
+		}, 300);
+	}
+
+	onMount(() => {
+		refreshUsers();
+	});
 </script>
 
 <div class="w-[90vw] mt-8 mx-auto">
@@ -342,7 +342,7 @@
 				on:change={handleRowsPerPageChange}
 			/>
 
-			{start + 1}-{end} de {data.users.total_records}
+			{start + 1}-{end} de {endPage}
 
 			<button
 				class="cursor-pointer disabled:pointer-events-none disabled:text-gray-400"
