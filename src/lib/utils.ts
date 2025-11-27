@@ -114,7 +114,7 @@ export const getPaymentStatus = (paid: boolean): string => {
 };
 
 export const paymentMethodMap: Record<string, string> = {
-	credit_card: 'Cartão de Crédito',
+	"credit-card": 'Cartão de Crédito',
 	boleto: 'Boleto',
 	pix: 'Pix',
 	debit_card: 'Cartão de Débito',
